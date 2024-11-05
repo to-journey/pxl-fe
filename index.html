@@ -31,10 +31,10 @@
 
     <script src="pxl.js"></script>
     <script>
-        document.getElementById("start-game-button").onclick = function() {
-            const userId = localStorage.getItem('user_id'); // Ensure user_id is fetched from local storage
-            console.log("Start Game button clicked.");
-            console.log("Retrieved user ID from local storage:", userId);
+        document.getElementById("start-game-button").onclick = function () {
+            const url = new URL(window.location.href);
+            const params = new URLSearchParams(url.search);
+            const userId = params.get('user_id');
 
             if (userId) {
                 console.log("Starting signup process for user ID:", userId);
