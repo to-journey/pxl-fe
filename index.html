@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRYPTALES Game</title>
+    <link rel="stylesheet" href="pxl.css">
+</head>
+<body>
+    <div class="welcome-screen" id="welcome-screen">
+        <h1>Welcome to "CRYPTALES"</h1>
+        <p>Test your knowledge of crypto myths and facts.</p>
+        <button id="start-game-button">Start Game</button>
+    </div>
+
+    <div class="game-container" id="game-container" style="display: none;">
+        <div class="score">Score: <span id="score">0</span></div>
+        <div class="question-container">
+            <div id="question-text"></div>
+        </div>
+        <div class="button-container">
+            <button id="myth-button" onclick="submitAnswer('Myth')">Myth</button>
+            <button id="fact-button" onclick="submitAnswer('Fact')">Fact</button>
+        </div>
+        <button id="next-button" onclick="nextQuestion()" style="display: none; margin-top: 20px;">Next</button>
+        <div id="feedback" class="feedback"></div>
+        <div class="timer">Time: <span id="timer">0</span>s</div>
+        <div id="explanation" class="explanation"></div>
+        <button id="close-button" onclick="closeGame()">Close</button>
+    </div>
+
+    <script src="pxl.js"></script>
+    <script>
+        document.getElementById("start-game-button").onclick = function() {
+            const userId = localStorage.getItem('user_id'); // Ensure user_id is fetched from local storage
+            console.log("Start Game button clicked.");
+            console.log("Retrieved user ID from local storage:", userId);
+
+            if (userId) {
+                console.log("Starting signup process for user ID:", userId);
+                signupUser(userId); // Call the signupUser function to handle user signup
+                startGame(); // Start the game after signup
+            } else {
+                console.error("User ID not found. Please ensure you are signed up.");
+            }
+        };
+    </script>
+</body>
+</html>
