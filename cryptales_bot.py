@@ -38,9 +38,10 @@ def signup_user(message):
 
 @bot.message_handler(commands=['play'])
 def start_game(message):
+    user_id = message.from_user.id
     bot.send_message(
         message.chat.id,
-        "Starting the game... Click here to play: [Play CRYPTALES](https://cryptales.vercel.app/)",
+        f"Starting the game... Click here to play: [Play CRYPTALES](https://telebot-orpin.vercel.app?user_id={user_id})",
         parse_mode="Markdown"
     )
 
