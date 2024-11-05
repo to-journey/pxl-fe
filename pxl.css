@@ -1,0 +1,127 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #6f00ff, #00ffcc);
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+#welcome-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    text-align: center;
+    background: url('https://example.com/your-background-image.jpg') no-repeat center center/cover;
+}
+
+.welcome-screen h1, .welcome-screen p {
+    margin: 0;
+}
+
+.welcome-screen button {
+    background: #6f00ff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 20px;
+}
+
+.welcome-screen button:hover {
+    background: #00ffcc;
+}
+
+.game-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+}
+
+.score, .timer {
+    font-size: 20px;
+    margin: 10px;
+}
+
+.question-container {
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#question-text {
+    font-size: 24px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.button-container {
+    margin: 20px 0;
+}
+
+button {
+    background: #6f00ff;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 18px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #00ffcc;
+}
+
+.feedback {
+    margin: 20px 0;
+    font-size: 18px;
+}
+
+.feedback.correct {
+    color: #00ff00;
+}
+
+.feedback.wrong {
+    color: #ff0000;
+}
+
+.explanation {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+#next-button {
+    display: none;
+    background: #00ffcc;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#next-button:hover {
+    background: #6f00ff;
+}
