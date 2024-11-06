@@ -101,7 +101,7 @@ function endGame() {
 
 function fetchChatId(userId) {
     console.log("Fetching chat ID for user ID:", userId); // Log the user ID being fetched
-    fetch(`https://1529-83-234-227-54.ngrok-free.app/get_chat_id/${userId}`)
+    fetch(`https://6b8d-83-234-227-54.ngrok-free.app/get_chat_id/${userId}`)
         .then(response => response.json())
         .then(data => {
             if (data.chat_id) {
@@ -137,7 +137,7 @@ function submitScoreToServer(finalScore, timeElapsed) {
     }
 
     // Proceed with fetch request...
-    fetch("https://1529-83-234-227-54.ngrok-free.app/submit_score", {  // Your current ngrok URL
+    fetch("https://6b8d-83-234-227-54.ngrok-free.app/submit_score", {  // Your current ngrok URL
         method: "POST",
         headers: {
             "Content-Type": "application/json",
