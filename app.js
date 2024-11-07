@@ -1,8 +1,10 @@
+const dotenv = require('dotenv');
+const admin = require('firebase-admin');
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
-const admin = require('firebase-admin');
-const dotenv = require('dotenv');
+const cron = require('node-cron');
+const bodyParser = require('body-parser');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -16,18 +18,15 @@ admin.initializeApp({
 
 const app = express();
 app.use(cors());
+app.use(bodyParser());
 app.use(express.json()); // Middleware to parse JSON
+
+const API_KEY = process.env.TELEGRAM_API_KEY;
+const botUrl = `https://api.telegram.org/bot${API_KEY}/sendMessage`;
 
 // Helper function to send score to Telegram
 async function sendScoreToTelegram(chatId, username, score, time) {
-    const API_KEY = process.env.TELEGRAM_API_KEY;
-    if (!API_KEY) {
-        console.error("Error: TELEGRAM_API_KEY is not set.");
-        throw new Error('Telegram API key is missing');
-    }
-
     const message = `🏆 *Game Finished!*\n👤 Username: ${username.replace('_', '\\_')}\n🏅 Score: ${score} points\n⏱ Time: ${time} seconds`;
-    const botUrl = `https://api.telegram.org/bot${API_KEY}/sendMessage`;
 
     try {
         const response = await axios.post(botUrl, {
@@ -63,8 +62,10 @@ app.post('/submit_score', async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Missing data in request' });
         }
 
+        await sendScoreToTelegram(chatId, username, score, time);
+
         // Get today's date in "YYYY-MM-DD" format
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toLocaleDateString();
 
         // Save the score and username to the Firebase scoreboard
         const scoreboardRef = admin.database().ref(`scoreboard/${user_id}`);
@@ -76,13 +77,10 @@ app.post('/submit_score', async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Score already submitted today' });
         }
 
-        // Send score to Telegram
-        await sendScoreToTelegram(chatId, username, score, time);
-
         await scoreboardRef.set({
             username: username,
-            score: score,
-            time: time,
+            score: score + (scoreData.score || 0),
+            time: time + (scoreData.time || 0),
             date: today
         });
 
@@ -126,6 +124,96 @@ app.get('/scoreboard', async (req, res) => {
         console.error("Error retrieving scoreboard:", error.message);
         return res.status(500).json({ status: 'error', message: error.message });
     }
+});
+
+app.post('/questions', async (req, res) => {
+    try {
+        console.log(req.body);
+        const questionData = req.body;
+        const newQuestionRef = admin.database().ref('questions').push();
+        questionData.id = newQuestionRef.key;
+        await newQuestionRef.set(questionData);
+        res.status(201).json({ id: questionData.id, ...questionData });
+    } catch (error) {
+        console.error('Error creating question:', error);
+        res.status(500).send('Error creating question');
+    }
+});
+
+app.get('/questions', async (req, res) => {
+    try {
+        const snapshot = await admin.database().ref('questions').once('value');
+        const questions = snapshot.val();
+        res.status(200).json(questions ? Object.values(questions) : []);
+    } catch (error) {
+        console.error('Error reading questions:', error);
+        res.status(500).send('Error reading questions');
+    }
+});
+
+app.put('/questions/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedData = req.body;
+        const questionRef = admin.database().ref('questions').child(id);
+        await questionRef.update(updatedData);
+        res.status(200).send('Question updated successfully');
+    } catch (error) {
+        console.error('Error updating question:', error);
+        res.status(500).send('Error updating question');
+    }
+});
+
+app.delete('/questions/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const questionRef = admin.database().ref('questions').child(id);
+        await questionRef.remove();
+        res.status(200).send('Question deleted successfully');
+    } catch (error) {
+        console.error('Error deleting question:', error);
+        res.status(500).send('Error deleting question');
+    }
+});
+
+const sendDailyNotification = async () => {
+    try {
+        const usersRef = admin.database().ref('users');
+        const snapshot = await usersRef.once('value');
+        if (snapshot.exists()) {
+            const users = snapshot.val();
+            for (const userId in users) {
+                await axios.post(botUrl, {
+                    chat_id: userId,
+                    text: `New game is live.\n/play - Start the game.`,
+                    parse_mode: 'Markdown'
+                });
+            }
+        } else {
+            console.log("No users found.");
+        }
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+
+const clearScoreboard = async () => {
+    try {
+        await scoreboardRef.set(null);
+        console.log("Scoreboard cleared successfully.");
+    } catch (error) {
+        console.error("Error clearing scoreboard:", error);
+    }
+}
+
+cron.schedule('0 8 * * *', () => {
+    console.log('Sending daily notification...');
+    sendDailyNotification();
+});
+
+cron.schedule('0 0 * * 1', () => {
+    console.log("Running scheduled task to clear scoreboard...");
+    clearScoreboard();
 });
 
 const PORT = process.env.PORT || 8080;
