@@ -7,7 +7,7 @@ let questions = [];
 
 async function startGame() {
     const result = await new Promise((resolve, reject) => {
-        fetch(`https://ca26-83-234-227-50.ngrok-free.app/questions`)
+        fetch(`https://e14b-83-234-227-50.ngrok-free.app/questions`)
         .then(response => resolve(response.json()))
         .catch(error => reject(error));
     });
@@ -96,7 +96,7 @@ function endGame() {
 
 function fetchChatId(userId) {
     console.log("Fetching chat ID for user ID:", userId); // Log the user ID being fetched
-    fetch(`https://ca26-83-234-227-50.ngrok-free.app/get_chat_id/${userId}`)
+    fetch(`https://e14b-83-234-227-50.ngrok-free.app/get_chat_id/${userId}`)
         .then(response => response.json())
         .then(data => {
             if (data.chat_id) {
@@ -132,7 +132,7 @@ function submitScoreToServer(finalScore, timeElapsed) {
     }
 
     // Proceed with fetch request...
-    fetch("https://ca26-83-234-227-50.ngrok-free.app/submit_score", {  // Your current ngrok URL
+    fetch("https://e14b-83-234-227-50.ngrok-free.app/submit_score", {  // Your current ngrok URL
         method: "POST",
         headers: {
             "Content-Type": "application/json",
