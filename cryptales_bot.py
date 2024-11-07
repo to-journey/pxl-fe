@@ -14,7 +14,7 @@ firebase_admin.initialize_app(
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
     bot.send_message(
-        message.chat.id, "Welcome to CRYPTALES! Use /signup to register your ID."
+        message.chat.id, "Welcome to PXL GAMES! 🕹️\nUse /signup to register your user ID."
     )
 
 
@@ -32,20 +32,14 @@ def signup_user(message):
 
     bot.send_message(
         chat_id,
-        f"You have successfully signed up! Your chat ID is {chat_id} and user ID is {user_id}.",
+        f"You have successfully signed up with the user ID {user_id}",
     )
     print(f"Stored chat_id {chat_id} and username {username} for user {user_id}")
-
-    # New line to send user ID back to the frontend
-    bot.send_message(
-        chat_id,
-        f"Your User ID is: {user_id}. Please make sure this is stored in your game.",
-    )
 
     # Provide the options to /play and /scoreboard after successful signup
     bot.send_message(
         chat_id,
-        "You can now use the following commands:\n/play - Start the game\n/scoreboard - View the scoreboard",
+        "You can now use the following\ncommands:\n/play - Start the game\n/scoreboard - View the scoreboard",
     )
 
 
@@ -54,7 +48,7 @@ def start_game(message):
     user_id = message.from_user.id
     bot.send_message(
         message.chat.id,
-        f"Starting the game... Click here to play: [Play CRYPTALES](https://telebot-orpin.vercel.app?user_id={user_id})",
+        f"Starting the game...\nClick here to play: [CRYPTALES](https://telebot-orpin.vercel.app?user_id={user_id})",
         parse_mode="Markdown",
     )
 
@@ -72,21 +66,11 @@ def show_scoreboard(message):
         )
 
         scoreboard_message = "🏆 SCOREBOARD 🏆\n"
-        top_3 = sorted_scores[:3]
 
-        medals = ["🥇", "🥈", "🥉"]
-        for i, (uid, score) in enumerate(top_3):
+        for i, (uid, score) in enumerate(sorted_scores):
             username = score.get("username", "Unknown User")
-            scoreboard_message += f"{medals[i]} {username}: {score['score']} points, {score['time']} seconds\n"
-
-        current_user_position = next(
-            (i for i, (uid, _) in enumerate(sorted_scores) if uid == user_id), None
-        )
-
-        if current_user_position is not None and current_user_position >= 3:
-            current_user_data = sorted_scores[current_user_position][1]
-            scoreboard_message += f"\n🎖 {current_user_data['username']}: {current_user_data['score']} points, {current_user_data['time']} seconds"
-
+            scoreboard_message += f"{username}: {score['score']} points, {score['time']} seconds\n"
+        
     bot.send_message(message.chat.id, scoreboard_message)
 
 if __name__ == "__main__":
