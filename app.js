@@ -128,12 +128,10 @@ app.get('/scoreboard', async (req, res) => {
 
 app.post('/questions', async (req, res) => {
     try {
-        console.log(req.body);
-        const questionData = req.body;
-        const newQuestionRef = admin.database().ref('questions').push();
-        questionData.id = newQuestionRef.key;
-        await newQuestionRef.set(questionData);
-        res.status(201).json({ id: questionData.id, ...questionData });
+        const { questions } = req.body;
+        const questionRef = admin.database().ref('questions');
+        questionRef.set(questions);
+        res.status(201).json({ message: 'Success' });
     } catch (error) {
         console.error('Error creating question:', error);
         res.status(500).send('Error creating question');
@@ -144,35 +142,10 @@ app.get('/questions', async (req, res) => {
     try {
         const snapshot = await admin.database().ref('questions').once('value');
         const questions = snapshot.val();
-        res.status(200).json(questions ? Object.values(questions) : []);
+        res.status(200).json({ questions });
     } catch (error) {
         console.error('Error reading questions:', error);
         res.status(500).send('Error reading questions');
-    }
-});
-
-app.put('/questions/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const updatedData = req.body;
-        const questionRef = admin.database().ref('questions').child(id);
-        await questionRef.update(updatedData);
-        res.status(200).send('Question updated successfully');
-    } catch (error) {
-        console.error('Error updating question:', error);
-        res.status(500).send('Error updating question');
-    }
-});
-
-app.delete('/questions/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const questionRef = admin.database().ref('questions').child(id);
-        await questionRef.remove();
-        res.status(200).send('Question deleted successfully');
-    } catch (error) {
-        console.error('Error deleting question:', error);
-        res.status(500).send('Error deleting question');
     }
 });
 
