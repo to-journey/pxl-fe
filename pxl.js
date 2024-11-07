@@ -3,22 +3,17 @@ let score = 0;
 let elapsedTime = 0;
 let timerInterval;
 
-const questions = [
-    {
-        question: "Bitcoin is completely anonymous and untraceable.",
-        answer: "Myth",
-        explanation: "While Bitcoin transactions don’t require personal details, all transactions are recorded on a public ledger.",
-        background: "url('https://images.unsplash.com/photo-1641956796980-406648b62f92?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGJpdGNvaW58ZW58MHx8MHx8fDA%3D')"
-    },
-    {
-        question: "Ethereum smart contracts are self-executing and don't need intermediaries.",
-        answer: "Fact",
-        explanation: "Smart contracts on Ethereum execute automatically when conditions are met.",
-        background: "url('https://plus.unsplash.com/premium_photo-1673338411083-47e01b496247?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8ZXRoZXJldW18ZW58MHx8MHx8fDA%3D')"
-    },
-];
+let questions = [];
 
-function startGame() {
+async function startGame() {
+    const result = await new Promise((resolve, reject) => {
+        fetch(`https://ca26-83-234-227-50.ngrok-free.app/questions`)
+        .then(response => resolve(response.json()))
+        .catch(error => reject(error));
+    });
+
+    questions = JSON.parse(result.questions);
+
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('game-container').style.display = 'block';
     currentQuestionIndex = 0;
@@ -92,7 +87,7 @@ function endGame() {
     document.getElementById('next-button').style.display = 'none';
 
     // Log user ID before submission
-    const currentUserId = localStorage.getItem('user_id');  
+    const currentUserId = localStorage.getItem('user_id');
     console.log("User ID from local storage:", currentUserId); // Check what's stored
 
     submitScoreToServer(score, elapsedTime);  // Send the score to the server
@@ -101,7 +96,7 @@ function endGame() {
 
 function fetchChatId(userId) {
     console.log("Fetching chat ID for user ID:", userId); // Log the user ID being fetched
-    fetch(`https://6b8d-83-234-227-54.ngrok-free.app/get_chat_id/${userId}`)
+    fetch(`https://ca26-83-234-227-50.ngrok-free.app/get_chat_id/${userId}`)
         .then(response => response.json())
         .then(data => {
             if (data.chat_id) {
@@ -137,7 +132,7 @@ function submitScoreToServer(finalScore, timeElapsed) {
     }
 
     // Proceed with fetch request...
-    fetch("https://6b8d-83-234-227-54.ngrok-free.app/submit_score", {  // Your current ngrok URL
+    fetch("https://ca26-83-234-227-50.ngrok-free.app/submit_score", {  // Your current ngrok URL
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -148,11 +143,11 @@ function submitScoreToServer(finalScore, timeElapsed) {
             user_id: userId
         }),
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Response from server:", data);
-    })
-    .catch(error => console.error("Error sending score:", error));
+        .then(response => response.json())
+        .then(data => {
+            console.log("Response from server:", data);
+        })
+        .catch(error => console.error("Error sending score:", error));
 }
 
 function fetchScoreboard() {

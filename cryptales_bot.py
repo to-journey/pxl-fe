@@ -52,6 +52,15 @@ def start_game(message):
         parse_mode="Markdown",
     )
 
+@bot.message_handler(commands=["question"])
+def start_game(message):
+    user_id = message.from_user.id
+    bot.send_message(
+        message.chat.id,
+        f"Click here to edit question: [Edit question](https://telebot-orpin.vercel.app/questions.html",
+        parse_mode="Markdown",
+    )
+
 @bot.message_handler(commands=['scoreboard'])
 def show_scoreboard(message):
     user_id = str(message.from_user.id)  # Get the current user's ID as a string
@@ -67,8 +76,18 @@ def show_scoreboard(message):
 
         scoreboard_message = "🏆 SCOREBOARD 🏆\n"
 
-        for i, (uid, score) in enumerate(sorted_scores):
+        is_user_ranked = False
+
+        for i, (uid, score) in enumerate(sorted_scores[:5]):
+            if user_id == uid:
+                is_user_ranked = True
             username = score.get("username", "Unknown User")
+            scoreboard_message += f"{username}: {score['score']} points, {score['time']} seconds\n"
+        
+        if len(sorted_scores) > 5:
+            scoreboard_message += "...\n"
+        
+        if not is_user_ranked:
             scoreboard_message += f"{username}: {score['score']} points, {score['time']} seconds\n"
         
     bot.send_message(message.chat.id, scoreboard_message)
