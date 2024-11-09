@@ -54,6 +54,12 @@
 <script>
     function save() {
         const questions = document.getElementById('questions').value;
+        try {
+            JSON.parse(questions);
+        } catch (err) {
+            alert(err.message);
+            return;
+        }
 
         fetch("https://pxl8d.top/api/questions", {
             method: "POST",
