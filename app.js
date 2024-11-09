@@ -203,7 +203,7 @@ cron.schedule('0 8 * * *', () => {
     sendDailyNotification();
 });
 
-cron.schedule('0 0 * * 1', () => {
+cron.schedule('0 8 * * 1', () => {
     console.log("Running scheduled task to clear scoreboard...");
     clearScoreboard();
 });
