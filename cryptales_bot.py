@@ -82,12 +82,12 @@ def show_scoreboard(message):
                 scoreboard_message += "...\n"
             if i < 5 or user_id == uid:
                 username = score.get("username", "Unknown User")
-                scoreboard_message += f"{i + 1}. {username}: {score['score']} points, {score['time']} seconds\n"
+                scoreboard_message += f"{i + 1}. <b>{username}</b>: {score['score']} points, {score['time']} seconds\n"
         
         if len(sorted_scores) > 5:
             scoreboard_message += "...\n"
         
-    bot.send_message(message.chat.id, scoreboard_message)
+    bot.send_message(message.chat.id, scoreboard_message, parse_mode='HTML')
 
 if __name__ == "__main__":
     print("Starting the bot...")
