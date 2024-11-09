@@ -13,7 +13,7 @@ dotenv.config();
 const serviceAccount = require('./firebase-adminsdk.json');
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://cryptalesbot-default-rtdb.firebaseio.com/'
+    databaseURL: 'https://pxl8d-4a7a8-default-rtdb.firebaseio.com/'
 });
 
 const app = express();
@@ -79,8 +79,8 @@ app.post('/submit_score', async (req, res) => {
 
         await scoreboardRef.set({
             username: username,
-            score: score + (scoreData.score || 0),
-            time: time + (scoreData.time || 0),
+            score: score + (scoreData?.score || 0),
+            time: time + (scoreData?.time || 0),
             date: today
         });
 
