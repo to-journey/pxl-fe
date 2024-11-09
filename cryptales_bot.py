@@ -2,12 +2,12 @@ import telebot
 import firebase_admin
 from firebase_admin import credentials, db
 
-API_KEY = "7813851715:AAEwKzM4TOJsOP7mlrwccy2b5fUq2VHP8P8"
+API_KEY = "7607500072:AAEaAYBc1TIzEHjjsvsJ46yNSkp9XwZPgZ0"
 bot = telebot.TeleBot(API_KEY)
 
-cred = credentials.Certificate("firebase-adminsdk.json")
+cred = credentials.Certificate("./firebase-adminsdk.json")
 firebase_admin.initialize_app(
-    cred, {"databaseURL": "https://cryptalesbot-default-rtdb.firebaseio.com/"}
+    cred, {"databaseURL": "https://pxl8d-4a7a8-default-rtdb.firebaseio.com/"}
 )
 
 
@@ -48,18 +48,19 @@ def start_game(message):
     user_id = message.from_user.id
     bot.send_message(
         message.chat.id,
-        f"Starting the game...\nClick here to play: [CRYPTALES](https://telebot-orpin.vercel.app?user_id={user_id})",
+        f"Starting the game...\nClick here to play: [PXL GAMES](https://pxl8d.top?user_id={user_id})",
         parse_mode="Markdown",
     )
 
 @bot.message_handler(commands=["question"])
 def start_game(message):
-    user_id = message.from_user.id
-    bot.send_message(
-        message.chat.id,
-        f"Click here to edit question: [Edit question](https://telebot-orpin.vercel.app/questions.html",
-        parse_mode="Markdown",
-    )
+    if message.from_user.id == '5988835567':
+        user_id = message.from_user.id
+        bot.send_message(
+            message.chat.id,
+            f"Click here to edit question: [Edit question](https://pxl8d.top/questions.html",
+            parse_mode="Markdown",
+        )
 
 @bot.message_handler(commands=['scoreboard'])
 def show_scoreboard(message):
@@ -76,19 +77,15 @@ def show_scoreboard(message):
 
         scoreboard_message = "🏆 SCOREBOARD 🏆\n"
 
-        is_user_ranked = False
-
-        for i, (uid, score) in enumerate(sorted_scores[:5]):
-            if user_id == uid:
-                is_user_ranked = True
-            username = score.get("username", "Unknown User")
-            scoreboard_message += f"{username}: {score['score']} points, {score['time']} seconds\n"
+        for i, (uid, score) in enumerate(sorted_scores):
+            if i == 5:
+                scoreboard_message += "...\n"
+            if i < 5 or user_id == uid:
+                username = score.get("username", "Unknown User")
+                scoreboard_message += f"{i + 1}. {username}: {score['score']} points, {score['time']} seconds\n"
         
         if len(sorted_scores) > 5:
             scoreboard_message += "...\n"
-        
-        if not is_user_ranked:
-            scoreboard_message += f"{username}: {score['score']} points, {score['time']} seconds\n"
         
     bot.send_message(message.chat.id, scoreboard_message)
 
