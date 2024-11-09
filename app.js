@@ -129,7 +129,7 @@ app.get('/scoreboard', async (req, res) => {
 app.post('/questions', async (req, res) => {
     try {
         const { questions } = req.body;
-        const questionRef = admin.database().ref('questions');
+        const questionRef = admin.database().ref('questions/prev');
         questionRef.set(questions);
         res.status(201).json({ message: 'Success' });
     } catch (error) {
@@ -140,7 +140,7 @@ app.post('/questions', async (req, res) => {
 
 app.get('/questions', async (req, res) => {
     try {
-        const snapshot = await admin.database().ref('questions').once('value');
+        const snapshot = await admin.database().ref('questions/current').once('value');
         const questions = snapshot.val();
         res.status(200).json({ questions });
     } catch (error) {
@@ -148,6 +148,24 @@ app.get('/questions', async (req, res) => {
         res.status(500).send('Error reading questions');
     }
 });
+
+const setQuestions = async () => {
+    const questionRefPrev = admin.database().ref('questions/prev');
+    const questionRef = admin.database().ref('questions/current');
+    try {
+        const snapshot = await questionRefPrev.once('value');
+
+        if (snapshot.exists()) {
+            const questionsData = snapshot.val();
+            await questionRef.set(questionsData);
+            console.log('Data copied from questions/prev to questions/current successfully.');
+        } else {
+            console.log('No data found at questions/prev.');
+        }
+    } catch (error) {
+        console.error('Error copying data:', error);
+    }
+}
 
 const sendDailyNotification = async () => {
     try {
@@ -181,6 +199,7 @@ const clearScoreboard = async () => {
 
 cron.schedule('0 8 * * *', () => {
     console.log('Sending daily notification...');
+    setQuestions();
     sendDailyNotification();
 });
 
