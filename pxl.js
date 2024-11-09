@@ -7,7 +7,7 @@ let questions = [];
 
 async function startGame() {
     const result = await new Promise((resolve, reject) => {
-        fetch(`https://e14b-83-234-227-50.ngrok-free.app/questions`)
+        fetch(`https://pxl8d.top/api/questions`)
         .then(response => resolve(response.json()))
         .catch(error => reject(error));
     });
@@ -91,12 +91,12 @@ function endGame() {
     console.log("User ID from local storage:", currentUserId); // Check what's stored
 
     submitScoreToServer(score, elapsedTime);  // Send the score to the server
-    window.location.href = "tg://resolve?domain=pxltalesbot";
+    window.location.href = "tg://resolve?domain=pxlgames_bot";
 }
 
 function fetchChatId(userId) {
     console.log("Fetching chat ID for user ID:", userId); // Log the user ID being fetched
-    fetch(`https://e14b-83-234-227-50.ngrok-free.app/get_chat_id/${userId}`)
+    fetch(`https://pxl8d.top/api/get_chat_id/${userId}`)
         .then(response => response.json())
         .then(data => {
             if (data.chat_id) {
@@ -132,7 +132,7 @@ function submitScoreToServer(finalScore, timeElapsed) {
     }
 
     // Proceed with fetch request...
-    fetch("https://e14b-83-234-227-50.ngrok-free.app/submit_score", {  // Your current ngrok URL
+    fetch("https://pxl8d.top/api/submit_score", {  // Your current ngrok URL
         method: "POST",
         headers: {
             "Content-Type": "application/json",
