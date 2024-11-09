@@ -8,8 +8,8 @@ let questions = [];
 async function startGame() {
     const result = await new Promise((resolve, reject) => {
         fetch(`https://pxl8d.top/api/questions`)
-        .then(response => resolve(response.json()))
-        .catch(error => reject(error));
+            .then(response => resolve(response.json()))
+            .catch(error => reject(error));
     });
 
     questions = JSON.parse(result.questions);
@@ -148,19 +148,4 @@ function submitScoreToServer(finalScore, timeElapsed) {
             console.log("Response from server:", data);
         })
         .catch(error => console.error("Error sending score:", error));
-}
-
-function fetchScoreboard() {
-    fetch("http://127.0.0.1:5001/scoreboard")
-        .then(response => response.json())
-        .then(data => {
-            console.log("Scoreboard data:", data); // Check the data received
-
-            let scoreboardDisplay = "🏆 SCOREBOARD 🏆\n"; // Add trophy header
-            for (const [username, details] of Object.entries(data)) {
-                scoreboardDisplay += `${username}: ${details.score} points, ${details.time} seconds\n`;
-            }
-            document.getElementById('scoreboard').textContent = scoreboardDisplay; // Assume you have a display element
-        })
-        .catch(error => console.error("Error fetching scoreboard:", error));
 }
