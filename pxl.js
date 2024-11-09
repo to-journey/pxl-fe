@@ -94,27 +94,10 @@ function endGame() {
     window.location.href = "tg://resolve?domain=pxlgames_bot";
 }
 
-function fetchChatId(userId) {
-    console.log("Fetching chat ID for user ID:", userId); // Log the user ID being fetched
-    fetch(`https://pxl8d.top/api/get_chat_id/${userId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.chat_id) {
-                localStorage.setItem('user_chat_id', data.chat_id);
-                localStorage.setItem('user_id', userId); // Ensure user_id is set here
-                console.log("Chat ID and User ID fetched and saved:", data.chat_id, userId);
-            } else {
-                console.error("Chat ID not found for user ID:", userId);
-            }
-        })
-        .catch(error => console.error("Error fetching chat ID:", error));
-}
-
 function signupUser(userId) {
     console.log("Signing up user with ID:", userId);
     localStorage.setItem('user_id', userId);
     console.log("User ID saved to local storage:", localStorage.getItem('user_id')); // Confirm saving
-    fetchChatId(userId); // Fetch chat ID after saving user ID
 }
 
 function submitScoreToServer(finalScore, timeElapsed) {
