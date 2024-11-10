@@ -174,11 +174,15 @@ const sendDailyNotification = async () => {
         if (snapshot.exists()) {
             const users = snapshot.val();
             for (const userId in users) {
-                await axios.post(botUrl, {
-                    chat_id: userId,
-                    text: `New game is live.\n/play - Start the game.`,
-                    parse_mode: 'Markdown'
-                });
+                try {
+                    await axios.post(botUrl, {
+                        chat_id: userId,
+                        text: `New game is live.\n/play - Start the game.`,
+                        parse_mode: 'Markdown'
+                    });
+                } catch (err) {
+                    console.error(`Couldn't send daily notification to ${userId}`);
+                }
             }
         } else {
             console.log("No users found.");
