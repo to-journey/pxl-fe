@@ -194,6 +194,7 @@ const sendDailyNotification = async () => {
 
 const clearScoreboard = async () => {
     try {
+        const scoreboardRef = admin.database().ref(`scoreboard`);
         await scoreboardRef.set(null);
         console.log("Scoreboard cleared successfully.");
     } catch (error) {
