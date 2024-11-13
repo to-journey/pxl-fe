@@ -62,6 +62,16 @@ def start_game(message):
             parse_mode="Markdown",
         )
 
+@bot.message_handler(commands=['users'])
+def get_users(message):
+    users_ref = db.reference("users")
+    users = users_ref.get()
+    total_users = len(users)
+
+    users_message = f"Total number of users: {total_users}"
+
+    bot.send_message(message.chat.id, users_message)
+
 @bot.message_handler(commands=['scoreboard'])
 def show_scoreboard(message):
     user_id = str(message.from_user.id)  # Get the current user's ID as a string
