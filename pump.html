@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <title>CryptoBounce</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #6f00ff, #00ffcc);
+      color: white;
+    }
+
+    p {
+      margin: 0 !important;
+    }
+
+    .text-white {
+      color: white;
+    }
+
+    .icon-container {
+      display: grid;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .icon-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    #upload {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .bg-pink {
+      background: #6f00ff;
+    }
+
+    #home {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      gap: 32px;
+    }
+
+    #picker {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      gap: 32px;
+    }
+
+    #game {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #scoreboard {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="home">
+    <h1 class="h2 text-white text-center">
+      Welcome to "PUMP&DUMP"
+    </h1>
+    <p class="h5 text-white text-center">
+      Get ready to ride the waves of crypto volatility!
+      Choose your Avatar, hit the ball, watch it soar, and avoid the crash!
+    </p>
+    <button id="start" class="btn btn-primary bg-pink btn-lg">
+      Start Game
+    </button>
+  </div>
+  <div id="picker">
+    <div class="icon-container">
+      <div class="icon-row">
+        <img class="icon" src="/icon1.png" />
+        <img class="icon" src="/icon2.png" />
+        <img class="icon" src="/icon3.png" />
+        <img class="icon" src="/icon4.png" />
+      </div>
+      <div class="icon-row">
+        <img class="icon" src="/icon5.png" />
+        <img class="icon" src="/icon6.png" />
+        <div id="upload">
+          <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+            <rect x="15" y="0" width="6" height="36" fill="white" />
+            <rect x="0" y="15" width="36" height="6" fill="white" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="game">
+    <p id="score" class="h4">
+      Current score is: 0
+    </p>
+    <canvas id="canvas" width="375" height="560"></canvas>
+  </div>
+  <div id="scoreboard">
+    <p id="hits" class="h4"></p>
+    <button id="play_again" class="btn btn-primary btn-lg bg-pink">
+      Play again
+    </button>
+  </div>
+</body>
+
+<script>
+  const loadImage = async (src) => new Promise((resolve, reject) => {
+    const image = new Image();
+    image.src = src;
+    image.onload = () => resolve(image);
+    image.onerror = (err) => reject(err);
+  });
+
+  const random = () => Math.random() - 0.5
+
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  const x1 = 10, x2 = 355, y1 = 10, y2 = 550;
+  const width = 340;
+  const ballRadius = 20;
+  const paneWidth = 100, paneHeight = 15;
+  const acc = 0.5;
+  const z = 0.01;
+
+  const ballV = {};
+  let ballX, ballY;
+  let paneX = x1 + width / 2;
+
+  let pane = null, ball = null;
+  let once = false;
+  let pos;
+
+  let bgIndex = 0;
+  let opacity = 0;
+  let score = 0;
+  let isPlaying = false;
+
+  const BG_COLORS = [
+    '#6DD1E2',
+    '#6B9FE1',
+    '#6A6EE0',
+    '#4A43DE',
+    '#9E2DF1',
+    '#B46AE1',
+  ];
+
+  const FLAME_COLORS_DOWN = [
+    '#FC968580',
+    '#E8775E7F',
+    '#DF705B70',
+    '#CF66596F',
+    '#C4635860',
+    '#AB5E5730',
+    '#9C5B552F',
+    '#89544920',
+    '#1A1A1A1F',
+    '#11111110',
+  ];
+
+  const FLAME_COLORS_UP = [
+    '#80E47C80',
+    '#78D4747F',
+    '#70C46C70',
+    '#68B4646F',
+    '#60A45C60',
+    '#58945430',
+    '#50844C2F',
+    '#48744620',
+    '#1A1A1A1F',
+    '#11111110',
+  ];
+
+  let flames = [];
+
+  function update() {
+    const bi = Math.floor(bgIndex / 2);
+    ctx.fillStyle = BG_COLORS[bi == 0 ? BG_COLORS.length - 1 : bi - 1];
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    opacity = Math.min(1, opacity + 0.1);
+    ctx.globalAlpha = opacity;
+    ctx.fillStyle = BG_COLORS[bi];
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+
+    if (isPlaying) {
+      ballX += ballV.x;
+      ballY += ballV.y;
+
+      (pos == 'bottom' ? FLAME_COLORS_UP : FLAME_COLORS_DOWN).map((color, index) => {
+        for (let i = 0; i < index / 2 + 1; i++) {
+          let vx = random() * index * 0.02 + random() * 0.8;
+          let vy = random() * index * 0.02 + random() * 0.8;
+          const r = Math.random() * 0.01 + (9 - index) * 1.2;
+          const live = 0.02 + index * 0.020;
+          const life = 0.1 + index * 0.025;
+          flames.push({ color, index, x: ballX, y: ballY, vx, vy, r, time: 0, live, life });
+        }
+      });
+
+      for (let i = 0; i < flames.length; i++) {
+        flames[i].x += flames[i].vx;
+        flames[i].y += flames[i].vy;
+        flames[i].time += 0.016;
+        if (flames[i].time > flames[i].live) {
+          ctx.beginPath();
+          ctx.arc(flames[i].x, flames[i].y, flames[i].r, 0, Math.PI * 2);
+          ctx.fillStyle = flames[i].color;
+          ctx.fill();
+          ctx.closePath();
+        }
+      }
+
+      flames = flames.filter(flame => flame.life > flame.time);
+
+      if (ballY + ballRadius > y2 && pos != 'bottom') {
+        pos = 'bottom';
+        const px1 = paneX - paneWidth / 2;
+        const px2 = paneX + paneWidth / 2;
+        if (ballX < px1 || ballX > px2) {
+          handleGameEnd();
+          return;
+        }
+        const d = Math.hypot(ballV.x, ballV.y);
+        const pxm = (px1 + px2) / 2;
+        const a = Math.atan2(ballV.x, ballV.y) + (ballX - pxm) * z;
+        ballV.x = Math.sin(a) * (d + acc);
+        ballV.y = -Math.cos(a) * (d + acc);
+        score += 1;
+        updateScore();
+      }
+
+      if (ballX - ballRadius < x1 || ballX + ballRadius > x2)
+        ballV.x = -ballV.x;
+
+      if (ballY - ballRadius < y1) {
+        ballV.y = -ballV.y;
+        pos = 'top';
+        bgIndex += 1;
+        if (bgIndex == 12)
+          bgIndex = 0;
+        if (bgIndex % 2 == 0)
+          opacity = 0;
+      }
+    }
+
+    ctx.drawImage(pane, paneX - paneWidth / 2, ballY + ballRadius > y2 - 5 ? ballY + ballRadius : y2 - 5, paneWidth, paneHeight);
+    if (ball) {
+      ctx.save();
+      const angle = Math.atan2(ballV.x, -ballV.y);
+      ctx.setTransform(Math.cos(angle), Math.sin(angle), -Math.sin(angle), Math.cos(angle), ballX, ballY);
+      ctx.drawImage(ball, -ballRadius, -ballRadius, ballRadius * 2, ballRadius * 2);
+      ctx.restore();
+    }
+  }
+
+  const updateScore = () => {
+    $("#score").html(`Your current score is: ${score}`);
+  }
+
+  const initGame = () => {
+    score = 0;
+    updateScore();
+    pos = 'top';
+    flames = [];
+    ballV.x = Math.random() * 5 - 2.5
+    ballV.y = 3.5;
+    ballX = 210;
+    ballY = 80;
+  }
+
+  const handleGameEnd = () => {
+    isPlaying = false;
+    $("#game").hide();
+    $("#hits").html(`<span class="h3">${score}</span> hits`);
+    $("#scoreboard").show();
+  }
+
+  function animate() {
+    update();
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('load', async () => {
+    $("#picker").hide();
+    $("#game").hide();
+    $("#scoreboard").hide();
+    pane = await loadImage('/pane.png');
+    initGame();
+    animate();
+  });
+
+  const handlePaneMove = (x) => {
+    if (x > x2 - paneWidth / 2)
+      x = x2 - paneWidth / 2;
+    if (x < x1 + paneWidth / 2)
+      x = x1 + paneWidth / 2;
+    paneX = x;
+  }
+
+  canvas.addEventListener("mousemove", function (e) {
+    handlePaneMove(e.offsetX);
+  });
+
+  canvas.addEventListener("touchmove", function (e) {
+    handlePaneMove(e.touches[0].clientX);
+  });
+
+  const startGame = () => {
+    initGame();
+    isPlaying = true;
+  }
+
+  $("#start").click(function () {
+    $("#home").hide();
+    $("#picker").show();
+  });
+
+  $(".icon").click(async function () {
+    ball = await loadImage($(this).attr('src'));
+    $("#picker").hide();
+    $("#game").show();
+    startGame();
+  });
+
+  $("#upload").click(async function () {
+    const fileInput = document.createElement('input');
+    const t = $(fileInput);
+    t.attr('type', 'file');
+    t.change((e) => {
+      if (e.target.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          ball = await loadImage(e.target.result);
+          $("#picker").hide();
+          $("#game").show();
+          startGame();
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    });
+    fileInput.click();
+  });
+
+  $("#play_again").click(() => {
+    $("#scoreboard").hide();
+    $("#game").show();
+    startGame();
+  });
+</script>
+
+</html>
