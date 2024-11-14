@@ -21,7 +21,7 @@
 
     body {
       width: 100vw;
-      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
       background: linear-gradient(135deg, #6f00ff, #00ffcc);
       color: white;
     }
@@ -46,6 +46,17 @@
       gap: 16px;
     }
 
+    .icon {
+      width: 48px;
+      height: 48px;
+      border: 2px solid #FFF0;
+      border-radius: 16px;
+    }
+
+    #icon0 {
+      display: none;
+    }
+
     #upload {
       display: flex;
       justify-content: center;
@@ -54,6 +65,10 @@
 
     .bg-pink {
       background: #6f00ff;
+    }
+
+    .selected {
+      border: 2px solid #FFFA;
     }
 
     #home {
@@ -97,6 +112,33 @@
       align-items: center;
       gap: 12px;
     }
+
+    .modal-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1020;
+      background-color: #0002;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .upload-confirm-modal {
+      padding: 24px;
+      border-radius: 16px;
+      background: white;
+      color: black;
+
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .modal-button-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
   </style>
 </head>
 
@@ -107,23 +149,21 @@
     </h1>
     <p class="h5 text-white text-center">
       Get ready to ride the waves of crypto volatility!
-      Choose your Avatar, hit the ball, watch it soar, and avoid the crash!
     </p>
-    <button id="start" class="btn btn-primary bg-pink btn-lg">
-      Start Game
-    </button>
-  </div>
-  <div id="picker">
     <div class="icon-container">
+      <p class="h5 text-white text-center">
+        Choose your avatar
+      </p>
       <div class="icon-row">
-        <img class="icon" src="/icon1.png" />
-        <img class="icon" src="/icon2.png" />
-        <img class="icon" src="/icon3.png" />
-        <img class="icon" src="/icon4.png" />
+        <img id="icon1" class="icon" src="/icon1.png" />
+        <img id="icon2" class="icon" src="/icon2.png" />
+        <img id="icon3" class="icon" src="/icon3.png" />
+        <img id="icon4" class="icon" src="/icon4.png" />
       </div>
       <div class="icon-row">
-        <img class="icon" src="/icon5.png" />
-        <img class="icon" src="/icon6.png" />
+        <img id="icon5" class="icon" src="/icon5.png" />
+        <img id="icon6" class="icon" src="/icon6.png" />
+        <img id="icon0" class="icon" />
         <div id="upload">
           <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
             <rect x="15" y="0" width="6" height="36" fill="white" />
@@ -132,6 +172,9 @@
         </div>
       </div>
     </div>
+    <button id="start" class="btn btn-primary bg-pink btn-lg">
+      Start Game
+    </button>
   </div>
   <div id="game">
     <p id="score" class="h4">
@@ -144,6 +187,19 @@
     <button id="play_again" class="btn btn-primary btn-lg bg-pink">
       Play again
     </button>
+  </div>
+  <div class="modal-container" id="upload_confirm_modal">
+    <div class="upload-confirm-modal">
+      You should select *.png image
+      <div class="modal-button-container">
+        <button id="ok" class="btn btn-primary">
+          Ok
+        </button>
+        <button id="cancel" class="btn btn-danger">
+          Cancel
+        </button>
+      </div>
+    </div>
   </div>
 </body>
 
@@ -166,6 +222,7 @@
   const paneWidth = 100, paneHeight = 15;
   const acc = 0.5;
   const z = 0.01;
+  const images_count = 6;
 
   const ballV = {};
   let ballX, ballY;
@@ -327,9 +384,9 @@
   }
 
   window.addEventListener('load', async () => {
-    $("#picker").hide();
     $("#game").hide();
     $("#scoreboard").hide();
+    $("#upload_confirm_modal").hide();
     pane = await loadImage('/pane.png');
     initGame();
     animate();
@@ -348,8 +405,9 @@
   });
 
   canvas.addEventListener("touchmove", function (e) {
+    e.preventDefault();
     handlePaneMove(e.touches[0].clientX);
-  });
+  }, { passive: false });
 
   const startGame = () => {
     initGame();
@@ -357,18 +415,32 @@
   }
 
   $("#start").click(function () {
+    if (!ball)
+      return;
     $("#home").hide();
-    $("#picker").show();
-  });
-
-  $(".icon").click(async function () {
-    ball = await loadImage($(this).attr('src'));
-    $("#picker").hide();
     $("#game").show();
     startGame();
   });
 
+  $(".icon").click(async function () {
+    for (let i = 0; i <= images_count; i++)
+      $(`#icon${i}`).toggleClass('selected', false);
+    $(this).toggleClass('selected');
+    ball = await loadImage($(this).attr('src'));
+  });
+
   $("#upload").click(async function () {
+    $("#upload_confirm_modal").show()
+  });
+
+  $("#play_again").click(() => {
+    $("#scoreboard").hide();
+    $("#game").show();
+    startGame();
+  });
+
+  $("#ok").click(() => {
+    $("#upload_confirm_modal").hide();
     const fileInput = document.createElement('input');
     const t = $(fileInput);
     t.attr('type', 'file');
@@ -377,6 +449,10 @@
         const reader = new FileReader();
         reader.onload = async (e) => {
           ball = await loadImage(e.target.result);
+          const icon0 = $("#icon0");
+          icon0.attr('src', e.target.result);
+          icon0.show();
+          icon0.toggleClass('selected');
           $("#picker").hide();
           $("#game").show();
           startGame();
@@ -387,11 +463,17 @@
     fileInput.click();
   });
 
-  $("#play_again").click(() => {
-    $("#scoreboard").hide();
-    $("#game").show();
-    startGame();
+  $("#cancel").click(() => {
+    $("#upload_confirm_modal").hide();
   });
+
+  function resizeOps() {
+    document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
+  }
+
+  resizeOps();
+
+  window.addEventListener("resize", resizeOps);
 </script>
 
 </html>
