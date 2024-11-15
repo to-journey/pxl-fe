@@ -6,25 +6,23 @@ const axios = require('axios');
 const cron = require('node-cron');
 const bodyParser = require('body-parser');
 
-// Load environment variables from .env file
-dotenv.config();
-
-// Initialize Firebase Admin SDK
-const serviceAccount = require('./firebase-adminsdk.json');
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://pxl8d-4a7a8-default-rtdb.firebaseio.com/'
-});
-
 const app = express();
 app.use(cors());
 app.use(bodyParser());
-app.use(express.json()); // Middleware to parse JSON
+app.use(express.json());
 
-const API_KEY = process.env.TELEGRAM_API_KEY;
-const botUrl = `https://api.telegram.org/bot${API_KEY}/sendMessage`;
+dotenv.config();
 
-// Helper function to send score to Telegram
+const serviceAccount = require('./firebase-adminsdk.json');
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: process.env.FIREBASE_DB_URL,
+});
+
+const db = admin.database();
+
+const botUrl = process.env.TELEGRAM_BOT_URL;
+
 async function sendScoreToTelegram(chatId, username, score, time) {
     const message = `🏆 *Game Finished!*\n👤 Username: ${username.replace('_', '\\_')}\n🏅 Score: ${score} points\n⏱ Time: ${time} seconds`;
 
@@ -41,13 +39,23 @@ async function sendScoreToTelegram(chatId, username, score, time) {
     }
 }
 
+const saveGamePlayedLog = async (gameId, userId) => {
+    const gamePlayRef = db.ref('gamePlays').push();
+    await gamePlayRef.set({
+        gameId: gameId,
+        userId: userId,
+        timestamp: new Date().getTime()
+    });
+}
+
 app.post('/submit_score', async (req, res) => {
     try {
-        const { score, time, user_id } = req.body;
+        const { score, time, game_id, user_id } = req.body;
         console.log("Data received in /submit_score:", req.body);
 
-        // Retrieve user information from Firebase
-        const ref = admin.database().ref(`users/${user_id}`);
+        saveGamePlayedLog(game_id, user_id);
+
+        const ref = db.ref(`users/${user_id}`);
         const userSnapshot = await ref.once('value');
         const userData = userSnapshot.val();
 
@@ -64,11 +72,9 @@ app.post('/submit_score', async (req, res) => {
 
         await sendScoreToTelegram(chatId, username, score, time);
 
-        // Get today's date in "YYYY-MM-DD" format
         const today = new Date().toLocaleDateString();
 
-        // Save the score and username to the Firebase scoreboard
-        const scoreboardRef = admin.database().ref(`scoreboard/${user_id}`);
+        const scoreboardRef = db.ref(`scoreboard/${user_id}`);
 
         const scoreSnapshot = await scoreboardRef.once('value');
         const scoreData = scoreSnapshot.val();
@@ -93,19 +99,17 @@ app.post('/submit_score', async (req, res) => {
 
 app.get('/scoreboard', async (req, res) => {
     try {
-        const scoreboardRef = admin.database().ref('scoreboard');
+        const scoreboardRef = db.ref('scoreboard');
         const scoreboardSnapshot = await scoreboardRef.once('value');
         const scoreboardData = scoreboardSnapshot.val();
 
         console.log("Scoreboard data retrieved from Firebase:", scoreboardData);
 
         if (scoreboardData) {
-            // Create a sorted list of scores
             const sortedScores = Object.entries(scoreboardData).sort((a, b) => {
                 return b[1].score - a[1].score || a[1].time - b[1].time;
             });
 
-            // Format the scoreboard
             const formattedScores = {};
             for (const [userId, data] of sortedScores) {
                 const username = data.username || 'Unknown User';
@@ -129,7 +133,7 @@ app.get('/scoreboard', async (req, res) => {
 app.post('/questions', async (req, res) => {
     try {
         const { questions } = req.body;
-        const questionRef = admin.database().ref('questions/prev');
+        const questionRef = db.ref('questions/prev');
         questionRef.set(questions);
         res.status(201).json({ message: 'Success' });
     } catch (error) {
@@ -140,7 +144,7 @@ app.post('/questions', async (req, res) => {
 
 app.get('/questions', async (req, res) => {
     try {
-        const snapshot = await admin.database().ref('questions/current').once('value');
+        const snapshot = await db.ref('questions/current').once('value');
         const questions = snapshot.val();
         res.status(200).json({ questions });
     } catch (error) {
@@ -149,9 +153,37 @@ app.get('/questions', async (req, res) => {
     }
 });
 
+app.get('/checkGame/:gameId/:userId', async (req, res) => {
+    const { gameId, userId } = req.params;
+
+    const startOfDay = new Date().setHours(0, 0, 0, 0);
+    const endOfDay = new Date().setHours(23, 59, 59, 999);
+
+    try {
+        const snapshot = await db.ref('gamePlays').orderByChild('timestamp')
+            .startAt(startOfDay)
+            .endAt(endOfDay)
+            .once('value');
+
+        let played = false;
+
+        snapshot.forEach((childSnapshot) => {
+            const data = childSnapshot.val();
+            if (data.gameId === gameId && data.userId === userId) {
+                played = true;
+            }
+        });
+
+        res.json({ played });
+    } catch (error) {
+        console.error('Error checking game play:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 const setQuestions = async () => {
-    const questionRefPrev = admin.database().ref('questions/prev');
-    const questionRef = admin.database().ref('questions/current');
+    const questionRefPrev = db.ref('questions/prev');
+    const questionRef = db.ref('questions/current');
     try {
         const snapshot = await questionRefPrev.once('value');
 
@@ -169,7 +201,7 @@ const setQuestions = async () => {
 
 const sendDailyNotification = async () => {
     try {
-        const usersRef = admin.database().ref('users');
+        const usersRef = db.ref('users');
         const snapshot = await usersRef.once('value');
         if (snapshot.exists()) {
             const users = snapshot.val();
@@ -194,7 +226,7 @@ const sendDailyNotification = async () => {
 
 const clearScoreboard = async () => {
     try {
-        const scoreboardRef = admin.database().ref(`scoreboard`);
+        const scoreboardRef = db.ref(`scoreboard`);
         await scoreboardRef.set(null);
         console.log("Scoreboard cleared successfully.");
     } catch (error) {
