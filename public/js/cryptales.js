@@ -114,6 +114,7 @@ function submitScoreToServer(finalScore, timeElapsed) {
         body: JSON.stringify({
             score: finalScore,
             time: timeElapsed,
+            game_id: 'CRYPTALES',
             user_id: userId
         }),
     })
