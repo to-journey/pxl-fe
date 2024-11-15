@@ -29,7 +29,7 @@ body {
     color: white;
 }
 
-.game-card>svg {
+.game-card>.check {
     display: none;
     position: absolute;
     left: 50%;
@@ -50,7 +50,7 @@ body {
     border-radius: 9999px;
 }
 
-.played>svg {
+.played>.check {
     display: unset;
 }
 
