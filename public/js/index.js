@@ -13,9 +13,9 @@ $(document).ready(function () {
             $(gameCards[i]).toggleClass('played', res.played);
         });
     }
-        console.log();
 
     $(".game-card").click(function () {
-        window.open($(this).attr('data-url'), '_self');
+        const url = $(this).attr('data-url');
+        if (url) window.open(url, '_self');
     });
 });
