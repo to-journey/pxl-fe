@@ -93,12 +93,6 @@ function endGame() {
     window.location.href = "tg://resolve?domain=pxlgames_bot";
 }
 
-function signupUser(userId) {
-    console.log("Signing up user with ID:", userId);
-    localStorage.setItem('user_id', userId);
-    console.log("User ID saved to local storage:", localStorage.getItem('user_id'));
-}
-
 function submitScoreToServer(finalScore, timeElapsed) {
     const userId = localStorage.getItem('user_id');
     console.log("Attempting to send score to server:", {
@@ -131,13 +125,8 @@ function submitScoreToServer(finalScore, timeElapsed) {
 }
 
 document.getElementById("start-game-button").onclick = function () {
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams(url.search);
-    const userId = params.get('user_id');
-
+    const userId = localStorage.getItem('user_id');
     if (userId) {
-        console.log("Starting signup process for user ID:", userId);
-        signupUser(userId);
         startGame();
     } else {
         console.error("User ID not found. Please ensure you are signed up.");

@@ -239,6 +239,11 @@ function update() {
     }
 }
 
+function animate() {
+    update();
+    requestAnimationFrame(animate);
+}
+
 const initConfetti = () => {
     for (let i = 0; i < confettiCount; i++) {
         confetti.push({
@@ -287,20 +292,6 @@ const handleGameEnd = () => {
     }, 1500);
 }
 
-function animate() {
-    update();
-    requestAnimationFrame(animate);
-}
-
-window.addEventListener('load', async () => {
-    $("#game").hide();
-    $("#scoreboard").hide();
-    $("#upload_confirm_modal").hide();
-    pane = await loadImage('/pane.png');
-    initGame();
-    animate();
-});
-
 const handlePaneMove = (x) => {
     if (x > x2 - paneWidth / 2)
         x = x2 - paneWidth / 2;
@@ -308,6 +299,20 @@ const handlePaneMove = (x) => {
         x = x1 + paneWidth / 2;
     paneX = x;
 }
+
+const startGame = () => {
+    initGame();
+    isPlaying = true;
+}
+
+window.addEventListener('load', async () => {
+    $("#game").hide();
+    $("#scoreboard").hide();
+    $("#upload_confirm_modal").hide();
+    pane = await loadImage('/img/pump/pane.png');
+    initGame();
+    animate();
+});
 
 canvas.addEventListener("mousemove", function (e) {
     handlePaneMove(e.offsetX);
@@ -317,11 +322,6 @@ canvas.addEventListener("touchmove", function (e) {
     e.preventDefault();
     handlePaneMove(e.touches[0].clientX);
 }, { passive: false });
-
-const startGame = () => {
-    initGame();
-    isPlaying = true;
-}
 
 $("#start").click(function () {
     if (!ball)
