@@ -14,7 +14,7 @@ firebase_admin.initialize_app(
 def send_welcome(message):
     bot.send_message(
         message.chat.id,
-        "Welcome to PXL GAMES! 🕹️\nUse /signup to register your user ID.",
+        "Welcome to PXLGAMES! 🕹️\nUse /signup to register your user ID.",
     )
 
 @bot.message_handler(commands=["signup"])
@@ -42,7 +42,7 @@ def start_game(message):
     user_id = message.from_user.id
     bot.send_message(
         message.chat.id,
-        f"Starting the game...\nClick here to play: [PXL GAMES](https://pxl8d.top?user_id={user_id})",
+        f"Starting the game...\nClick here to play: [PXLGAMES](https://pxl8d.top?user_id={user_id})",
         parse_mode="Markdown",
     )
 
