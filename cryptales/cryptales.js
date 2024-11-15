@@ -86,36 +86,33 @@ function endGame() {
     document.querySelector('.button-container').style.display = 'none';
     document.getElementById('next-button').style.display = 'none';
 
-    // Log user ID before submission
     const currentUserId = localStorage.getItem('user_id');
-    console.log("User ID from local storage:", currentUserId); // Check what's stored
+    console.log("User ID from local storage:", currentUserId);
 
-    submitScoreToServer(score, elapsedTime);  // Send the score to the server
+    submitScoreToServer(score, elapsedTime);
     window.location.href = "tg://resolve?domain=pxlgames_bot";
 }
 
 function signupUser(userId) {
     console.log("Signing up user with ID:", userId);
     localStorage.setItem('user_id', userId);
-    console.log("User ID saved to local storage:", localStorage.getItem('user_id')); // Confirm saving
+    console.log("User ID saved to local storage:", localStorage.getItem('user_id'));
 }
 
 function submitScoreToServer(finalScore, timeElapsed) {
-    const userId = localStorage.getItem('user_id'); // Ensure user_id is stored correctly
+    const userId = localStorage.getItem('user_id');
     console.log("Attempting to send score to server:", {
         score: finalScore,
         time: timeElapsed,
         user_id: userId
     });
 
-    // Check if userId is null
     if (!userId) {
         console.error("No user ID found in local storage. Cannot submit score.");
         return;
     }
 
-    // Proceed with fetch request...
-    fetch("https://pxl8d.top/api/submit_score", {  // Your current ngrok URL
+    fetch("https://pxl8d.top/api/submit_score", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -132,3 +129,17 @@ function submitScoreToServer(finalScore, timeElapsed) {
         })
         .catch(error => console.error("Error sending score:", error));
 }
+
+document.getElementById("start-game-button").onclick = function () {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    const userId = params.get('user_id');
+
+    if (userId) {
+        console.log("Starting signup process for user ID:", userId);
+        signupUser(userId);
+        startGame();
+    } else {
+        console.error("User ID not found. Please ensure you are signed up.");
+    }
+};

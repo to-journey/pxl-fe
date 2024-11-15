@@ -10,25 +10,21 @@ firebase_admin.initialize_app(
     cred, {"databaseURL": "https://pxl8d-4a7a8-default-rtdb.firebaseio.com/"}
 )
 
-
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
     bot.send_message(
-        message.chat.id, "Welcome to PXL GAMES! 🕹️\nUse /signup to register your user ID."
+        message.chat.id,
+        "Welcome to PXL GAMES! 🕹️\nUse /signup to register your user ID.",
     )
-
 
 @bot.message_handler(commands=["signup"])
 def signup_user(message):
     chat_id = message.chat.id
-    user_id = message.from_user.id  # Get the unique user ID
-    username = (
-        message.from_user.username or message.from_user.first_name
-    )  # Get username or fallback to first name
+    user_id = message.from_user.id
+    username = message.from_user.username or message.from_user.first_name
 
-    # Store chat_id and username in Firebase
     ref = db.reference(f"users/{user_id}")
-    ref.set({"chat_id": chat_id, "username": username})  # Save the username
+    ref.set({"chat_id": chat_id, "username": username})
 
     bot.send_message(
         chat_id,
@@ -36,12 +32,10 @@ def signup_user(message):
     )
     print(f"Stored chat_id {chat_id} and username {username} for user {user_id}")
 
-    # Provide the options to /play and /scoreboard after successful signup
     bot.send_message(
         chat_id,
         "You can now use the following\ncommands:\n/play - Start the game\n/scoreboard - View the scoreboard",
     )
-
 
 @bot.message_handler(commands=["play"])
 def start_game(message):
@@ -54,7 +48,7 @@ def start_game(message):
 
 @bot.message_handler(commands=["question"])
 def start_game(message):
-    if message.from_user.id == '5988835567':
+    if message.from_user.id == "5988835567":
         user_id = message.from_user.id
         bot.send_message(
             message.chat.id,
@@ -62,7 +56,7 @@ def start_game(message):
             parse_mode="Markdown",
         )
 
-@bot.message_handler(commands=['users'])
+@bot.message_handler(commands=["users"])
 def get_users(message):
     users_ref = db.reference("users")
     users = users_ref.get()
@@ -72,9 +66,9 @@ def get_users(message):
 
     bot.send_message(message.chat.id, users_message)
 
-@bot.message_handler(commands=['scoreboard'])
+@bot.message_handler(commands=["scoreboard"])
 def show_scoreboard(message):
-    user_id = str(message.from_user.id)  # Get the current user's ID as a string
+    user_id = str(message.from_user.id)
     scoreboard_ref = db.reference("scoreboard")
     scoreboard_data = scoreboard_ref.get()
 
@@ -93,11 +87,11 @@ def show_scoreboard(message):
             if i < 5 or user_id == uid:
                 username = score.get("username", "Unknown User")
                 scoreboard_message += f"{i + 1}. <b>{username}</b>: {score['score']} points, {score['time']} seconds\n"
-        
+
         if len(sorted_scores) > 5:
             scoreboard_message += "...\n"
-        
-    bot.send_message(message.chat.id, scoreboard_message, parse_mode='HTML')
+
+    bot.send_message(message.chat.id, scoreboard_message, parse_mode="HTML")
 
 if __name__ == "__main__":
     print("Starting the bot...")
