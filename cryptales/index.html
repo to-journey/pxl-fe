@@ -28,21 +28,6 @@
         <div id="explanation" class="explanation"></div>
     </div>
 
-    <script src="pxl.js"></script>
-    <script>
-        document.getElementById("start-game-button").onclick = function () {
-            const url = new URL(window.location.href);
-            const params = new URLSearchParams(url.search);
-            const userId = params.get('user_id');
-
-            if (userId) {
-                console.log("Starting signup process for user ID:", userId);
-                signupUser(userId); // Call the signupUser function to handle user signup
-                startGame(); // Start the game after signup
-            } else {
-                console.error("User ID not found. Please ensure you are signed up.");
-            }
-        };
-    </script>
+    <script src="/cryptales/cryptales.js"></script>
 </body>
 </html>
