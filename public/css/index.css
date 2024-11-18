@@ -19,7 +19,7 @@ body {
     gap: 8px;
 }
 
-.game-card>img {
+.game-card>.game-img {
     width: 100%;
     border: 2px solid #FFF8;
     border-radius: 8px;
