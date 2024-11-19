@@ -282,6 +282,7 @@ const handleGameEnd = () => {
         $("#scoreboard").show();
         initConfetti();
     }, 1500);
+    submitScore('PUMP', score);
 }
 
 const handlePaneMove = (x) => {
