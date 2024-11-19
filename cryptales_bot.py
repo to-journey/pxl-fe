@@ -49,7 +49,6 @@ def start_game(message):
 @bot.message_handler(commands=["question"])
 def start_game(message):
     if message.from_user.id == "5988835567":
-        user_id = message.from_user.id
         bot.send_message(
             message.chat.id,
             f"Click here to edit question: [Edit question](https://pxl8d.top/questions.html",
@@ -68,27 +67,42 @@ def get_users(message):
 
 @bot.message_handler(commands=["scoreboard"])
 def show_scoreboard(message):
-    user_id = str(message.from_user.id)
+    cur_user = str(message.from_user.id)
     scoreboard_ref = db.reference("scoreboard")
     scoreboard_data = scoreboard_ref.get()
 
     if not scoreboard_data:
         scoreboard_message = "The scoreboard is currently empty."
     else:
-        sorted_scores = sorted(
-            scoreboard_data.items(), key=lambda x: (-x[1]["score"], x[1]["time"])
-        )
+        aggregated_data = {}
+
+        for game, users in scoreboard_data.items():
+            for user_id, user_data in users.items():
+                if user_id not in aggregated_data:
+                    aggregated_data[user_id] = {
+                        'id': user_id,
+                        'score': 0,
+                        'time': 0,
+                        'username': user_data['username']
+                    }
+                
+                aggregated_data[user_id]['score'] += user_data.get('score', 0)
+                aggregated_data[user_id]['time'] += user_data.get('time', 0)
+
+        result_list = list(aggregated_data.values())
+        result_list.sort(key=lambda x: (x['score'], -x['time']), reverse=True)
 
         scoreboard_message = "🏆 SCOREBOARD 🏆\n"
 
-        for i, (uid, score) in enumerate(sorted_scores):
-            if i == 5:
+        rank = 1
+        for user in result_list:
+            if rank <= 5 or user['id'] == cur_user:
+                scoreboard_message += f"{rank}. <b>{user['username']}</b>: {user['score']} points, {user['time']} seconds\n"
+            if rank == 6 and user['id'] != cur_user:
                 scoreboard_message += "...\n"
-            if i < 5 or user_id == uid:
-                username = score.get("username", "Unknown User")
-                scoreboard_message += f"{i + 1}. <b>{username}</b>: {score['score']} points, {score['time']} seconds\n"
-
-        if len(sorted_scores) > 5:
+            rank = rank + 1
+        
+        if len(result_list) > 5:
             scoreboard_message += "...\n"
 
     bot.send_message(message.chat.id, scoreboard_message, parse_mode="HTML")
