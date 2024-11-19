@@ -12,6 +12,18 @@ app.use(cors());
 app.use(bodyParser());
 app.use(express.json());
 
+app.use((req, res, next) => {
+    const allowedOrigin = 'https://pxl8d.top';
+    const origin = req.headers.origin;
+
+    if (origin === allowedOrigin) {
+        res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+        next();
+    } else {
+        res.status(403).send('Forbidden');
+    }
+});
+
 dotenv.config();
 
 const serviceAccount = require('./firebase-adminsdk.json');
