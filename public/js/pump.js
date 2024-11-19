@@ -173,8 +173,9 @@ function update() {
             const d = Math.hypot(ballV.x, ballV.y);
             const pxm = (px1 + px2) / 2;
             const a = Math.atan2(ballV.x, ballV.y) + (ballX - pxm) * z;
-            ballV.x = Math.sin(a) * (d + acc);
-            ballV.y = -Math.cos(a) * (d + acc);
+            const a2 = Math.max(-1.0471, Math.min(1.0471, a));
+            ballV.x = Math.sin(a2) * (d + acc);
+            ballV.y = -Math.cos(a2) * (d + acc);
             score += 1;
         }
 

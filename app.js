@@ -16,7 +16,7 @@ app.use((req, res, next) => {
     const allowedOrigin = 'https://pxl8d.top';
     const origin = req.headers.origin;
 
-    if (origin === allowedOrigin) {
+    if (req.method != 'POST' || origin === allowedOrigin) {
         res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
         next();
     } else {
