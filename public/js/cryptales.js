@@ -89,40 +89,7 @@ function endGame() {
     const currentUserId = localStorage.getItem('user_id');
     console.log("User ID from local storage:", currentUserId);
 
-    submitScoreToServer(score, elapsedTime);
-    window.location.href = "tg://resolve?domain=pxlgames_bot";
-}
-
-function submitScoreToServer(finalScore, timeElapsed) {
-    const userId = localStorage.getItem('user_id');
-    console.log("Attempting to send score to server:", {
-        score: finalScore,
-        time: timeElapsed,
-        user_id: userId
-    });
-
-    if (!userId) {
-        console.error("No user ID found in local storage. Cannot submit score.");
-        return;
-    }
-
-    fetch("https://pxl8d.top/api/submit_score", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            score: finalScore,
-            time: timeElapsed,
-            game_id: 'CRYPTALES',
-            user_id: userId
-        }),
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Response from server:", data);
-        })
-        .catch(error => console.error("Error sending score:", error));
+    submitScore('CRYPTALES', score, elapsedTime);
 }
 
 document.getElementById("start-game-button").onclick = function () {
