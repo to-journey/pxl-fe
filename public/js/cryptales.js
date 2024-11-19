@@ -13,6 +13,7 @@ async function startGame() {
     });
 
     questions = JSON.parse(result.questions);
+    questions = questions.sort(() => Math.random() > 0.5 ? -1 : 1);
 
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('game-container').style.display = 'block';
