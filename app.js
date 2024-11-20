@@ -196,13 +196,13 @@ const clearScoreboard = async () => {
     }
 }
 
-cron.schedule('0 0 * * *', () => {
+cron.schedule('0 8 * * *', () => {
     console.log('Sending daily notification...');
     setQuestions();
     sendDailyNotification();
 });
 
-cron.schedule('0 0 * * 1', () => {
+cron.schedule('0 8 * * 1', () => {
     console.log("Running scheduled task to clear scoreboard...");
     clearScoreboard();
 });
