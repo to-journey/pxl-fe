@@ -1,10 +1,3 @@
-const loadImage = async (src) => new Promise((resolve, reject) => {
-    const image = new Image();
-    image.src = src;
-    image.onload = () => resolve(image);
-    image.onerror = (err) => reject(err);
-});
-
 const random = () => Math.random() - 0.5
 
 const canvas = document.getElementById('canvas');
