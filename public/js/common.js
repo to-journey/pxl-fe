@@ -28,15 +28,41 @@ const loadImage = async (src) => new Promise((resolve, reject) => {
     image.onerror = (err) => reject(err);
 });
 
-const loadGif = async(src) => new Promise((resolve) => {
+const loadGif = async (src) => new Promise((resolve) => {
     fetch(src)
-        .then(response => response.blob())
-        .then(blob => {
-            const gif = new window.GIF(blob);
-            console.log(gif);
-            gif.load(blob);
-            gif.on('parsed', function() {
-                resolve(gif.frames);
-            });
+        .then(response => response.arrayBuffer())
+        .then(buffer => {
+            const gifReader = new GifReader(new Uint8Array(buffer));
+            const width = gifReader.width;
+            const height = gifReader.height;
+
+            const totalFrames = gifReader.numFrames();
+            const frames = [];
+
+            for (let i = 0; i < totalFrames; i++) {
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext("2d");
+                const imageData = ctx.createImageData(width, height);
+                gifReader.decodeAndBlitFrameRGBA(i, imageData.data);
+                ctx.putImageData(imageData, 0, 0);
+                frames.push(canvas);
+            }
+
+            resolve(frames);
         });
 });
+
+class GIF {
+    constructor(frames) {
+        this.frames = frames;
+        this.currentFrame = 0;
+    }
+
+    render(ctx, x, y) {
+        if (this.frames.length === 0) return;
+        ctx.drawImage(this.frames[this.currentFrame], x, y);
+        this.currentFrame = (this.currentFrame + 1) % this.frames.length;
+    }
+}
