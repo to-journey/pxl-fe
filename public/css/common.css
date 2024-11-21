@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+    width: 100vw;
+    height: calc(var(--vh, 1vh) * 100);
+    background: linear-gradient(135deg, #6f00ff, #00ffcc);
+    color: white;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    border: 2px solid #FFF;
+    border-radius: 8px;
+}
+
+.btn {
+    padding: 10px 20px;
+    background: #6f00ff;
+    font-size: 18px;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.gap-4 {
+    gap: 16px;
+}
