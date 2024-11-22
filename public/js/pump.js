@@ -362,11 +362,3 @@ $("#ok").click(() => {
 $("#cancel").click(() => {
     $("#upload_confirm_modal").hide();
 });
-
-function resizeOps() {
-    document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
-}
-
-resizeOps();
-
-window.addEventListener("resize", resizeOps);
