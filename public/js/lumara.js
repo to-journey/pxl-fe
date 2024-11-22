@@ -23,13 +23,14 @@ const input = { x: rocket.x, y: rocket.y };
 
 canvas.addEventListener("mousemove", (e) => {
     input.x = e.clientX - canvas.getBoundingClientRect().left - rocket.width / 2;
-    input.y = e.clientY - canvas.getBoundingClientRect().top - rocket.height / 2;
+    input.y = e.clientY - canvas.getBoundingClientRect().top - rocket.height;
 });
 
 canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
     const touch = e.touches[0];
     input.x = touch.clientX - canvas.getBoundingClientRect().left - rocket.width / 2;
-    input.y = touch.clientY - canvas.getBoundingClientRect().top - rocket.height / 2;
+    input.y = touch.clientY - canvas.getBoundingClientRect().top - rocket.height;
 });
 
 function spawnRock() {
@@ -128,7 +129,7 @@ function gameLoop() {
         rocket.x = Math.max(0, Math.min(width - rocket.width, input.x));
         rocket.y = Math.max(0, Math.min(heihgt - rocket.height, input.y));
 
-        const index = Math.floor(score / 20);
+        const index = Math.floor(score / 10);
         memCtx.save();
         memCtx.translate(rocket.x, rocket.y);
         if (tank_img[index]) {

@@ -1,3 +1,11 @@
+function resizeOps() {
+    document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
+}
+
+resizeOps();
+
+window.addEventListener("resize", resizeOps);
+
 const submitScore = (gameId, score, time) => {
     const userId = localStorage.getItem('user_id');
     if (!userId) {
