@@ -94,10 +94,5 @@ function endGame() {
 }
 
 document.getElementById("start-game-button").onclick = function () {
-    const userId = localStorage.getItem('user_id');
-    if (userId) {
-        startGame();
-    } else {
-        console.error("User ID not found. Please ensure you are signed up.");
-    }
+    startGame();
 };
