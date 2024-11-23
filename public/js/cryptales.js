@@ -87,9 +87,6 @@ function endGame() {
     document.querySelector('.button-container').style.display = 'none';
     document.getElementById('next-button').style.display = 'none';
 
-    const currentUserId = localStorage.getItem('user_id');
-    console.log("User ID from local storage:", currentUserId);
-
     submitScore('CRYPTALES', score, elapsedTime);
 }
 
