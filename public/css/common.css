@@ -1,9 +1,27 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     width: 100vw;
     height: calc(var(--vh, 1vh) * 100);
     background: linear-gradient(135deg, #6f00ff, #00ffcc);
+    font-family: Arial, sans-serif;
     color: white;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin-block-start: 0;
+    margin-block-end: 0;
 }
 
 .container {
@@ -13,7 +31,35 @@ body {
     align-items: center;
 }
 
-canvas {
+#welcome {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#scoreboard {
+    position: relative;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+#confettiCanvas {
+    position: absolute;
+    width: 100vw;
+    height: calc(var(--vh, 1vh) * 100);
+}
+
+#play_again {
+    z-index: 10;
+}
+
+.canvas {
     border: 2px solid #FFF;
     border-radius: 8px;
 }
@@ -26,6 +72,14 @@ canvas {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.hide {
+    display: none!important;
+}
+
+.mt-4 {
+    margin-top: 16px;
 }
 
 .flex {
@@ -42,4 +96,8 @@ canvas {
 
 .gap-4 {
     gap: 16px;
+}
+
+.text-center {
+    text-align: center;
 }
