@@ -1,7 +1,8 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-let bg_img;
+let bg_img = [];
+let bg;
 let tank_img = [];
 let coin_img = [];
 let rock_img = [];
@@ -31,7 +32,7 @@ canvas.addEventListener("touchmove", (e) => {
     const touch = e.touches[0];
     input.x = touch.clientX - canvas.getBoundingClientRect().left - rocket.width / 2;
     input.y = touch.clientY - canvas.getBoundingClientRect().top - rocket.height;
-});
+}, { passive: false });
 
 function spawnRock() {
     const width = 30;
@@ -87,18 +88,102 @@ let coin_spawn_elapse = 0;
 let rock_spawn_elapse = 0;
 
 let isPlaying = false;
+let countDown = 4;
+
+const confettiCount = 600;
+const gravity = 0.5;
+const terminalVelocity = 5;
+const drag = 0.075;
+const colors = [
+    { front: 'red', back: 'darkred' },
+    { front: 'green', back: 'darkgreen' },
+    { front: 'blue', back: 'darkblue' },
+    { front: 'yellow', back: 'darkyellow' },
+    { front: 'orange', back: 'darkorange' },
+    { front: 'pink', back: 'darkpink' },
+    { front: 'purple', back: 'darkpurple' },
+    { front: 'turquoise', back: 'darkturquoise' },
+];
+
+const randomRange = (min, max) => Math.random() * (max - min) + min;
+
+let confetti = [];
+const confettiCanvas = document.getElementById('confettiCanvas');
+confettiCanvas.width = window.innerWidth;
+confettiCanvas.height = window.innerHeight;
+const confettiCtx = confettiCanvas.getContext('2d');
+
+
+const initConfetti = () => {
+    for (let i = 0; i < confettiCount; i++) {
+        confetti.push({
+            color: colors[Math.floor(randomRange(0, colors.length))],
+            dimensions: {
+                x: randomRange(5, 10),
+                y: randomRange(5, 15),
+            },
+            position: {
+                x: randomRange(0, window.innerWidth),
+                y: window.innerHeight - 10,
+            },
+            rotation: randomRange(0, 2 * Math.PI),
+            scale: {
+                x: 1,
+                y: 1,
+            },
+            velocity: {
+                x: randomRange(-25, 25),
+                y: randomRange(0, -50),
+            },
+        });
+    }
+};
+
+const drawConfetti = () => {
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+    confetti.forEach((confetto, index) => {
+        let width = confetto.dimensions.x * confetto.scale.x;
+        let height = confetto.dimensions.y * confetto.scale.y;
+
+        confettiCtx.translate(confetto.position.x, confetto.position.y);
+        confettiCtx.rotate(confetto.rotation);
+
+        confetto.velocity.x -= confetto.velocity.x * drag;
+        confetto.velocity.y = Math.min(confetto.velocity.y + gravity, terminalVelocity);
+        confetto.velocity.x += Math.random() > 0.5 ? Math.random() : -Math.random();
+
+        confetto.position.x += confetto.velocity.x;
+        confetto.position.y += confetto.velocity.y;
+
+        if (confetto.position.y >= confettiCanvas.height) confetti.splice(index, 1);
+
+        if (confetto.position.x > confettiCanvas.width) confetto.position.x = 0;
+        if (confetto.position.x < 0) confetto.position.x = confettiCanvas.width;
+
+        confetto.scale.y = Math.cos(confetto.position.y * 0.1);
+        confettiCtx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
+
+        confettiCtx.fillRect(-width / 2, -height / 2, width, height);
+
+        confettiCtx.setTransform(1, 0, 0, 1, 0, 0);
+    });
+}
 
 function gameLoop() {
     const width = canvas.width;
-    const heihgt = canvas.height;
+    const height = canvas.height;
 
     const memCanvas = document.createElement('canvas');
     memCanvas.width = width;
-    memCanvas.height = heihgt;
+    memCanvas.height = height;
     const memCtx = memCanvas.getContext('2d');
 
-    if (bg_img) {
-        memCtx.drawImage(bg_img, 0, 0, width, heihgt);
+    if (bg) {
+        bg.render(memCtx, 0, 0);
+    } else {
+        memCtx.fillStyle = '#6DD1E2';
+        memCtx.fillRect(0, 0, width, height);
     }
 
     memCtx.fillStyle = "white";
@@ -109,8 +194,31 @@ function gameLoop() {
         memCtx.fillStyle = "red";
         memCtx.font = "48px Arial";
         memCtx.textAlign = "center";
-        memCtx.fillText("Game Over!", canvas.width / 2, canvas.height / 2);
+        memCtx.fillText("Game Over!", width / 2, height / 2);
     }
+
+    if (countDown >= 0) {
+        memCtx.font = "36px Arial";
+        memCtx.textAlign = "center";
+        memCtx.textBaseline = "middle";
+
+        const x = width / 2;
+        const y = height / 2;
+
+        memCtx.fillStyle = "white";
+        memCtx.fillText(countDown == 4 ? 'Loading assets...' : (countDown > 0 ? `${countDown}` : 'GO!'), x, y);
+    }
+
+    rocket.x = Math.max(0, Math.min(width - rocket.width, input.x));
+    rocket.y = Math.max(0, Math.min(height - rocket.height, input.y));
+
+    const index = Math.floor(score / 10);
+    memCtx.save();
+    memCtx.translate(rocket.x, rocket.y);
+    if (tank_img[index]) {
+        memCtx.drawImage(tank_img[index], -2, -2);
+    }
+    memCtx.restore();
 
     if (isPlaying) {
         coin_spawn_elapse++;
@@ -126,33 +234,20 @@ function gameLoop() {
             spawnRock();
         }
 
-        rocket.x = Math.max(0, Math.min(width - rocket.width, input.x));
-        rocket.y = Math.max(0, Math.min(heihgt - rocket.height, input.y));
-
-        const index = Math.floor(score / 10);
-        memCtx.save();
-        memCtx.translate(rocket.x, rocket.y);
-        if (tank_img[index]) {
-            memCtx.drawImage(tank_img[index], -2, -2);
-        }
-        memCtx.restore();
-
         for (let i = rocks.length - 1; i >= 0; i--) {
             const rock = rocks[i];
             rock.y += gameSpeed;
 
             memCtx.save();
             memCtx.translate(rock.x, rock.y);
-            memCtx.scale(0.15, 0.15);
-            rock.gif.render(memCtx, -40, -100);
+            rock.gif.render(memCtx, -6, -15);
             memCtx.restore();
 
             if (isColliding(rocket, rock)) {
-                gameOver = true;
-                isPlaying = false;
+                handleGameEnd();
             }
 
-            if (rock.y > heihgt) {
+            if (rock.y > height) {
                 rocks.splice(i, 1);
             }
         }
@@ -163,8 +258,7 @@ function gameLoop() {
 
             memCtx.save();
             memCtx.translate(coin.x, coin.y);
-            memCtx.scale(0.1, 0.1);
-            coin.gif.render(memCtx, -50, -250);
+            coin.gif.render(memCtx, -5, -25);
             memCtx.restore();
 
             if (isColliding(rocket, coin)) {
@@ -173,7 +267,7 @@ function gameLoop() {
                 coins.splice(i, 1);
             }
 
-            if (coin.y > heihgt) {
+            if (coin.y > height) {
                 coins.splice(i, 1);
             }
         }
@@ -181,15 +275,29 @@ function gameLoop() {
 
     ctx.drawImage(memCanvas, 0, 0);
 
+    drawConfetti();
     requestAnimationFrame(gameLoop);
 }
 
 gameLoop();
 
+const handleGameEnd = () => {
+    isPlaying = false;
+    gameOver = true;
+    // submitScore('LUMARA', score);
+    $("#score").html(`Score: ${score}`);
+    setTimeout(() => {
+        $("#game").addClass('hide');
+        $("#scoreboard").removeClass('hide');
+        initConfetti();
+    }, 1000);
+}
+
 let isLoading = true;
 
 async function loadAssets() {
-    bg_img = await loadImage("/img/lumara/BGR-mobile.png");
+    bg_img = await loadGif("/img/lumara/bg.gif");
+    bg = new GIF(bg_img);
     coin_img = await loadGif("/img/lumara/drop.gif");
     rock_img = await loadGif("/img/lumara/rock.gif");
     for (let i = 0; i <= 100; i += 10) {
@@ -201,16 +309,7 @@ async function loadAssets() {
 
 loadAssets();
 
-$("#start").click(async function () {
-    await new Promise((resolve) => {
-        const timerId = setInterval(() => {
-            if (!isLoading) {
-                clearInterval(timerId);
-                resolve(true);
-            }
-        }, 100);
-    });
-
+function startGame() {
     rocks = [];
     coins = [];
 
@@ -221,5 +320,34 @@ $("#start").click(async function () {
     coin_spawn_elapse = 0;
     rock_spawn_elapse = 0;
 
-    isPlaying = true;
+    countDown = 3;
+
+    const timerId = setInterval(() => {
+        countDown--;
+        if (countDown == -1) {
+            clearInterval(timerId);
+            isPlaying = true;
+        }
+    }, 1000);
+}
+
+$("#start").click(async function () {
+    $("#welcome").hide();
+    $("#game").removeClass('hide');
+    await new Promise((resolve) => {
+        const timerId = setInterval(() => {
+            if (!isLoading) {
+                clearInterval(timerId);
+                resolve(true);
+            }
+        }, 100);
+    });
+    startGame();
+});
+
+$("#play_again").click(function () {
+    if (isPlaying) return;
+    $("#game").removeClass('hide');
+    $("#scoreboard").addClass('hide');
+    startGame();
 });
