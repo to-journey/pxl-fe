@@ -3,28 +3,6 @@ const random = () => Math.random() - 0.5
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const confettiCount = 600;
-const gravity = 0.5;
-const terminalVelocity = 5;
-const drag = 0.075;
-const colors = [
-    { front: 'red', back: 'darkred' },
-    { front: 'green', back: 'darkgreen' },
-    { front: 'blue', back: 'darkblue' },
-    { front: 'yellow', back: 'darkyellow' },
-    { front: 'orange', back: 'darkorange' },
-    { front: 'pink', back: 'darkpink' },
-    { front: 'purple', back: 'darkpurple' },
-    { front: 'turquoise', back: 'darkturquoise' },
-];
-
-const randomRange = (min, max) => Math.random() * (max - min) + min;
-
-let confetti = [];
-confettiCanvas.width = window.innerWidth;
-confettiCanvas.height = window.innerHeight;
-const confettiCtx = confettiCanvas.getContext('2d');
-
 const x1 = 10, x2 = 355, y1 = 10, y2 = 540;
 const width = 340;
 const ballRadius = 20;
@@ -32,6 +10,9 @@ const paneWidth = 100, paneHeight = 15;
 const acc = 0.5;
 const z = 0.01;
 const images_count = 6;
+
+let score = 0;
+let gameOver = false;
 
 const ballV = {};
 let ballX, ballY;
@@ -62,70 +43,143 @@ while (DEAD_ANIMATION.length < 100) {
 
 let bgIndex = 0;
 let opacity = 0;
-let score = 0;
-let isPlaying = false;
-let isDead = false;
 let animateIndex = 0;
 
-const BG_COLORS = [
-    '#6DD1E2',
-    '#6B9FE1',
-    '#6A6EE0',
-    '#4A43DE',
-    '#9E2DF1',
-    '#B46AE1',
-];
-
-const FLAME_COLORS_DOWN = [
-    '#FC968580',
-    '#E8775E7F',
-    '#DF705B70',
-    '#CF66596F',
-    '#C4635860',
-    '#AB5E5730',
-    '#9C5B552F',
-    '#89544920',
-    '#1A1A1A1F',
-    '#11111110',
-];
-
-const FLAME_COLORS_UP = [
-    '#80E47C80',
-    '#78D4747F',
-    '#70C46C70',
-    '#68B4646F',
-    '#60A45C60',
-    '#58945430',
-    '#50844C2F',
-    '#48744620',
-    '#1A1A1A1F',
-    '#11111110',
-];
+const BG_COLORS = ['#6DD1E2', '#6B9FE1', '#6A6EE0', '#4A43DE', '#9E2DF1', '#B46AE1'];
+const FLAME_COLORS_DOWN = ['#FC968580', '#E8775E7F', '#DF705B70', '#CF66596F', '#C4635860', '#AB5E5730', '#9C5B552F', '#89544920', '#1A1A1A1F', '#11111110'];
+const FLAME_COLORS_UP = ['#80E47C80', '#78D4747F', '#70C46C70', '#68B4646F', '#60A45C60', '#58945430', '#50844C2F', '#48744620', '#1A1A1A1F', '#11111110'];
 
 let flames = [];
 
-function update() {
+let isPlaying = false;
+let countDown = 4;
+
+const confettiCount = 600;
+const gravity = 0.5;
+const terminalVelocity = 5;
+const drag = 0.075;
+const colors = [
+    { front: 'red', back: 'darkred' },
+    { front: 'green', back: 'darkgreen' },
+    { front: 'blue', back: 'darkblue' },
+    { front: 'yellow', back: 'darkyellow' },
+    { front: 'orange', back: 'darkorange' },
+    { front: 'pink', back: 'darkpink' },
+    { front: 'purple', back: 'darkpurple' },
+    { front: 'turquoise', back: 'darkturquoise' },
+];
+
+const randomRange = (min, max) => Math.random() * (max - min) + min;
+
+let confetti = [];
+const confettiCanvas = document.getElementById('confettiCanvas');
+confettiCanvas.width = window.innerWidth;
+confettiCanvas.height = window.innerHeight;
+const confettiCtx = confettiCanvas.getContext('2d');
+
+const initConfetti = () => {
+    for (let i = 0; i < confettiCount; i++) {
+        confetti.push({
+            color: colors[Math.floor(randomRange(0, colors.length))],
+            dimensions: {
+                x: randomRange(5, 10),
+                y: randomRange(5, 15),
+            },
+            position: {
+                x: randomRange(0, window.innerWidth),
+                y: window.innerHeight - 10,
+            },
+            rotation: randomRange(0, 2 * Math.PI),
+            scale: {
+                x: 1,
+                y: 1,
+            },
+            velocity: {
+                x: randomRange(-25, 25),
+                y: randomRange(0, -50),
+            },
+        });
+    }
+};
+
+const drawConfetti = () => {
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+    confetti.forEach((confetto, index) => {
+        let width = confetto.dimensions.x * confetto.scale.x;
+        let height = confetto.dimensions.y * confetto.scale.y;
+
+        confettiCtx.translate(confetto.position.x, confetto.position.y);
+        confettiCtx.rotate(confetto.rotation);
+
+        confetto.velocity.x -= confetto.velocity.x * drag;
+        confetto.velocity.y = Math.min(confetto.velocity.y + gravity, terminalVelocity);
+        confetto.velocity.x += Math.random() > 0.5 ? Math.random() : -Math.random();
+
+        confetto.position.x += confetto.velocity.x;
+        confetto.position.y += confetto.velocity.y;
+
+        if (confetto.position.y >= confettiCanvas.height) confetti.splice(index, 1);
+
+        if (confetto.position.x > confettiCanvas.width) confetto.position.x = 0;
+        if (confetto.position.x < 0) confetto.position.x = confettiCanvas.width;
+
+        confetto.scale.y = Math.cos(confetto.position.y * 0.1);
+        confettiCtx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
+
+        confettiCtx.fillRect(-width / 2, -height / 2, width, height);
+
+        confettiCtx.setTransform(1, 0, 0, 1, 0, 0);
+    });
+}
+
+function gameLoop() {
+    const width = canvas.width;
+    const height = canvas.height;
+
     const bi = Math.floor(bgIndex / 2);
     ctx.fillStyle = BG_COLORS[bi == 0 ? BG_COLORS.length - 1 : bi - 1];
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, width, height);
 
     opacity = Math.min(1, opacity + 0.1);
     ctx.globalAlpha = opacity;
     ctx.fillStyle = BG_COLORS[bi];
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, width, height);
 
-    ctx.globalAlpha = 0.2;
-    ctx.font = '72px Arial';
-    ctx.fillStyle = 'black';
-    const text = `${score}`;
-    const textWidth = ctx.measureText(text).width;
-    const textHeight = 72;
-    const x = (canvas.width - textWidth) / 2;
-    const y = (canvas.height + textHeight / 2) / 2;
-    ctx.fillText(text, x, y);
-    ctx.globalAlpha = 1.0;
+    if (gameOver) {
+        ctx.fillStyle = "red";
+        ctx.font = "48px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("Game Over!", width / 2, height / 2);
+    }
+
+    if (countDown >= 0) {
+        ctx.font = "36px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const x = width / 2;
+        const y = height / 2;
+
+        ctx.fillStyle = "white";
+        ctx.fillText(countDown == 4 ? 'Loading assets...' : (countDown > 0 ? `${countDown}` : 'GO!'), x, y);
+    }
+
+    if (pane) {
+        ctx.drawImage(pane, paneX - paneWidth / 2, ballY + ballRadius > y2 - 5 ? ballY + ballRadius : y2 - 5, paneWidth, paneHeight);
+    }
 
     if (isPlaying) {
+        ctx.globalAlpha = 0.2;
+        ctx.font = "72px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        const x = width / 2;
+        const y = height / 2;
+        ctx.fillStyle = "black";
+        ctx.fillText(`${score}`, x, y);
+        ctx.globalAlpha = 1.0;
+
         ballX += ballV.x;
         ballY += ballV.y;
 
@@ -159,17 +213,15 @@ function update() {
             pos = 'bottom';
             const px1 = paneX - paneWidth / 2;
             const px2 = paneX + paneWidth / 2;
-            if (ballX < px1 || ballX > px2) {
+            if (ballX < px1 || ballX > px2)
                 handleGameEnd();
-                return;
-            }
+            else score++;
             const d = Math.hypot(ballV.x, ballV.y);
             const pxm = (px1 + px2) / 2;
             const a = Math.atan2(ballV.x, ballV.y) + (ballX - pxm) * z;
             const a2 = Math.max(-1.0471, Math.min(1.0471, a));
             ballV.x = Math.sin(a2) * (d + acc);
             ballV.y = -Math.cos(a2) * (d + acc);
-            score += 1;
         }
 
         if (ballX - ballRadius < x1 || ballX + ballRadius > x2)
@@ -186,80 +238,27 @@ function update() {
         }
     }
 
-    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-
-    confetti.forEach((confetto, index) => {
-        let width = confetto.dimensions.x * confetto.scale.x;
-        let height = confetto.dimensions.y * confetto.scale.y;
-
-        confettiCtx.translate(confetto.position.x, confetto.position.y);
-        confettiCtx.rotate(confetto.rotation);
-
-        confetto.velocity.x -= confetto.velocity.x * drag;
-        confetto.velocity.y = Math.min(confetto.velocity.y + gravity, terminalVelocity);
-        confetto.velocity.x += Math.random() > 0.5 ? Math.random() : -Math.random();
-
-        confetto.position.x += confetto.velocity.x;
-        confetto.position.y += confetto.velocity.y;
-
-        if (confetto.position.y >= confettiCanvas.height) confetti.splice(index, 1);
-
-        if (confetto.position.x > confettiCanvas.width) confetto.position.x = 0;
-        if (confetto.position.x < 0) confetto.position.x = confettiCanvas.width;
-
-        confetto.scale.y = Math.cos(confetto.position.y * 0.1);
-        confettiCtx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
-
-        confettiCtx.fillRect(-width / 2, -height / 2, width, height);
-
-        confettiCtx.setTransform(1, 0, 0, 1, 0, 0);
-    });
-
-    ctx.drawImage(pane, paneX - paneWidth / 2, ballY + ballRadius > y2 - 5 ? ballY + ballRadius : y2 - 5, paneWidth, paneHeight);
     if (ball) {
         ctx.save();
-        const angle = isDead ? DEAD_ANIMATION[animateIndex++] : Math.atan2(ballV.x, -ballV.y);
+        const angle = gameOver ? DEAD_ANIMATION[animateIndex++] : Math.atan2(ballV.x, -ballV.y);
         ctx.setTransform(Math.cos(angle), Math.sin(angle), -Math.sin(angle), Math.cos(angle), ballX, ballY);
         ctx.drawImage(ball, -ballRadius, -ballRadius, ballRadius * 2, ballRadius * 2);
         ctx.restore();
     }
+
+    drawConfetti();
+    requestAnimationFrame(gameLoop)
 }
 
-function animate() {
-    update();
-    requestAnimationFrame(animate);
-}
-
-const initConfetti = () => {
-    for (let i = 0; i < confettiCount; i++) {
-        confetti.push({
-            color: colors[Math.floor(randomRange(0, colors.length))],
-            dimensions: {
-                x: randomRange(5, 10),
-                y: randomRange(5, 15),
-            },
-            position: {
-                x: randomRange(0, window.innerWidth),
-                y: window.innerHeight - 10,
-            },
-            rotation: randomRange(0, 2 * Math.PI),
-            scale: {
-                x: 1,
-                y: 1,
-            },
-            velocity: {
-                x: randomRange(-25, 25),
-                y: randomRange(0, -50),
-            },
-        });
-    }
-};
+gameLoop();
 
 const initGame = () => {
-    isDead = false;
     score = 0;
+    gameOver = false;
+
     pos = 'top';
     flames = [];
+
     ballV.x = Math.random() * 5 - 2.5
     ballV.y = 3.5;
     ballX = 210;
@@ -268,15 +267,15 @@ const initGame = () => {
 
 const handleGameEnd = () => {
     isPlaying = false;
-    isDead = true;
+    gameOver = true;
     animateIndex = 0;
-    setTimeout(() => {
-        $("#game").hide();
-        $("#hits").html(`<span class="h2">${score}</span> hits`);
-        $("#scoreboard").show();
-        initConfetti();
-    }, 1500);
     submitScore('PUMP', score);
+    $("#score").html(`${score} hits`);
+    setTimeout(() => {
+        $("#game").addClass('hide');
+        $("#scoreboard").removeClass('hide');
+        initConfetti();
+    }, 1000);
 }
 
 const handlePaneMove = (x) => {
@@ -289,17 +288,25 @@ const handlePaneMove = (x) => {
 
 const startGame = () => {
     initGame();
-    isPlaying = true;
+
+    countDown = 3;
+
+    const timerId = setInterval(() => {
+        countDown--;
+        if (countDown == -1) {
+            clearInterval(timerId);
+            isPlaying = true;
+        }
+    }, 1000);
 }
 
-window.addEventListener('load', async () => {
-    $("#game").hide();
-    $("#scoreboard").hide();
-    $("#upload_confirm_modal").hide();
+async function loadAssets() {
     pane = await loadImage('/img/pump/pane.png');
-    initGame();
-    animate();
-});
+    countDown = 3;
+}
+
+loadAssets();
+initGame();
 
 canvas.addEventListener("mousemove", function (e) {
     handlePaneMove(e.offsetX);
@@ -313,26 +320,19 @@ canvas.addEventListener("touchmove", function (e) {
 $("#start").click(function () {
     if (!ball)
         return;
-    $("#home").hide();
-    $("#game").show();
+    $("#welcome").hide();
+    $("#game").removeClass('hide');
     startGame();
 });
 
 $(".icon").click(async function () {
-    for (let i = 0; i <= images_count; i++)
-        $(`#icon${i}`).toggleClass('selected', false);
+    $(".icon").removeClass("selected");
     $(this).toggleClass('selected');
     ball = await loadImage($(this).attr('src'));
 });
 
 $("#upload").click(async function () {
-    $("#upload_confirm_modal").show()
-});
-
-$("#play_again").click(() => {
-    $("#scoreboard").hide();
-    $("#game").show();
-    startGame();
+    $("#upload_confirm_modal").removeClass('hide');
 });
 
 $("#ok").click(() => {
@@ -345,13 +345,11 @@ $("#ok").click(() => {
             const reader = new FileReader();
             reader.onload = async (e) => {
                 ball = await loadImage(e.target.result);
+                $(".icon").removeClass("selected");
                 const icon0 = $("#icon0");
                 icon0.attr('src', e.target.result);
                 icon0.show();
-                icon0.toggleClass('selected');
-                $("#picker").hide();
-                $("#game").show();
-                startGame();
+                icon0.toggleClass('selected', true);
             };
             reader.readAsDataURL(e.target.files[0]);
         }
@@ -360,5 +358,12 @@ $("#ok").click(() => {
 });
 
 $("#cancel").click(() => {
-    $("#upload_confirm_modal").hide();
+    $("#upload_confirm_modal").addClass('hide');
+});
+
+$("#play_again").click(function () {
+    if (isPlaying) return;
+    $("#game").removeClass('hide');
+    $("#scoreboard").addClass('hide');
+    startGame();
 });
