@@ -6,58 +6,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
-    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/pump.css">
   <title>PUMP&DUMP</title>
 </head>
 
 <body>
-  <div id="home">
-    <h1 class="h2 text-white text-center">
-      Welcome to "PUMP&DUMP"
-    </h1>
-    <p class="h5 text-white text-center">
-      Get ready to ride the waves of crypto volatility!
-    </p>
-    <p class="mt-5 h5 text-white text-center">
-      Choose your avatar
-    </p>
-    <div class="icon-container">
-      <div class="icon-row">
-        <img id="icon1" class="icon" src="/img/pump/icon1.png" />
-        <img id="icon2" class="icon" src="/img/pump/icon2.png" />
-        <img id="icon3" class="icon" src="/img/pump/icon3.png" />
-        <img id="icon4" class="icon" src="/img/pump/icon4.png" />
-      </div>
-      <div class="icon-row">
-        <img id="icon5" class="icon" src="/img/pump/icon5.png" />
-        <img id="icon6" class="icon" src="/img/pump/icon6.png" />
-        <img id="icon7" class="icon" src="/img/pump/icon7.png" />
-        <img id="icon0" class="icon" />
-        <div id="upload">
-          <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-            <rect x="15" y="0" width="6" height="36" fill="white" />
-            <rect x="0" y="15" width="36" height="6" fill="white" />
-          </svg>
+  <div class="container">
+    <div id="welcome">
+      <h1 class="text-center">
+        Welcome to "PUMP&DUMP"
+      </h1>
+      <p class="text-center">
+        Get ready to ride the waves of crypto volatility!
+      </p>
+      <p class="mt-4">
+        Choose your avatar
+      </p>
+      <div class="icon-container">
+        <div class="icon-row">
+          <img id="icon1" class="icon" src="/img/pump/icon1.png" />
+          <img id="icon2" class="icon" src="/img/pump/icon2.png" />
+          <img id="icon3" class="icon" src="/img/pump/icon3.png" />
+          <img id="icon4" class="icon" src="/img/pump/icon4.png" />
+        </div>
+        <div class="icon-row">
+          <img id="icon5" class="icon" src="/img/pump/icon5.png" />
+          <img id="icon6" class="icon" src="/img/pump/icon6.png" />
+          <img id="icon7" class="icon" src="/img/pump/icon7.png" />
+          <img id="icon0" class="icon" />
+          <div id="upload">
+            <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+              <rect x="15" y="0" width="6" height="36" fill="white" />
+              <rect x="0" y="15" width="36" height="6" fill="white" />
+            </svg>
+          </div>
         </div>
       </div>
+      <button id="start" class="mt-4 btn">
+        Start Game
+      </button>
     </div>
-    <button id="start" class="mt-8 btn btn-primary bg-pink btn-lg">
-      Start Game
-    </button>
+    <div id="game" class="hide">
+      <canvas id="canvas" class="canvas" width="375" height="560"></canvas>
+    </div>
+    <div id="scoreboard" class="hide">
+      <canvas id="confettiCanvas"></canvas>
+      <h1 id="score"></h1>
+      <button id="play_again" class="btn">
+        Play again
+      </button>
+    </div>
   </div>
-  <div id="game">
-    <canvas id="canvas" width="375" height="560"></canvas>
-  </div>
-  <div id="scoreboard">
-    <canvas id="confettiCanvas"></canvas>
-    <p id="hits" class="h3"></p>
-    <button id="play_again" class="btn btn-primary btn-lg bg-pink">
-      Play again
-    </button>
-  </div>
-  <div class="modal-container" id="upload_confirm_modal">
+  <div class="modal-container hide" id="upload_confirm_modal">
     <div class="upload-confirm-modal">
       You should select *.png image
       <div class="modal-button-container">
