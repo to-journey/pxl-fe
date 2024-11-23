@@ -15,10 +15,25 @@
 
 <body>
   <div class="container">
-    <div class="flex flex-col items-center gap-4">
-      <canvas id="canvas" width="375" height="560"></canvas>
-      <button id="start" class="btn">
+    <div id="welcome">
+      <h1 class="text-center">
+        Welcome to "LUMARA DRIP"
+      </h1>
+      <p class="text-center">
+        Fill up your Lumara tank but watch out for the falling stalactites!
+      </p>
+      <button id="start" class="mt-4 btn">
         Start Game
+      </button>
+    </div>
+    <div id="game" class="hide">
+      <canvas id="canvas" class="canvas" width="375" height="560"></canvas>
+    </div>
+    <div id="scoreboard" class="hide">
+      <canvas id="confettiCanvas"></canvas>
+      <h1 id="score"></h1>
+      <button id="play_again" class="btn">
+        Play again
       </button>
     </div>
   </div>
