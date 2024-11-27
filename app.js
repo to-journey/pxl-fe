@@ -36,6 +36,12 @@ const db = admin.database();
 
 const botUrl = process.env.TELEGRAM_BOT_URL;
 
+const getToday = () => {
+    const nowUTC = DateTime.now().setZone('UTC');
+    const beforeUTC = nowUTC.minus({ hours: 14 });
+    return beforeUTC.toFormat('MM/dd/yyyy');
+}
+
 async function sendScoreToTelegram(chatId, username, score, time) {
     let message = `🏆 *Game Finished!*\n👤 Username: ${username.replace('_', '\\_')}\n🏅 Score: ${score} points`;
     if (time)
@@ -80,8 +86,7 @@ app.post('/submit_score/:gameId/:userId', async (req, res) => {
         const scoreSnapshot = await scoreboardRef.once('value');
         const scoreData = scoreSnapshot.val();
 
-        const dt = DateTime.now().setZone('America/Los_Angeles');
-        const today = dt.toFormat('MM/dd/yyyy');
+        const today = getToday();
         if (scoreData && scoreData?.date == today) {
             return res.status(400).json({ status: 'error', message: 'Score already submitted today' });
         }
@@ -133,8 +138,7 @@ app.get('/checkGame/:gameId/:userId', async (req, res) => {
         const scoreSnapshot = await scoreboardRef.once('value');
         const scoreData = scoreSnapshot.val();
 
-        const dt = DateTime.now().setZone('America/Los_Angeles');
-        const today = dt.toFormat('MM/dd/yyyy');
+        const today = getToday();
         const played = scoreData?.date == today;
 
         res.json({ played });
@@ -196,13 +200,13 @@ const clearScoreboard = async () => {
     }
 }
 
-cron.schedule('0 8 * * *', () => {
+cron.schedule('0 14 * * *', () => {
     console.log('Sending daily notification...');
     setQuestions();
     sendDailyNotification();
 });
 
-cron.schedule('0 8 * * 1', () => {
+cron.schedule('0 14 * * 1', () => {
     console.log("Running scheduled task to clear scoreboard...");
     clearScoreboard();
 });
