@@ -284,7 +284,7 @@ gameLoop();
 const handleGameEnd = () => {
     isPlaying = false;
     gameOver = true;
-    // submitScore('LUMARA', score);
+    submitScore('LUMARA', score);
     $("#score").html(`Score: ${score}`);
     setTimeout(() => {
         $("#game").addClass('hide');
