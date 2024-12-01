@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIGITUS MAXIMUS</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/digitus.css">
+</head>
+
+<body>
+  <div class="container">
+    <div id="welcome">
+      <h1 class="text-center">
+        Welcome to "DIGITUS MAXIMUS"
+      </h1>
+      <p class="text-center">
+        Tap your way to victory—mine those coins before your time runs out!
+      </p>
+      <button id="start" class="mt-4 btn">
+        Start Game
+      </button>
+    </div>
+    <div id="game" class="hide">
+      <canvas id="canvas" class="canvas" width="375" height="560"></canvas>
+    </div>
+    <div id="scoreboard" class="hide">
+      <canvas id="confettiCanvas"></canvas>
+      <h1>
+        DIGITUS MAXIMUS
+      </h1>
+      <h1 id="score"></h1>
+      <button id="play_again" class="btn">
+        Play again
+      </button>
+    </div>
+  </div>
+</body>
+
+<script src="/js/common.js"></script>
+<script src="/js/digitus.js"></script>
+
+</html>
