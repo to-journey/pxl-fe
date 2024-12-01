@@ -7,12 +7,16 @@ let questions = [];
 
 async function startGame() {
     const result = await new Promise((resolve, reject) => {
-        fetch(`https://pxl8d.top/api/questions`)
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(url.search);
+        let date = params.get('date') || 'today';
+        date = date ? date : 'today';
+        fetch(`http://203.161.49.128/api/questions/${date}`)
             .then(response => resolve(response.json()))
             .catch(error => reject(error));
     });
 
-    questions = JSON.parse(result.questions);
+    questions = JSON.parse(result);
     questions = questions.sort(() => Math.random() > 0.5 ? -1 : 1);
 
     document.getElementById('welcome-screen').style.display = 'none';
@@ -87,7 +91,7 @@ function endGame() {
     document.querySelector('.button-container').style.display = 'none';
     document.getElementById('next-button').style.display = 'none';
 
-    submitScore('CRYPTALES', score, elapsedTime);
+    submitScore(2, score, elapsedTime);
 }
 
 document.getElementById("start-game-button").onclick = function () {
