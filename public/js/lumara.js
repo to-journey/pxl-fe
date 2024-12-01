@@ -284,7 +284,7 @@ gameLoop();
 const handleGameEnd = () => {
     isPlaying = false;
     gameOver = true;
-    submitScore('LUMARA', score);
+    submitScore(4, score);
     $("#score").html(`Score: ${score}`);
     setTimeout(() => {
         $("#game").addClass('hide');
@@ -292,8 +292,6 @@ const handleGameEnd = () => {
         initConfetti();
     }, 1000);
 }
-
-let isLoading = true;
 
 async function loadAssets() {
     bg_img = await loadGif("/img/lumara/bg.gif");
@@ -304,7 +302,7 @@ async function loadAssets() {
         const img = await loadImage(`/img/lumara/${i}.png`);
         tank_img.push(img);
     }
-    isLoading = false;
+    countDown = 3;
 }
 
 loadAssets();
@@ -320,8 +318,6 @@ function startGame() {
     coin_spawn_elapse = 0;
     rock_spawn_elapse = 0;
 
-    countDown = 3;
-
     const timerId = setInterval(() => {
         countDown--;
         if (countDown == -1) {
@@ -336,7 +332,7 @@ $("#start").click(async function () {
     $("#game").removeClass('hide');
     await new Promise((resolve) => {
         const timerId = setInterval(() => {
-            if (!isLoading) {
+            if (countDown < 4) {
                 clearInterval(timerId);
                 resolve(true);
             }
