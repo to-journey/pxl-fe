@@ -269,7 +269,7 @@ const handleGameEnd = () => {
     isPlaying = false;
     gameOver = true;
     animateIndex = 0;
-    submitScore('PUMP', score);
+    submitScore(3, score);
     $("#score").html(`${score} hits`);
     setTimeout(() => {
         $("#game").addClass('hide');
