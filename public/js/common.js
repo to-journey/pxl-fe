@@ -7,17 +7,19 @@ resizeOps();
 window.addEventListener("resize", resizeOps);
 
 const submitScore = (gameId, score, time) => {
-    const userId = localStorage.getItem('user_id');
-    if (!userId) {
-        console.error("No user ID found in local storage. Cannot submit score.");
+    const token = localStorage.getItem('token');
+    if (!token) {
+        console.error("Unauthorized. Cannot submit score.");
         return;
     }
-    fetch(`https://pxl8d.top/api/submit_score/${gameId}/${userId}`, {
+    fetch('http://203.161.49.128/api/score', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
+            gameId,
             score,
             time,
         }),
