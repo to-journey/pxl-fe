@@ -5,6 +5,7 @@ let bg;
 let d1, d2;
 let flush;
 let telos;
+let clock;
 
 let count = 30;
 let score = 0;
@@ -148,14 +149,19 @@ function gameLoop() {
     });
 
     ctx.fillStyle = '#0008';
-    ctx.fillRect(0, 532, 375, 28);
+    ctx.fillRect(0, 528, 375, 32);
 
     ctx.fillStyle = 'pink';
     ctx.font = '12px Arial';
-    ctx.textAlign = 'right';
-    ctx.fillText(`🕐TIMER: ${count} sec`, 367, 548);
     ctx.textAlign = 'left';
-    ctx.fillText(`$TELOS COINS: ${score}`, 8, 548);
+    if (telos) {
+        ctx.drawImage(telos, 8, 536, 15, 15);
+    }
+    ctx.fillText(`$TLOS COINS: ${score}`, 30, 545);
+    if (clock) {
+        ctx.drawImage(clock, 264, 536, 15, 15);
+    }
+    ctx.fillText(`TIMER: ${count} sec`, 284, 545);
 
     drawConfetti();
     requestAnimationFrame(gameLoop);
@@ -169,6 +175,7 @@ const loadAssets = async () => {
     d2 = await loadImage('/img/digitus/d2.png');
     telos = await loadImage('/img/digitus/telos.png');
     flush = await loadImage('/img/digitus/flush.png');
+    clock = await loadImage('/img/digitus/clock.png');
     countDown = 3;
 }
 
