@@ -1,17 +1,24 @@
 import { Box } from "@chakra-ui/react"
-import { Route, BrowserRouter as Router, Routes } from "react-router"
+import { useEffect } from "react"
+import { Route, Routes } from "react-router"
 import Header from "./components/Header"
 import Games from "./pages/Games"
+import Questions from "./pages/Questions"
+import Scoreboard from "./pages/Scoreboard"
 
 function App() {
+  useEffect(() => {
+    localStorage.setItem('chakra-ui-color-mode', 'dark');
+  }, []);
+
   return (
     <Box h='100vh' pt='96px' overflowY='auto'>
-      <Router>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Games />} />
-        </Routes>
-      </Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Games />} />
+        <Route path="/scoreboard" element={<Scoreboard />} />
+        <Route path="/questions" element={<Questions />} />
+      </Routes>
     </Box>
   )
 }
