@@ -1,6 +1,5 @@
-import { Flex, Image } from "@chakra-ui/react";
+import { Image, Link } from "@chakra-ui/react";
 import { FC } from "react";
-import { useNavigate } from "react-router";
 
 interface Props {
     src: string;
@@ -9,13 +8,11 @@ interface Props {
 }
 
 const GameCard: FC<Props> = ({ src, label, to }) => {
-    const navigate = useNavigate();
-
     return (
-        <Flex direction='column' gap='8px' align='center' onClick={() => to && navigate(to)}>
+        <Link href={to} display='flex' flexDirection='column' gap='8px' alignItems='center'>
             <Image src={src} rounded='24px' />
             {label}
-        </Flex>
+        </Link>
     )
 }
 
