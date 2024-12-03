@@ -46,6 +46,22 @@ body {
     background: #00ffcc;
 }
 
+.game-container button {
+    background: #6f00ff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 20px;
+}
+
+.game-container button:hover {
+    background: #00ffcc;
+}
+
 .game-container {
     padding: 20px;
     height: 100%;
@@ -89,22 +105,6 @@ body {
 
 .button-container {
     margin: 20px 0;
-}
-
-button {
-    background: #6f00ff;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    font-size: 18px;
-    color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-button:hover {
-    background: #00ffcc;
 }
 
 .feedback {

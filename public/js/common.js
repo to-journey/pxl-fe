@@ -76,3 +76,7 @@ class GIF {
         this.currentFrame = (this.currentFrame + 1) % this.frames.length;
     }
 }
+
+document.getElementById('return').addEventListener('click', () => {
+    location.href = '/';
+});
