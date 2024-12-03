@@ -42,18 +42,18 @@ const Header = () => {
             }} />
             <Box position="fixed" top={0} w='full'>
                 <Flex position='relative' h='80px' bgGradient='linear(to-r, #1c3f3fc0, #28b2a5c0)' px={{ base: '16px', lg: '96px' }} py='16px' gap={{ base: '16px', lg: '32px' }}>
-                    <Image src="/logo.png" />
+                    <Image src="/logo.png" cursor='pointer' onClick={() => navigate('/')} />
                     <Flex w='full'>
                         <Flex display={{ base: 'none', lg: 'flex' }} align='center' gap='16px'>
-                            <Button bg="#222" onClick={() => navigate('/')}>
-                                HOME
+                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => navigate('/')}>
+                                GAMES
                             </Button>
-                            <Button bg="#222" onClick={() => navigate('/scoreboard')}>
+                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => navigate('/scoreboard')}>
                                 SCOREBOARD
                             </Button>
-                            <Button bg="#222" onClick={() => navigate('/questions')}>
+                            {/* <Button bg="#222" onClick={() => navigate('/questions')}>
                                 QUESTIONS
-                            </Button>
+                            </Button> */}
                         </Flex>
                         {user?.id ? (
                             <>
@@ -67,7 +67,7 @@ const Header = () => {
                                 </Flex>
                             </>
                         ) : (
-                            <Button ml='auto' bg="#222">
+                            <Button ml='auto' bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }}>
                                 SIGN IN
                             </Button>
                         )}
@@ -90,24 +90,24 @@ const Header = () => {
                     </DrawerHeader>
                     <DrawerBody>
                         <Flex direction='column' gap={4}>
-                            <Button bg="#222" onClick={() => {
+                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => {
                                 navigate('/');
                                 setIsOpenMenu(false);
                             }}>
-                                HOME
+                                GAMES
                             </Button>
-                            <Button bg="#222" onClick={() => {
+                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => {
                                 navigate('/scoreboard');
                                 setIsOpenMenu(false);
                             }}>
                                 SCOREBOARD
                             </Button>
-                            <Button bg="#222" onClick={() => {
+                            {/* <Button bg="#222" onClick={() => {
                                 navigate('/questions');
                                 setIsOpenMenu(false);
                             }}>
                                 QUESTIONS
-                            </Button>
+                            </Button> */}
                         </Flex>
                     </DrawerBody>
                     <DrawerFooter>
@@ -116,7 +116,7 @@ const Header = () => {
                                 Edit profile
                             </Button>
                         ) : (
-                            <Button bg="#222">
+                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }}>
                                 SIGN IN
                             </Button>
                         )}
