@@ -9,7 +9,7 @@ const theme = extendTheme({
     styles: {
         global: {
             body: {
-                fontFamily: "'SF Slapstick Comic', sans-serif",
+                fontFamily: "'Pixeled', sans-serif",
             },
         },
     },
