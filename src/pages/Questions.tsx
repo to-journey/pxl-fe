@@ -30,45 +30,47 @@ const Questions = () => {
     return (
         <>
             <Flex p={{ base: '16px', lg: '96px' }} justify='center'>
-                <TableContainer w='full' maxW='1440px'>
-                    <Table>
-                        <Thead>
-                            <Tr>
-                                <Th w='120px'>
-                                    DATE
-                                </Th>
-                                <Th>
-                                    ACTION
-                                </Th>
-                                <Th w='80px'>
-                                    PREVIEW
-                                </Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {questions.map((question: IQuestion, index: number) => (
-                                <Tr key={index}>
-                                    <Td>
-                                        {question.date}
-                                    </Td>
-                                    <Td>
-                                        <Button onClick={() => {
-                                            setDate(question.date);
-                                            setIsOpenEditModal(true);
-                                        }}>
-                                            <EditIcon />
-                                        </Button>
-                                    </Td>
-                                    <Td>
-                                        <Link href={`/games/cryptales.html?date=${question.date}`}>
-                                            <PlayIcon />
-                                        </Link>
-                                    </Td>
+                <Flex w='full' maxW='1440px' bg='#222e' p='16px' rounded='16px'>
+                    <TableContainer w='full' maxW='1440px'>
+                        <Table>
+                            <Thead>
+                                <Tr>
+                                    <Th>
+                                        DATE
+                                    </Th>
+                                    <Th>
+                                        ACTION
+                                    </Th>
+                                    <Th>
+                                        PREVIEW
+                                    </Th>
                                 </Tr>
-                            ))}
-                        </Tbody>
-                    </Table>
-                </TableContainer>
+                            </Thead>
+                            <Tbody>
+                                {questions.map((question: IQuestion, index: number) => (
+                                    <Tr key={index}>
+                                        <Td>
+                                            {question.date}
+                                        </Td>
+                                        <Td>
+                                            <Button onClick={() => {
+                                                setDate(question.date);
+                                                setIsOpenEditModal(true);
+                                            }}>
+                                                <EditIcon />
+                                            </Button>
+                                        </Td>
+                                        <Td>
+                                            <Link href={`/games/cryptales.html?date=${question.date}`}>
+                                                <PlayIcon />
+                                            </Link>
+                                        </Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    </TableContainer>
+                </Flex>
             </Flex>
             <Modal size='sm' isCentered isOpen={isOpenEditModal} onClose={() => setIsOpenEditModal(false)}>
                 <ModalOverlay />
