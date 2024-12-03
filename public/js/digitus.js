@@ -204,7 +204,7 @@ canvas.addEventListener("mouseup", () => {
 
 canvas.addEventListener("touchend", (e) => {
     e.preventDefault();
-    if (isPlaying) {
+    if (isPlaying && e.touches.length == 0) {
         score++;
         addCoins();
     }
