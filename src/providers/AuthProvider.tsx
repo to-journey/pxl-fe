@@ -33,7 +33,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
     useEffect(() => {
         if (token) {
             storage.setToken(token);
-            queryClient.invalidateQueries(['getUser']);
+            queryClient.invalidateQueries(['getUserInfo']);
         }
     }, [token]);
 

@@ -24,40 +24,42 @@ const Scoreboard = () => {
 
     return (
         <Flex p={{ base: '16px', lg: '96px' }} justify='center'>
-            <TableContainer w='full' maxW='1440px'>
-                <Table>
-                    <Thead>
-                        <Tr>
-                            <Th />
-                            <Th>
-                                USERNAME
-                            </Th>
-                            <Th>
-                                TOTAL
-                            </Th>
-                            {games.map((game: IGame) => <Th key={game.id}>{game.name}</Th>)}
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {usersWithScore.map((user: any, index: number) => {
-                            return (
-                                <Tr key={index}>
-                                    <Td>
-                                        {index + 1}
-                                    </Td>
-                                    <Td>
-                                        {user.name}
-                                    </Td>
-                                    <Td>
-                                        {user.totalScore}
-                                    </Td>
-                                    {user.scores.map((score: any, index: number) => <Td key={index}>{score?.score}</Td>)}
-                                </Tr>
-                            )
-                        })}
-                    </Tbody>
-                </Table>
-            </TableContainer>
+            <Flex w='full' maxW='1440px' bg='#222e' p='16px' rounded='16px'>
+                <TableContainer>
+                    <Table>
+                        <Thead>
+                            <Tr>
+                                <Th />
+                                <Th>
+                                    USERNAME
+                                </Th>
+                                <Th>
+                                    TOTAL
+                                </Th>
+                                {games.map((game: IGame) => <Th key={game.id}>{game.name}</Th>)}
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {usersWithScore.map((user: any, index: number) => {
+                                return (
+                                    <Tr key={index}>
+                                        <Td>
+                                            {index + 1}
+                                        </Td>
+                                        <Td>
+                                            {user.name}
+                                        </Td>
+                                        <Td>
+                                            {user.totalScore}
+                                        </Td>
+                                        {user.scores.map((score: any, index: number) => <Td key={index}>{score?.score}</Td>)}
+                                    </Tr>
+                                )
+                            })}
+                        </Tbody>
+                    </Table>
+                </TableContainer>
+            </Flex>
         </Flex>
     )
 }
