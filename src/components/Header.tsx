@@ -51,6 +51,9 @@ const Header = () => {
                             <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => navigate('/scoreboard')}>
                                 SCOREBOARD
                             </Button>
+                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => navigate('/about-us')}>
+                                ABOUT US
+                            </Button>
                             {/* <Button bg="#222" onClick={() => navigate('/questions')}>
                                 QUESTIONS
                             </Button> */}
@@ -101,6 +104,9 @@ const Header = () => {
                                 setIsOpenMenu(false);
                             }}>
                                 SCOREBOARD
+                            </Button>
+                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => navigate('/about-us')}>
+                                ABOUT US
                             </Button>
                             {/* <Button bg="#222" onClick={() => {
                                 navigate('/questions');
