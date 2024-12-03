@@ -105,7 +105,10 @@ const Header = () => {
                             }}>
                                 SCOREBOARD
                             </Button>
-                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => navigate('/about-us')}>
+                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => {
+                                navigate('/about-us');
+                                setIsOpenMenu(false);
+                            }}>
                                 ABOUT US
                             </Button>
                             {/* <Button bg="#222" onClick={() => {
