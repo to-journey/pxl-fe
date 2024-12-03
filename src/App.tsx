@@ -12,7 +12,7 @@ function App() {
   }, []);
 
   return (
-    <Box h='100vh' pt='96px' overflowY='auto'>
+    <Box className="bg-img" h='100vh' pt='96px' overflowY='auto'>
       <Header />
       <Routes>
         <Route path="/" element={<Games />} />
