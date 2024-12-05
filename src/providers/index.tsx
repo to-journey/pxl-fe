@@ -4,12 +4,14 @@ import { FC, ReactNode } from "react";
 import { BrowserRouter as Router } from "react-router";
 import { ToastContainer } from "react-toastify";
 import AuthProvider from "./AuthProvider";
+import WalletConnectProvider from "./WalletConnectProvider";
 
 const theme = extendTheme({
     styles: {
         global: {
             body: {
                 fontFamily: "'Pixeled', sans-serif",
+                fontSize: 12,
             },
         },
     },
@@ -28,7 +30,9 @@ const Provider: FC<Props> = ({ children }) => {
             <ChakraProvider theme={theme}>
                 <Router>
                     <AuthProvider>
-                        {children}
+                        <WalletConnectProvider>
+                            {children}
+                        </WalletConnectProvider>
                     </AuthProvider>
                 </Router>
             </ChakraProvider>
