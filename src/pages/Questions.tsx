@@ -1,4 +1,4 @@
-import { Button, Flex, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Table, TableContainer, Tbody, Td, Textarea, Th, Thead, Tr } from "@chakra-ui/react";
+import { Button, Flex, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Textarea, Th, Thead, Tr } from "@chakra-ui/react";
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -9,7 +9,7 @@ import { IQuestion } from "../interfaces";
 const Questions = () => {
     const { questions } = useGetQuestions();
     const [date, setDate] = useState('');
-    const { mutate: saveQuestions, isLoading } = useSaveQuestions(date);
+    const { mutate: saveQuestions } = useSaveQuestions(date);
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
     const [question, setQuestion] = useState('');
 
@@ -30,7 +30,7 @@ const Questions = () => {
     return (
         <>
             <Flex p={{ base: '16px', lg: '96px' }} justify='center'>
-                <Flex w='full' maxW='1440px' bg='#222e' p='16px' rounded='16px'>
+                <Flex w='full' maxW='1440px' bg='black' p='16px' rounded='16px'>
                     <TableContainer w='full' maxW='1440px'>
                         <Table>
                             <Thead>
@@ -84,7 +84,6 @@ const Questions = () => {
                     </ModalBody>
                     <ModalFooter pt='8px'>
                         <Button onClick={handleSave}>
-                            {isLoading && <Spinner size='sm' mr={2} />}
                             Save
                         </Button>
                     </ModalFooter>
