@@ -1,8 +1,10 @@
-import { Avatar, Box, Button, ButtonGroup, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, ButtonGroup, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
+import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { useUpdateUserInfo } from "../api/users";
+import { useUpdateUser } from "../api/users";
 import { AuthContext } from "../providers/AuthProvider";
+import { ListIcon } from "./icons";
 
 const Header = () => {
     const navigate = useNavigate();
@@ -13,22 +15,21 @@ const Header = () => {
     const [image, setImage] = useState<File>();
     const [avatar, setAvatar] = useState<string>();
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const { mutate: handleUpdateUserInfo, isLoading } = useUpdateUserInfo();
+    const [telegramId, setTelegramId] = useState('');
+    const { mutate: handleUpdateUserInfo } = useUpdateUser();
 
     const handleSave = () => {
         const formData = new FormData();
-        if (image) {
+        if (image)
             formData.append('image', image);
-        }
         formData.append('name', name);
-        formData.append('email', email);
+        formData.append('telegram_id', telegramId);
         handleUpdateUserInfo(formData);
     }
 
     useEffect(() => {
         if (user?.name) setName(user.name);
-        if (user?.email) setEmail(user.email);
+        if (user?.telegram_id) setTelegramId(user.telegram_id);
         if (user?.avatar) setAvatar(`${import.meta.env.VITE_API_URL}/public/${user.avatar}`);
     }, [user]);
 
@@ -40,96 +41,76 @@ const Header = () => {
                     setAvatar(URL.createObjectURL(image));
                 setImage(image);
             }} />
-            <Box position="fixed" top={0} w='full'>
-                <Flex position='relative' h='80px' bgGradient='linear(to-r, #1c3f3fc0, #28b2a5c0)' px={{ base: '16px', lg: '96px' }} py='16px' gap={{ base: '16px', lg: '32px' }}>
+            <Box position="fixed" top={0} zIndex={1020} w='full'>
+                <Flex position='relative' h='112px' bg='#0008' px={{ base: '16px', lg: '96px' }} py='16px' gap={{ base: '16px', lg: '32px' }}>
                     <Image src="/logo.png" cursor='pointer' onClick={() => navigate('/')} />
-                    <Flex w='full'>
+                    <Flex w='full' align='center'>
                         <Flex display={{ base: 'none', lg: 'flex' }} align='center' gap='16px'>
-                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => navigate('/')}>
+                            <Button p='12px 28px 16px 28px' bg="black" fontSize={12} _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate('/')}>
                                 GAMES
                             </Button>
-                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => navigate('/scoreboard')}>
+                            <Button p='12px 28px 16px 28px' bg="black" fontSize={12} _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate('/scoreboard')}>
                                 SCOREBOARD
                             </Button>
-                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => navigate('/about-us')}>
+                            <Button p='12px 28px 16px 28px' bg="black" fontSize={12} _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate('/about-us')}>
                                 ABOUT US
                             </Button>
-                            {/* <Button bg="#222" onClick={() => navigate('/questions')}>
-                                QUESTIONS
-                            </Button> */}
                         </Flex>
-                        {user?.id ? (
-                            <>
-                                <Flex ml='auto' display={{ base: 'none', lg: 'flex' }} align='center' gap='8px' onClick={() => setIsOpenProfileEditModal(true)}>
-                                    <Avatar size='md' cursor='pointer' src={`${import.meta.env.VITE_API_URL}/public/${user.avatar}`} />
+                        <Flex ml='auto' align='center' gap='8px'>
+                            {user?.id && (
+                                <Flex align='center' gap='8px'>
+                                    <Avatar size='md' cursor='pointer' src={`${import.meta.env.VITE_API_URL}/public/${user.avatar}`} onClick={() => setIsOpenProfileEditModal(true)} />
                                     <Text>{user.name}</Text>
                                 </Flex>
-                                <Flex ml='auto' display={{ base: 'flex', lg: 'none' }} align='center' gap='8px' onClick={() => setIsOpenMenu(true)}>
-                                    <Avatar size='md' cursor='pointer' src={`${import.meta.env.VITE_API_URL}/public/${user.avatar}`} />
-                                    <Text>{user.name}</Text>
-                                </Flex>
-                            </>
-                        ) : (
-                            <Button ml='auto' bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }}>
-                                SIGN IN
+                            )}
+                            <Box display={{ base: 'none', lg: 'unset' }}>
+                                <DynamicWidget />
+                            </Box>
+                            <Button display={{ lg: 'none' }} onClick={() => setIsOpenMenu(true)}>
+                                <ListIcon />
                             </Button>
-                        )}
+                        </Flex>
                     </Flex>
-                    <Box position='absolute' left={0} bottom={0} w='full' h='6px' bgGradient='linear(to-b, #0000, #28b2a5c0)' />
                 </Flex>
-                <Box h='6px' bgGradient='linear(to-b, #1c3f3fc0, #28b2a5c0, #1a5b5bc0)' />
-            </Box>
+                <Box h='6px' bg='#000' shadow='0 0 2px 2px #02d6e8' />
+            </Box >
             <Drawer isOpen={isOpenMenu} onClose={() => setIsOpenMenu(false)}>
                 <DrawerOverlay />
                 <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader>
-                        {user?.id && (
-                            <Flex align='center' gap='8px'>
-                                <Avatar size='md' cursor='pointer' src={`${import.meta.env.VITE_API_URL}/public/${user.avatar}`} />
-                                <Text>{user.name}</Text>
-                            </Flex>
-                        )}
+                        <Flex direction='column' gap='16px'>
+                            {user && (
+                                <Flex align='center' gap='8px'>
+                                    <Avatar size='md' cursor='pointer' src={`${import.meta.env.VITE_API_URL}/public/${user.avatar}`} />
+                                    <Text fontSize={12}>{user.name}</Text>
+                                </Flex>
+                            )}
+                            <DynamicWidget />
+                        </Flex>
                     </DrawerHeader>
                     <DrawerBody>
                         <Flex direction='column' gap={4}>
-                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => {
+                            <Button p='12px 28px 16px 28px' bg="black" fontSize={12} onClick={() => {
                                 navigate('/');
                                 setIsOpenMenu(false);
                             }}>
                                 GAMES
                             </Button>
-                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => {
+                            <Button p='12px 28px 16px 28px' bg="black" fontSize={12} onClick={() => {
                                 navigate('/scoreboard');
                                 setIsOpenMenu(false);
                             }}>
                                 SCOREBOARD
                             </Button>
-                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }} onClick={() => {
+                            <Button p='12px 28px 16px 28px' bg="black" fontSize={12} onClick={() => {
                                 navigate('/about-us');
                                 setIsOpenMenu(false);
                             }}>
                                 ABOUT US
                             </Button>
-                            {/* <Button bg="#222" onClick={() => {
-                                navigate('/questions');
-                                setIsOpenMenu(false);
-                            }}>
-                                QUESTIONS
-                            </Button> */}
                         </Flex>
                     </DrawerBody>
-                    <DrawerFooter>
-                        {user?.id ? (
-                            <Button onClick={() => setIsOpenProfileEditModal(true)}>
-                                Edit profile
-                            </Button>
-                        ) : (
-                            <Button bg="#222" _hover={{ shadow: 'inset 0 0 12px rgb(252, 2, 216)' }}>
-                                SIGN IN
-                            </Button>
-                        )}
-                    </DrawerFooter>
                 </DrawerContent>
             </Drawer>
             <Modal size='xs' isCentered isOpen={isOpenProfileEditModal} onClose={() => setIsOpenProfileEditModal(false)}>
@@ -145,23 +126,18 @@ const Header = () => {
                                 <Avatar src={avatar} cursor='pointer' size='lg' onClick={() => fileInputRef.current?.click()} />
                             </Flex>
                             <Flex direction='column' gap='4px'>
-                                <Text>
-                                    User name:
-                                </Text>
-                                <Input value={name} onChange={(e) => setName(e.target.value)} />
+                                <Text>User name:</Text>
+                                <Input fontSize={12} value={name} onChange={(e) => setName(e.target.value)} />
                             </Flex>
                             <Flex direction='column' gap='4px'>
-                                <Text>
-                                    Email:
-                                </Text>
-                                <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+                                <Text>Telegram ID:</Text>
+                                <Input fontSize={12} value={telegramId} onChange={(e) => setTelegramId(e.target.value)} />
                             </Flex>
                         </Flex>
                     </ModalBody>
                     <ModalFooter pt='8px'>
                         <ButtonGroup>
                             <Button onClick={handleSave}>
-                                {isLoading && <Spinner size='sm' mr={2} />}
                                 Save
                             </Button>
                         </ButtonGroup>
