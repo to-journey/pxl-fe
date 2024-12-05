@@ -2,6 +2,7 @@ import { Box } from "@chakra-ui/react"
 import { useEffect } from "react"
 import { Route, Routes } from "react-router"
 import Header from "./components/Header"
+import AboutUs from "./pages/AboutUs"
 import Games from "./pages/Games"
 import Questions from "./pages/Questions"
 import Scoreboard from "./pages/Scoreboard"
@@ -12,12 +13,13 @@ function App() {
   }, []);
 
   return (
-    <Box className="bg-img" h='100vh' pt='96px' overflowY='auto' backgroundPosition='center center'>
+    <Box className="bg-img" h='100vh' pt={{ base: '86px', lg: '118px' }} overflowY='auto' backgroundPosition='center center'>
       <Header />
       <Routes>
         <Route path="/" element={<Games />} />
         <Route path="/scoreboard" element={<Scoreboard />} />
         <Route path="/questions" element={<Questions />} />
+        <Route path="/about-us" element={<AboutUs />} />
       </Routes>
     </Box>
   )
