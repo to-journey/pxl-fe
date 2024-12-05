@@ -1,15 +1,15 @@
 import { createContext, FC, ReactNode, useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
-import { queryClient } from ".";
-import { useGetUserInfo } from "../api/users";
+import { useSignInWithDynamicId } from "../api/auth";
 import { IUser } from "../interfaces";
-import { storage } from "../utils";
+import { axios, storage } from "../utils";
 
 interface IAuth {
     user?: IUser;
     setUser?: (user: IUser) => void;
     token?: string | null;
     setToken?: (token: string) => void;
+    signInWithDynamicId?: (userId: string) => void;
+    logout?: () => void;
 }
 
 export const AuthContext = createContext<IAuth>({});
@@ -20,25 +20,37 @@ interface Props {
 
 const AuthProvider: FC<Props> = ({ children }) => {
     const [token, setToken] = useState(storage.getToken());
-    const [param] = useSearchParams();
-    const { user } = useGetUserInfo();
+    const [user, setUser] = useState<IUser>();
+    const { mutate: signInWithDynamicId } = useSignInWithDynamicId((res) => {
+        setToken?.(res.data.token);
+    });
 
-    useEffect(() => {
-        const token = param.get('token');
-        if (token) {
-            setToken(token);
+    const logout = () => {
+        setToken(null);
+    }
+
+    const getUserInfo = async () => {
+        try {
+            const res = await axios.get('/user-info');
+            setUser(res.data);
+        } catch (err: any) {
+            console.error(err.message);
+            setUser(undefined);
         }
-    }, [param]);
+    }
 
     useEffect(() => {
         if (token) {
             storage.setToken(token);
-            queryClient.invalidateQueries(['getUserInfo']);
+            getUserInfo();
+        } else {
+            storage.deleteToken();
+            setUser(undefined);
         }
     }, [token]);
 
     return (
-        <AuthContext.Provider value={{ token, setToken, user }}>
+        <AuthContext.Provider value={{ token, setToken, user, signInWithDynamicId, logout }}>
             {children}
         </AuthContext.Provider>
     )
