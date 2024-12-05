@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { axios, toast } from "../../utils";
 import { queryClient } from "../../providers";
+import { axios, toast } from "../../utils";
 
 export const useGetUsers = () => {
     const { data, isLoading } = useQuery({
@@ -11,21 +11,12 @@ export const useGetUsers = () => {
     return { users: data?.data || [], isLoading };
 }
 
-export const useGetUserInfo = () => {
-    const { data, isLoading } = useQuery({
-        queryKey: ['getUserInfo'],
-        queryFn: () => axios.get('/user-info'),
-    });
-
-    return { user: data?.data || {}, isLoading };
-}
-
-export const useUpdateUserInfo = () => {
+export const useUpdateUser = () => {
     return useMutation({
         mutationFn: (user: any) => axios.put('/user', user),
         onSuccess: () => {
             toast.success('User info has been successfully updated.');
-            queryClient.invalidateQueries(['getUserInfo']);
+            queryClient.invalidateQueries({ queryKey: ['getUserInfo'] });
         },
         onError: (err: any) => toast.error(err.message),
     });

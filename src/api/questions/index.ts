@@ -15,6 +15,6 @@ export const useSaveQuestions = (date: string) => {
     return useMutation({
         mutationFn: (question: string) => axios.post(`/questions?date=${date}`, { question }),
         onError: (err: any) => toast.error(err.message),
-        onSuccess: () => queryClient.invalidateQueries(['getQuestions']),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['getQuestions'] }),
     });
 }
