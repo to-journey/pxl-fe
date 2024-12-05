@@ -42,7 +42,7 @@ const Header = () => {
                 setImage(image);
             }} />
             <Box position="fixed" top={0} zIndex={1020} w='full'>
-                <Flex position='relative' h='112px' bg='#0008' px={{ base: '16px', lg: '96px' }} py='16px' gap={{ base: '16px', lg: '32px' }}>
+                <Flex position='relative' h={{ base: '80px', lg: '112px' }} bg='#0008' px={{ base: '16px', lg: '96px' }} py='16px' gap={{ base: '16px', lg: '32px' }}>
                     <Image src="/logo.png" cursor='pointer' onClick={() => navigate('/')} />
                     <Flex w='full' align='center'>
                         <Flex display={{ base: 'none', lg: 'flex' }} align='center' gap='16px'>
