@@ -1,14 +1,16 @@
 import { Avatar, Flex, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import _ from 'lodash';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import { useGetGames } from '../api/games';
 import { useGetScoreboard } from '../api/scoreboard';
 import { useGetUsers } from '../api/users';
 import { IUser } from '../interfaces';
+import { AuthContext } from '../providers/AuthProvider';
 
 const Scoreboard = () => {
     const [params] = useSearchParams();
+    const { user } = useContext(AuthContext);
     const view = params.get('view');
     const { users } = useGetUsers();
     const { games } = useGetGames();
@@ -44,22 +46,22 @@ const Scoreboard = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {usersWithScore.map((user: any, index: number) => {
+                            {usersWithScore.map((userWithScore: any, index: number) => {
                                 return (
-                                    <Tr key={index}>
+                                    <Tr bg={userWithScore.id == user?.id ? '#666' : 'black'} key={index}>
                                         <Td fontSize={12}>
                                             {index + 1}
                                         </Td>
                                         <Td>
                                             <Flex gap='8px'>
-                                                <Avatar src={`${import.meta.env.VITE_API_URL}/public/${user.avatar}`} />
+                                                <Avatar src={`${import.meta.env.VITE_API_URL}/public/${userWithScore.avatar}`} />
                                                 <Flex direction='column' justify='center' gap='8px'>
-                                                    <Text fontSize={12}>{user.name}</Text>
+                                                    <Text fontSize={12}>{userWithScore.name}</Text>
                                                 </Flex>
                                             </Flex>
                                         </Td>
                                         <Td fontSize={12}>
-                                            {user.totalScore}
+                                            {userWithScore.totalScore}
                                         </Td>
                                     </Tr>
                                 )
