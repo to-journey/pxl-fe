@@ -27,7 +27,7 @@ const Scoreboard = () => {
 
     return (
         <Flex p={{ base: '16px', lg: '96px' }} justify='center'>
-            <Flex w='full' maxW='1440px'>
+            <Flex w='full' maxW='1024px'>
                 <TableContainer w='full' bg='black' border='2px solid purple' rounded='16px'>
                     <Table>
                         <Thead borderBottom='2px solid purple'>
