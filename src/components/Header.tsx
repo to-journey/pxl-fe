@@ -14,7 +14,7 @@ const ScoreboardButton: FC<{
     const [showPopup, setShowPopup] = useState(false);
     return (
         <Box>
-            <Button w='full' p='12px 28px 16px 28px' bg="black" _hover={{ bg: '#fc02d8' }} fontSize={12} onClick={() => setShowPopup(true)}>
+            <Button w='full' p='12px 28px 16px 28px' bg="black" _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} fontSize={12} onMouseEnter={() => setShowPopup(true)}>
                 SCOREBOARD
             </Button >
             <Box position='relative'>
@@ -154,7 +154,7 @@ const Header = () => {
             </Drawer>
             <Modal size='xs' isCentered isOpen={isOpenProfileEditModal} onClose={() => setIsOpenProfileEditModal(false)}>
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent bg='#000c'>
                     <ModalCloseButton />
                     <ModalHeader pb='8px'>
                         EDIT PROFILE
