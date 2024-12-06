@@ -12,7 +12,7 @@ const submitScore = (gameId, score, time) => {
         console.error("Unauthorized. Cannot submit score.");
         return;
     }
-    fetch('http://203.161.49.128/api/score', {
+    fetch('https://pxlgames.xyz/api/score', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

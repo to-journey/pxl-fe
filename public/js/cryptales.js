@@ -11,7 +11,7 @@ async function startGame() {
         const params = new URLSearchParams(url.search);
         let date = params.get('date') || 'today';
         date = date ? date : 'today';
-        fetch(`http://203.161.49.128/api/questions/${date}`)
+        fetch(`https://pxlgames.xyz/api/questions/${date}`)
             .then(response => resolve(response.json()))
             .catch(error => reject(error));
     });
