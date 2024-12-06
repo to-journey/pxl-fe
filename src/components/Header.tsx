@@ -14,12 +14,12 @@ const ScoreboardButton: FC<{
     const [showPopup, setShowPopup] = useState(false);
     return (
         <Box>
-            <Button p='12px 28px 16px 28px' bg="black" _hover={{ bg: '#fc02d8' }} fontSize={12} onClick={() => setShowPopup(true)}>
+            <Button w='full' p='12px 28px 16px 28px' bg="black" _hover={{ bg: '#fc02d8' }} fontSize={12} onClick={() => setShowPopup(true)}>
                 SCOREBOARD
             </Button >
             <Box position='relative'>
                 {showPopup && (
-                    <Box position='absolute' left={0} top={2}>
+                    <Box position='absolute' left={0} top={2} zIndex={10}>
                         <OutsideClickHandler onOutsideClick={() => setShowPopup(false)}>
                             <Flex py={1} bg='#000c' direction='column' gap='2px' rounded={4}>
                                 <Box p='8px 16px' cursor='pointer' _hover={{ bg: '#fc02d8' }} onClick={() => {
@@ -80,7 +80,7 @@ const Header = () => {
             }} />
             <Box position="fixed" top={0} zIndex={1020} w='full'>
                 <Flex position='relative' h={{ base: '80px', lg: '112px' }} bg='#0008' px={{ base: '16px', lg: '96px' }} py='16px' gap={{ base: '16px', lg: '32px' }}>
-                    <Image src="/logo.png" cursor='pointer' onClick={() => navigate('/')} />
+                    <Image src="/logo.png" aspectRatio={1} cursor='pointer' onClick={() => navigate('/')} />
                     <Flex w='full' align='center'>
                         <Flex display={{ base: 'none', lg: 'flex' }} align='center' gap='16px'>
                             <Button p='12px 28px 16px 28px' bg="black" fontSize={12} _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate('/')}>
@@ -111,7 +111,7 @@ const Header = () => {
             </Box >
             <Drawer isOpen={isOpenMenu} onClose={() => setIsOpenMenu(false)}>
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent bg='#0008'>
                     <DrawerCloseButton />
                     <DrawerHeader>
                         <Flex direction='column' gap='16px'>
