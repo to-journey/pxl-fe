@@ -63,6 +63,7 @@ p {
     position: fixed;
     right: 8px;
     top: 8px;
+    z-index: 10;
     padding: 4px 8px;
 }
 
