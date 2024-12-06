@@ -3,6 +3,7 @@ export interface IGame {
     name: string;
     sname: string;
     is_open: boolean;
+    is_played: boolean;
 }
 
 export interface IUser {
