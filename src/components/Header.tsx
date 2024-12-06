@@ -1,10 +1,47 @@
 import { Avatar, Box, Button, ButtonGroup, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
-import { useContext, useEffect, useRef, useState } from "react";
+import { FC, useContext, useEffect, useRef, useState } from "react";
+import OutsideClickHandler from 'react-outside-click-handler';
 import { useNavigate } from "react-router";
 import { useUpdateUser } from "../api/users";
 import { AuthContext } from "../providers/AuthProvider";
 import { ListIcon } from "./icons";
+
+const ScoreboardButton: FC<{
+    onWeeklyClick: () => void;
+    onTotalClick: () => void;
+}> = ({ onWeeklyClick, onTotalClick }) => {
+    const [showPopup, setShowPopup] = useState(false);
+    return (
+        <Box>
+            <Button p='12px 28px 16px 28px' bg="black" _hover={{ bg: '#fc02d8' }} fontSize={12} onClick={() => setShowPopup(true)}>
+                SCOREBOARD
+            </Button >
+            <Box position='relative'>
+                {showPopup && (
+                    <Box position='absolute' left={0} top={2}>
+                        <OutsideClickHandler onOutsideClick={() => setShowPopup(false)}>
+                            <Flex py={1} bg='#000c' direction='column' gap='2px' rounded={4}>
+                                <Box p='8px 16px' cursor='pointer' _hover={{ bg: '#fc02d8' }} onClick={() => {
+                                    setShowPopup(false);
+                                    onWeeklyClick();
+                                }}>
+                                    WEEKLY
+                                </Box>
+                                <Box p='8px 16px' cursor='pointer' _hover={{ bg: '#fc02d8' }} onClick={() => {
+                                    setShowPopup(false);
+                                    onTotalClick();
+                                }}>
+                                    TOTAL
+                                </Box>
+                            </Flex>
+                        </OutsideClickHandler>
+                    </Box>
+                )}
+            </Box>
+        </Box>
+    )
+}
 
 const Header = () => {
     const navigate = useNavigate();
@@ -49,9 +86,7 @@ const Header = () => {
                             <Button p='12px 28px 16px 28px' bg="black" fontSize={12} _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate('/')}>
                                 GAMES
                             </Button>
-                            <Button p='12px 28px 16px 28px' bg="black" fontSize={12} _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate('/scoreboard')}>
-                                SCOREBOARD
-                            </Button>
+                            <ScoreboardButton onWeeklyClick={() => navigate('/scoreboard?view=weekly')} onTotalClick={() => navigate('/scoreboard?view=total')} />
                             <Button p='12px 28px 16px 28px' bg="black" fontSize={12} _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate('/about-us')}>
                                 ABOUT US
                             </Button>
@@ -97,12 +132,16 @@ const Header = () => {
                             }}>
                                 GAMES
                             </Button>
-                            <Button p='12px 28px 16px 28px' bg="black" fontSize={12} onClick={() => {
-                                navigate('/scoreboard');
-                                setIsOpenMenu(false);
-                            }}>
-                                SCOREBOARD
-                            </Button>
+                            <ScoreboardButton
+                                onWeeklyClick={() => {
+                                    navigate('/scoreboard?view=weekly');
+                                    setIsOpenMenu(false);
+                                }}
+                                onTotalClick={() => {
+                                    navigate('/scoreboard?view=total');
+                                    setIsOpenMenu(false);
+                                }}
+                            />
                             <Button p='12px 28px 16px 28px' bg="black" fontSize={12} onClick={() => {
                                 navigate('/about-us');
                                 setIsOpenMenu(false);
@@ -118,7 +157,7 @@ const Header = () => {
                 <ModalContent>
                     <ModalCloseButton />
                     <ModalHeader pb='8px'>
-                        Edit profile
+                        EDIT PROFILE
                     </ModalHeader>
                     <ModalBody>
                         <Flex direction='column' gap='8px'>
@@ -126,11 +165,11 @@ const Header = () => {
                                 <Avatar src={avatar} cursor='pointer' size='lg' onClick={() => fileInputRef.current?.click()} />
                             </Flex>
                             <Flex direction='column' gap='4px'>
-                                <Text>User name:</Text>
+                                <Text>USER NAME:</Text>
                                 <Input fontSize={12} value={name} onChange={(e) => setName(e.target.value)} />
                             </Flex>
                             <Flex direction='column' gap='4px'>
-                                <Text>Telegram ID:</Text>
+                                <Text>TELEGRAM ID:</Text>
                                 <Input fontSize={12} value={telegramId} onChange={(e) => setTelegramId(e.target.value)} />
                             </Flex>
                         </Flex>
@@ -138,7 +177,7 @@ const Header = () => {
                     <ModalFooter pt='8px'>
                         <ButtonGroup>
                             <Button onClick={handleSave}>
-                                Save
+                                SAVE
                             </Button>
                         </ButtonGroup>
                     </ModalFooter>
