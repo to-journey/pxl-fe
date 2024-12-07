@@ -1,6 +1,5 @@
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import { FC, useContext } from "react";
-import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { AuthContext } from "../providers/AuthProvider";
 
@@ -12,13 +11,15 @@ interface Props {
 }
 
 const GameCard: FC<Props> = ({ src, label, to, isPlayed }) => {
-    const navigate = useNavigate();
     const { user } = useContext(AuthContext);
 
     return (
         <Box display='flex' flexDirection='column' gap='8px' alignItems='center' cursor='pointer' _hover={{ border: 'none' }} onClick={() => {
-            if (user!.telegram_id.length > 0) to && navigate(to);
-            else {
+            if (!user) {
+                toast.error('Please login to play the game.');
+            } else if (user.telegram_id.length > 0 && to) {
+                window.location.href = to;
+            } else {
                 toast.error('Please connect your Telegram account to play the game.');
             }
         }}>
