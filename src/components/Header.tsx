@@ -169,7 +169,7 @@ const Header = () => {
                                 <Text>TELEGRAM ID:</Text>
                                 <Flex align='center' gap='8px'>
                                     <Input fontSize={14} value={telegramId} onChange={(e) => setTelegramId(e.target.value)} />
-                                    <Tooltip content="Telegram ID is required to start">
+                                    <Tooltip label="YOU REQUIRE TO SIGN UP TO THE TELEGRAM BOT">
                                         <Box cursor='pointer'>
                                             ?
                                         </Box>
