@@ -1,8 +1,7 @@
-import { Avatar, Box, Button, ButtonGroup, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, ButtonGroup, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Tooltip } from "@chakra-ui/react";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import { FC, useContext, useEffect, useRef, useState } from "react";
-import OutsideClickHandler from 'react-outside-click-handler';
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useUpdateUser } from "../api/users";
 import { AuthContext } from "../providers/AuthProvider";
 import { ListIcon } from "./icons";
@@ -13,29 +12,27 @@ const ScoreboardButton: FC<{
 }> = ({ onWeeklyClick, onTotalClick }) => {
     const [showPopup, setShowPopup] = useState(false);
     return (
-        <Box>
-            <Button w='full' p='12px 28px 16px 28px' bg="black" _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} fontSize={12} onMouseEnter={() => setShowPopup(true)}>
+        <Box onMouseEnter={() => setShowPopup(true)} onMouseLeave={() => setShowPopup(false)}>
+            <Button w='full' p='12px 28px 16px 28px' bg="black" _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} fontSize={12}>
                 SCOREBOARD
             </Button >
             <Box position='relative'>
                 {showPopup && (
-                    <Box position='absolute' left={0} top={2} zIndex={10}>
-                        <OutsideClickHandler onOutsideClick={() => setShowPopup(false)}>
-                            <Flex py={1} bg='#000c' direction='column' gap='2px' rounded={4}>
-                                <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
-                                    setShowPopup(false);
-                                    onWeeklyClick();
-                                }}>
-                                    WEEKLY
-                                </Box>
-                                <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
-                                    setShowPopup(false);
-                                    onTotalClick();
-                                }}>
-                                    TOTAL
-                                </Box>
-                            </Flex>
-                        </OutsideClickHandler>
+                    <Box position='absolute' left={0} top={0} zIndex={10} pt={2}>
+                        <Flex py={1} bg='#000c' direction='column' gap='2px' rounded={4}>
+                            <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
+                                setShowPopup(false);
+                                onWeeklyClick();
+                            }}>
+                                WEEKLY
+                            </Box>
+                            <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
+                                setShowPopup(false);
+                                onTotalClick();
+                            }}>
+                                TOTAL
+                            </Box>
+                        </Flex>
                     </Box>
                 )}
             </Box>
@@ -160,17 +157,27 @@ const Header = () => {
                         EDIT PROFILE
                     </ModalHeader>
                     <ModalBody>
-                        <Flex direction='column' gap='8px'>
+                        <Flex direction='column' gap='16px'>
                             <Flex justify='center'>
                                 <Avatar src={avatar} cursor='pointer' size='lg' onClick={() => fileInputRef.current?.click()} />
                             </Flex>
-                            <Flex direction='column' gap='4px'>
+                            <Flex direction='column' gap='8px'>
                                 <Text>USER NAME:</Text>
-                                <Input fontSize={12} value={name} onChange={(e) => setName(e.target.value)} />
+                                <Input fontSize={14} value={name} onChange={(e) => setName(e.target.value)} />
                             </Flex>
-                            <Flex direction='column' gap='4px'>
+                            <Flex direction='column' gap='8px'>
                                 <Text>TELEGRAM ID:</Text>
-                                <Input fontSize={12} value={telegramId} onChange={(e) => setTelegramId(e.target.value)} />
+                                <Flex align='center' gap='8px'>
+                                    <Input fontSize={14} value={telegramId} onChange={(e) => setTelegramId(e.target.value)} />
+                                    <Tooltip content="Telegram ID is required to start">
+                                        <Box cursor='pointer'>
+                                            ?
+                                        </Box>
+                                    </Tooltip>
+                                    <Link to='https://t.me/pxl_games' target="_blank">
+                                        <Image w='32px' src='/telegram.png' cursor='pointer' />
+                                    </Link>
+                                </Flex>
                             </Flex>
                         </Flex>
                     </ModalBody>
