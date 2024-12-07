@@ -46,7 +46,7 @@ const Scoreboard = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {usersWithScore.filter((_, index) => index < 20).map((userWithScore: any, index: number) => {
+                            {[...usersWithScore.filter((userWithScore, index) => index >= 20 && userWithScore.id == user?.id), ...usersWithScore.filter((_, index) => index < 20)].map((userWithScore: any, index: number) => {
                                 return (
                                     <Tr key={index} {...(userWithScore.id == user?.id ? { shadow: 'inset 0 0 12px #fc02d8' } : {})}>
                                         <Td fontSize={12} pl={8}>
