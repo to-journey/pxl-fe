@@ -23,18 +23,18 @@ const Scoreboard = () => {
             return { ...user, totalScore };
         });
         return result.sort((a: any, b: any) => {
-            return b.totalScore - a.totalScore;
+            return (b.totalScore || 0) - (a.totalScore || 0);
         });
     }, [users, games, scores]);
 
     return (
         <Flex p={{ base: '16px', lg: '96px' }} justify='center'>
-            <Flex w='full' maxW='1024px'>
+            <Flex w='full' maxW='1280px'>
                 <TableContainer w='full' bg='black' border='2px solid purple' rounded='16px'>
                     <Table>
                         <Thead borderBottom='2px solid purple'>
                             <Tr>
-                                <Th fontFamily='Pixeled'>
+                                <Th w='240px' fontFamily='Pixeled' pl={8}>
                                     RANK
                                 </Th>
                                 <Th fontFamily='Pixeled'>
@@ -46,13 +46,13 @@ const Scoreboard = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {usersWithScore.map((userWithScore: any, index: number) => {
+                            {usersWithScore.filter((_, index) => index < 20).map((userWithScore: any, index: number) => {
                                 return (
-                                    <Tr bg={userWithScore.id == user?.id ? '#666' : 'black'} key={index}>
-                                        <Td fontSize={12}>
+                                    <Tr key={index} {...(userWithScore.id == user?.id ? { shadow: 'inset 0 0 12px #fc02d8' } : {})}>
+                                        <Td fontSize={12} pl={8}>
                                             {index + 1}
                                         </Td>
-                                        <Td>
+                                        <Td py='8px'>
                                             <Flex gap='8px'>
                                                 <Avatar src={`${import.meta.env.VITE_API_URL}/public/${userWithScore.avatar}`} />
                                                 <Flex direction='column' justify='center' gap='8px'>
