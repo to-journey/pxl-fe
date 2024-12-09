@@ -25,7 +25,7 @@ const Scoreboard = () => {
         return result.sort((a: any, b: any) => {
             return (b.totalScore || 0) - (a.totalScore || 0);
         });
-    }, [users, games, scores]);
+    }, [users, games, scores, view]);
 
     return (
         <Flex p={{ base: '16px', lg: '96px' }} justify='center'>
