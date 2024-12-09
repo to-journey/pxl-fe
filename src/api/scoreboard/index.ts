@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { axios } from "../../utils";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { axios, toast } from "../../utils";
 
 export const useGetScoreboard = () => {
     const { data, isLoading } = useQuery({
@@ -8,4 +8,11 @@ export const useGetScoreboard = () => {
     });
 
     return { scores: data?.data || [], isLoading };
+}
+
+export const useCreateScore = () => {
+    return useMutation({
+        mutationFn: (data: any) => axios.post('/score', data),
+        onError: (err: any) => toast.error(err.response?.data.message || err.message),
+    });
 }
