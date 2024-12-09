@@ -4,7 +4,7 @@ import { FC, ReactNode } from "react";
 import { BrowserRouter as Router } from "react-router";
 import { ToastContainer } from "react-toastify";
 import AuthProvider from "./AuthProvider";
-import WalletConnectProvider from "./WalletConnectProvider";
+import DynamicProvider from "./DynamicProvider";
 
 const theme = extendTheme({
     styles: {
@@ -30,9 +30,9 @@ const Provider: FC<Props> = ({ children }) => {
             <ChakraProvider theme={theme}>
                 <Router>
                     <AuthProvider>
-                        <WalletConnectProvider>
+                        <DynamicProvider>
                             {children}
-                        </WalletConnectProvider>
+                        </DynamicProvider>
                     </AuthProvider>
                 </Router>
             </ChakraProvider>
