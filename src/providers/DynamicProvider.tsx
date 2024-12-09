@@ -22,7 +22,7 @@ const evmNetworks = [
     },
 ];
 
-const WalletConnectProvider: FC<{
+const DynamicProvider: FC<{
     children: ReactNode;
 }> = ({ children }) => {
     const { signInWithDynamicId, logout } = useContext(AuthContext);
@@ -55,4 +55,4 @@ const WalletConnectProvider: FC<{
     );
 }
 
-export default WalletConnectProvider;
+export default DynamicProvider;
