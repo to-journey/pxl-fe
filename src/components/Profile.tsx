@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Flex, Image, Input, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Tooltip } from "@chakra-ui/react";
-import { DynamicUserProfile, useIsLoggedIn, useRefreshUser } from "@dynamic-labs/sdk-react-core";
+import { DynamicUserProfile, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useUpdateUser } from "../api/users";
@@ -8,8 +8,7 @@ import LoginButton from "./LoginButton";
 
 const Profile = () => {
     const { user } = useContext(AuthContext);
-    const refresh = useRefreshUser();
-    const isLoggedIn = useIsLoggedIn();
+    const { handleLogOut } = useDynamicContext();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [avatar, setAvatar] = useState<string>();
@@ -33,7 +32,7 @@ const Profile = () => {
         if (user?.avatar) setAvatar(`${import.meta.env.VITE_API_URL}/public/${user.avatar}`);
     }, [user]);
 
-    if (isLoggedIn) {
+    if (user) {
         return (
             <>
                 <Input ref={fileInputRef} type="file" accept="image/*" display='none' onChange={(e) => {
@@ -51,17 +50,14 @@ const Profile = () => {
                             <MenuItem onClick={() => setShowProfileModal(true)}>
                                 EDIT PROFILE
                             </MenuItem>
-                            <MenuItem>
-                                MY WALLET
-                            </MenuItem>
                             <Divider />
-                            <MenuItem onClick={refresh}>
+                            <MenuItem onClick={handleLogOut}>
                                 LOGOUT
                             </MenuItem>
                         </MenuList>
                     </Menu>
                     <Text fontSize={12}>{user?.name}</Text>
-                </Flex>
+                </Flex >
                 <Modal size='xs' isCentered isOpen={showProfileModal} onClose={() => setShowProfileModal(false)}>
                     <ModalOverlay />
                     <ModalContent bg='#000c'>
