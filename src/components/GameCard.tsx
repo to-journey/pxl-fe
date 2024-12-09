@@ -17,8 +17,9 @@ const GameCard: FC<Props> = ({ src, label, to, isPlayed }) => {
         <Box display='flex' flexDirection='column' gap='8px' alignItems='center' cursor='pointer' _hover={{ border: 'none' }} onClick={() => {
             if (!user) {
                 toast.error('Please login to play the game.');
-            } else if (user.telegram_id.length > 0 && to) {
-                window.location.href = to;
+            } else if (user.telegram_id.length > 0) {
+                if (to)
+                    window.location.href = to;
             } else {
                 toast.error('Please connect your Telegram account to play the game.');
             }
