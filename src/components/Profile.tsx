@@ -1,9 +1,10 @@
-import { Box, Button, Divider, Flex, Image, Input, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Image, Input, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text, Tooltip } from "@chakra-ui/react";
 import { DynamicUserProfile, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useUpdateUser } from "../api/users";
 import { AuthContext } from "../providers/AuthProvider";
+import { toast } from "../utils";
 import LoginButton from "./LoginButton";
 
 const Profile = () => {
@@ -15,13 +16,28 @@ const Profile = () => {
     const [image, setImage] = useState<File>();
     const [name, setName] = useState('');
     const [telegramId, setTelegramId] = useState('');
-    const { mutate: handleUpdateUserInfo } = useUpdateUser();
+    const { mutate: handleUpdateUserInfo, isPending } = useUpdateUser(() => {
+        toast.success('User info has been successfully updated.');
+        setShowProfileModal(false);
+    });
 
     const handleSave = () => {
         const formData = new FormData();
+        if (user?.avatar == null && !image) {
+            toast.error('Please select user avatar.');
+            return;
+        }
         if (image)
             formData.append('image', image);
+        if (name.trim().length == 0) {
+            toast.error('Please input user name');
+            return;
+        }
         formData.append('name', name);
+        if (telegramId.trim().length == 0) {
+            toast.error('Please input telegram ID');
+            return;
+        }
         formData.append('telegram_id', telegramId);
         handleUpdateUserInfo(formData);
     }
@@ -68,7 +84,7 @@ const Profile = () => {
                         <ModalBody>
                             <Flex direction='column' gap='16px'>
                                 <Flex justify='center'>
-                                    <Image w='64px' h='64px' objectFit='cover' cursor='pointer' src={avatar} />
+                                    <Image w='64px' h='64px' objectFit='cover' cursor='pointer' src={avatar} onClick={() => fileInputRef.current?.click()} />
                                 </Flex>
                                 <Flex direction='column' gap='8px'>
                                     <Text>USER NAME:</Text>
@@ -90,6 +106,7 @@ const Profile = () => {
                         </ModalBody>
                         <ModalFooter pt='8px'>
                             <Button onClick={handleSave}>
+                                {isPending && <Spinner size='sm' mr={1} />}
                                 SAVE
                             </Button>
                         </ModalFooter>
