@@ -48,6 +48,7 @@ const WalletConnectProvider: FC<{
                     evmNetworks,
                 }
             }}
+            theme="dark"
         >
             {children}
         </DynamicContextProvider>
