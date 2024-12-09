@@ -1,44 +1,11 @@
 import { Avatar, Box, Button, ButtonGroup, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Tooltip } from "@chakra-ui/react";
-import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
-import { FC, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useUpdateUser } from "../api/users";
 import { AuthContext } from "../providers/AuthProvider";
 import { ListIcon } from "./icons";
-
-const ScoreboardButton: FC<{
-    onWeeklyClick: () => void;
-    onTotalClick: () => void;
-}> = ({ onWeeklyClick, onTotalClick }) => {
-    const [showPopup, setShowPopup] = useState(false);
-    return (
-        <Box onMouseEnter={() => setShowPopup(true)} onMouseLeave={() => setShowPopup(false)}>
-            <Button w='full' p='12px 28px 16px 28px' bg="black" _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} fontSize={12}>
-                SCOREBOARD
-            </Button >
-            <Box position='relative'>
-                {showPopup && (
-                    <Box position='absolute' left={0} top={0} zIndex={10} pt={2}>
-                        <Flex py={1} bg='#000c' direction='column' gap='2px' rounded={4}>
-                            <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
-                                setShowPopup(false);
-                                onWeeklyClick();
-                            }}>
-                                WEEKLY
-                            </Box>
-                            <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
-                                setShowPopup(false);
-                                onTotalClick();
-                            }}>
-                                TOTAL
-                            </Box>
-                        </Flex>
-                    </Box>
-                )}
-            </Box>
-        </Box>
-    )
-}
+import Profile from "./Profile";
+import ScoreboardButton from "./ScoreboardButton";
 
 const Header = () => {
     const navigate = useNavigate();
@@ -89,15 +56,7 @@ const Header = () => {
                             </Button>
                         </Flex>
                         <Flex ml='auto' align='center' gap='8px'>
-                            {user?.id && (
-                                <Flex align='center' gap='8px'>
-                                    <Avatar size='md' cursor='pointer' src={`${import.meta.env.VITE_API_URL}/public/${user.avatar}`} onClick={() => setIsOpenProfileEditModal(true)} />
-                                    <Text>{user.name}</Text>
-                                </Flex>
-                            )}
-                            <Box display={{ base: 'none', lg: 'unset' }}>
-                                <DynamicWidget />
-                            </Box>
+                            <Profile />
                             <Button display={{ lg: 'none' }} onClick={() => setIsOpenMenu(true)}>
                                 <ListIcon />
                             </Button>
@@ -111,15 +70,7 @@ const Header = () => {
                 <DrawerContent bg='#0008'>
                     <DrawerCloseButton />
                     <DrawerHeader>
-                        <Flex direction='column' gap='16px'>
-                            {user && (
-                                <Flex align='center' gap='8px'>
-                                    <Avatar size='md' cursor='pointer' src={`${import.meta.env.VITE_API_URL}/public/${user.avatar}`} />
-                                    <Text fontSize={12}>{user.name}</Text>
-                                </Flex>
-                            )}
-                            <DynamicWidget />
-                        </Flex>
+                        <Profile />
                     </DrawerHeader>
                     <DrawerBody>
                         <Flex direction='column' gap={4}>
