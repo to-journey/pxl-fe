@@ -116,7 +116,7 @@ const Profile = () => {
             </>
         )
     }
-    return <LoginButton display={{ base: 'none', lg: 'unset' }} />
+    return <LoginButton />
 }
 
 export default Profile;
