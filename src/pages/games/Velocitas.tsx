@@ -19,7 +19,6 @@ const Velocitas = () => {
     const lines = useRef<any[]>([]);
     const particles = useRef<any[]>([]);
     const state = useRef({ i: -1, j: 0, p: 0, s: 0 });
-    const prevScore = useRef(0);
     const score = useRef(0);
     const pos = useRef({ x: 0, y: 0 });
 
@@ -41,6 +40,13 @@ const Velocitas = () => {
                             ctx.arc(point.x, point.y, point.r, 0, Math.PI * 2);
                             ctx.fillStyle = '#fffc';
                             ctx.fill();
+                            const gradient = ctx.createRadialGradient(2, 4, 0, 2, 4, 4);
+
+                            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+                            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                            ctx.fillStyle = gradient;
+                            ctx.fillRect(point.x - 4, point.y - 4, 8, 8);
                         }
                         if (j > 0) {
                             ctx.beginPath();
@@ -49,7 +55,7 @@ const Velocitas = () => {
                             ctx.lineWidth = 2;
                             const d = Math.hypot(line[j].x - line[j - 1].x, line[j].y - line[j - 1].y);
                             const o = Math.floor(255 / (1 + d * 0.04));
-                            if (i == state.current.i) ctx.strokeStyle = 'red';
+                            if (state.current.i == i) ctx.strokeStyle = '#fff8';
                             else ctx.strokeStyle = `#ffffff${o.toString(16).padStart(2, '0')}`;
                             ctx.stroke();
                         }
@@ -72,37 +78,33 @@ const Velocitas = () => {
                         j++;
                         p = 0;
                         if (j >= line.length - 1) {
-                            if (score.current == prevScore.current) {
-                                handleGameEnd();
-                            }
-                            placeBlock();
-                            prevScore.current = score.current;
-                            i = state.current.i;
-                            j = 0;
+                            handleGameEnd();
                         }
                     } else {
                         p = d2 / d;
                     }
-                    state.current = { ...state.current, i, j, p };
-                    const x = line[j].x * (1 - p) + line[j + 1].x * p;
-                    const y = line[j].y * (1 - p) + line[j + 1].y * p;
-                    if (block.current) {
-                        ctx.drawImage(block.current, x - 48, y - 24, 96, 48);
-                    }
-                    pos.current = { x, y };
-
-                    particles.current.forEach((particle, index) => {
-                        particle.x += particle.sx;
-                        particle.y += particle.sy;
-                        particle.time += 0.016;
-                        ctx.beginPath();
-                        ctx.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
-                        ctx.fillStyle = '#fffc';
-                        ctx.fill();
-                        if (particle.time > particle.lifetime) {
-                            particles.current.splice(index, 1);
+                    if (j < line.length - 1) {
+                        state.current = { ...state.current, i, j, p };
+                        const x = line[j].x * (1 - p) + line[j + 1].x * p;
+                        const y = line[j].y * (1 - p) + line[j + 1].y * p;
+                        if (block.current) {
+                            ctx.drawImage(block.current, x - 32, y - 32, 64, 64);
                         }
-                    });
+                        pos.current = { x, y };
+
+                        particles.current.forEach((particle, index) => {
+                            particle.x += particle.sx;
+                            particle.y += particle.sy;
+                            particle.time += 0.016;
+                            ctx.beginPath();
+                            ctx.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2);
+                            ctx.fillStyle = '#fffc';
+                            ctx.fill();
+                            if (particle.time > particle.lifetime) {
+                                particles.current.splice(index, 1);
+                            }
+                        });
+                    }
                 }
                 ctx.textAlign = "left";
                 ctx.fillStyle = "white";
@@ -185,7 +187,6 @@ const Velocitas = () => {
         }
         isGameOver.current = false;
         score.current = 0;
-        prevScore.current = 0;
         state.current = { ...state.current, i: -1, s: 2 };
     }
 
@@ -193,7 +194,7 @@ const Velocitas = () => {
         let i = 8;
         while (i == 8)
             i = Math.floor(Math.random() * 8);
-        state.current = { ...state.current, i, j: 0, p: 0, s: state.current.s + 0.5 };
+        state.current = { ...state.current, i, j: 0, p: 0 };
     }
 
     const startGame = async () => {
@@ -213,7 +214,7 @@ const Velocitas = () => {
     }
 
     const addParticles = (x: number, y: number) => {
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 100; i++) {
             particles.current.push({
                 x: x + (Math.random() - 0.5) * 5,
                 y: y + (Math.random() - 0.5) * 5,
@@ -227,8 +228,10 @@ const Velocitas = () => {
     }
 
     const handleClick = (x: number, y: number) => {
-        if (isPlaying.current && x > pos.current.x - 48 && x < pos.current.x + 48 && y >= pos.current.y - 24 && y < pos.current.y + 24) {
+        if (isPlaying.current && x > pos.current.x - 32 && x < pos.current.x + 32 && y >= pos.current.y - 32 && y < pos.current.y + 32) {
             score.current++;
+            state.current = { ...state.current, s: state.current.s + 0.1 };
+            placeBlock();
             addParticles(x, y);
         }
     }
@@ -262,10 +265,10 @@ const Velocitas = () => {
                 <Flex direction='column' align='center' gap='16px'>
                     <Flex direction='column'>
                         <Text textAlign='center' fontSize={28} fontWeight='bold'>
-                            Welcome to "VELOCITAS BLOCCAA"
+                            Welcome to "VELOCITAS BLOCCA"
                         </Text>
                         <Text textAlign='center' fontFamily='sans-serif' fontSize={16}>
-                            Get ready to ride the waves of crypto volatility!
+                            Get ready to tap your way through the cosmic speedway of blocks!
                         </Text>
                     </Flex>
                     <Button bg='#6f00ff' color='white' _hover={{ bg: '#00ffcc' }} onClick={startGame}>
@@ -286,7 +289,7 @@ const Velocitas = () => {
                 <Flex direction='column' align='center'>
                     <ConfettiCanvas />
                     <Text fontSize={28} fontWeight='bold'>
-                        VELOCITAS BLOCCAA
+                        VELOCITAS BLOCCA
                     </Text>
                     <Text fontSize={28} fontWeight='bold'>
                         SCORE: {score.current}
