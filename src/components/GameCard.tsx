@@ -11,16 +11,15 @@ interface Props {
 }
 
 const GameCard: FC<Props> = ({ src, label, to, isPlayed }) => {
-    const { user } = useContext(AuthContext);
+    const { user, showProfileEditModal } = useContext(AuthContext);
 
     return (
         <Box display='flex' flexDirection='column' gap='8px' alignItems='center' cursor='pointer' _hover={{ border: 'none' }} onClick={() => {
             if (!user) {
                 toast.error('Please login to play the game.');
-            } else if (!user.avatar || user.avatar.trim().length == 0) {
-                toast.error('Please upload your avatar to play the game.');
-            } else if (user.telegram_id.length == 0) {
-                toast.error('Please connect your Telegram account to play the game.');
+            } else if (!user.avatar || user.avatar.trim().length == 0 || !user.telegram_id || user.telegram_id.trim().length == 0) {
+                toast.error('Please complete your profile to play the game.');
+                showProfileEditModal?.();
             } else if (to) {
                 window.location.href = to;
             }
