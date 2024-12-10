@@ -1,7 +1,11 @@
-import { createContext, FC, ReactNode, useEffect, useState } from "react";
+import { Box, Button, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text, Tooltip } from "@chakra-ui/react";
+import { createContext, FC, ReactNode, useEffect, useRef, useState } from "react";
+import { Link } from "react-router";
 import { useSignInWithDynamicId } from "../api/auth";
+import { useUpdateUser } from "../api/users";
+import Avatar from "../components/Avatar";
 import { IUser } from "../interfaces";
-import { axios, storage } from "../utils";
+import { axios, storage, toast } from "../utils";
 
 interface IAuth {
     user?: IUser;
@@ -10,6 +14,7 @@ interface IAuth {
     setToken?: (token: string) => void;
     signInWithDynamicId?: (userId: string) => void;
     logout?: () => void;
+    showProfileEditModal?: () => void;
 }
 
 export const AuthContext = createContext<IAuth>({});
@@ -24,6 +29,22 @@ const AuthProvider: FC<Props> = ({ children }) => {
     const { mutate: signInWithDynamicId } = useSignInWithDynamicId((res) => {
         setToken?.(res.data.token);
     });
+    const [showProfileEditModal, setShowProfileEditModal] = useState(false);
+    const [avatar, setAvatar] = useState<string>('');
+    const [name, setName] = useState('');
+    const [telegramId, setTelegramId] = useState('');
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [image, setImage] = useState<File>();
+    const { mutate: handleUpdateUserInfo, isPending } = useUpdateUser(() => {
+        toast.success('User info has been successfully updated.');
+        setShowProfileEditModal(false);
+    });
+
+    useEffect(() => {
+        if (user?.name) setName(user.name);
+        if (user?.telegram_id) setTelegramId(user.telegram_id);
+        if (user?.avatar) setAvatar(`${import.meta.env.VITE_API_URL}/public/${user.avatar}`);
+    }, [user]);
 
     const logout = () => {
         setToken(null);
@@ -32,7 +53,11 @@ const AuthProvider: FC<Props> = ({ children }) => {
     const getUserInfo = async () => {
         try {
             const res = await axios.get('/user-info');
-            setUser(res.data);
+            const user = res.data;
+            setUser(user);
+            if (!user.avatar || user.avatar.trim().length == 0 || !user.telegram_id || user.telegram_id.trim().length == 0) {
+                setShowProfileEditModal(true);
+            }
         } catch (err: any) {
             console.error(err.message);
             setUser(undefined);
@@ -49,9 +74,74 @@ const AuthProvider: FC<Props> = ({ children }) => {
         }
     }, [token]);
 
+    const handleSave = () => {
+        const formData = new FormData();
+        if (user?.avatar == null && !image) {
+            toast.error('Please select user avatar.');
+            return;
+        }
+        if (image)
+            formData.append('image', image);
+        if (name.trim().length == 0) {
+            toast.error('Please input user name');
+            return;
+        }
+        formData.append('name', name);
+        if (telegramId.trim().length == 0) {
+            toast.error('Please input telegram ID');
+            return;
+        }
+        formData.append('telegram_id', telegramId);
+        handleUpdateUserInfo(formData);
+    }
+
     return (
-        <AuthContext.Provider value={{ token, setToken, user, signInWithDynamicId, logout }}>
+        <AuthContext.Provider value={{ token, setToken, user, signInWithDynamicId, logout, showProfileEditModal: () => setShowProfileEditModal(true) }}>
             {children}
+            <Input ref={fileInputRef} type="file" accept="image/*" display='none' onChange={(e) => {
+                const image = e.target.files?.[0];
+                if (image)
+                    setAvatar(URL.createObjectURL(image));
+                setImage(image);
+            }} />
+            <Modal size='xs' isCentered isOpen={showProfileEditModal} onClose={() => setShowProfileEditModal(false)}>
+                <ModalOverlay />
+                <ModalContent bg='#000c'>
+                    <ModalCloseButton />
+                    <ModalHeader pb='8px'>
+                        EDIT PROFILE
+                    </ModalHeader>
+                    <ModalBody>
+                        <Flex direction='column' gap='16px'>
+                            <Flex justify='center'>
+                                <Avatar w='64px' h='64px' cursor='pointer' src={avatar} onClick={() => fileInputRef.current?.click()} />
+                            </Flex>
+                            <Flex direction='column' gap='8px'>
+                                <Text>USER NAME:</Text>
+                                <Input fontSize={14} value={name} onChange={(e) => setName(e.target.value)} />
+                            </Flex>
+                            <Flex direction='column' gap='8px'>
+                                <Text>TELEGRAM ID:</Text>
+                                <Flex align='center' gap='8px'>
+                                    <Input fontSize={14} value={telegramId} onChange={(e) => setTelegramId(e.target.value)} />
+                                    <Tooltip label="YOU REQUIRE TO SIGN UP TO THE TELEGRAM BOT">
+                                        <Box cursor='pointer'>?</Box>
+                                    </Tooltip>
+                                    <Link to='https://t.me/pxl_games' target="_blank">
+                                        <Image w='32px' src='/telegram.png' cursor='pointer' />
+                                    </Link>
+                                </Flex>
+                            </Flex>
+                        </Flex>
+                    </ModalBody>
+                    <ModalFooter pt='8px'>
+                        <Button onClick={handleSave}>
+                            {isPending && <Spinner size='sm' mr={1} />}
+                            SAVE
+                        </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </AuthContext.Provider>
     )
 }
