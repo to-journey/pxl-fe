@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { useUpdateUser } from "../api/users";
 import { AuthContext } from "../providers/AuthProvider";
 import { toast } from "../utils";
+import Avatar from "./Avatar";
 import LoginButton from "./LoginButton";
 
 const Profile = () => {
@@ -60,7 +61,7 @@ const Profile = () => {
                 <Flex align='center' gap='8px'>
                     <Menu>
                         <MenuButton>
-                            <Image w={{ base: '48px', lg: '80px' }} h={{ base: '48px', lg: '80px' }} objectFit='cover' cursor='pointer' src={`${import.meta.env.VITE_API_URL}/public/${user?.avatar}`} />
+                            <Avatar w={{ base: '48px', lg: '80px' }} cursor='pointer' h={{ base: '48px', lg: '80px' }} src={`${import.meta.env.VITE_API_URL}/public/${user?.avatar}`} />
                         </MenuButton>
                         <MenuList>
                             <MenuItem onClick={() => setShowProfileModal(true)}>
@@ -84,7 +85,7 @@ const Profile = () => {
                         <ModalBody>
                             <Flex direction='column' gap='16px'>
                                 <Flex justify='center'>
-                                    <Image w='64px' h='64px' objectFit='cover' cursor='pointer' src={avatar} onClick={() => fileInputRef.current?.click()} />
+                                    <Avatar w='64px' h='64px' cursor='pointer' src={avatar} onClick={() => fileInputRef.current?.click()} />
                                 </Flex>
                                 <Flex direction='column' gap='8px'>
                                     <Text>USER NAME:</Text>

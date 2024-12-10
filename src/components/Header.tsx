@@ -2,6 +2,7 @@ import { Box, Button, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, Draw
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../providers/AuthProvider";
+import Avatar from "./Avatar";
 import { ListIcon } from "./icons";
 import Profile from "./Profile";
 import ScoreboardButton from "./ScoreboardButton";
@@ -42,7 +43,7 @@ const Header = () => {
                     <DrawerCloseButton />
                     <DrawerHeader>
                         <Flex align='center' gap='8px'>
-                            <Image w='48px' h='48px' objectFit='cover' cursor='pointer' src={`${import.meta.env.VITE_API_URL}/public/${user?.avatar}`} />
+                            <Avatar w='48px' h='48px' src={`${import.meta.env.VITE_API_URL}/public/${user?.avatar}`} />
                             <Text fontSize={12}>{user?.name}</Text>
                         </Flex>
                     </DrawerHeader>
