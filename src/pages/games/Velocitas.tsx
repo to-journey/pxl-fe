@@ -18,7 +18,7 @@ const Velocitas = () => {
     const countDown = useRef(0);
     const lines = useRef<any[]>([]);
     const particles = useRef<any[]>([]);
-    const state = useRef({ i: -1, j: 0, p: 0, s: 0 });
+    const state = useRef({ i: -1, j: 0, p: 0 });
     const score = useRef(0);
     const pos = useRef({ x: 0, y: 0 });
 
@@ -73,7 +73,7 @@ const Velocitas = () => {
                     let { i, j, p } = state.current;
                     const line = lines.current[i];
                     const d = Math.hypot(line[j + 1].x - line[j].x, line[j + 1].y - line[j].y);
-                    const d2 = d * p + state.current.s;
+                    const d2 = d * p + Math.ceil((score.current + 1) / 5) * 2;
                     if (d2 > d) {
                         j++;
                         p = 0;
@@ -187,7 +187,7 @@ const Velocitas = () => {
         }
         isGameOver.current = false;
         score.current = 0;
-        state.current = { ...state.current, i: -1, s: 2 };
+        state.current = { ...state.current, i: -1 };
     }
 
     const placeBlock = () => {
@@ -230,7 +230,7 @@ const Velocitas = () => {
     const handleClick = (x: number, y: number) => {
         if (isPlaying.current && x > pos.current.x - 32 && x < pos.current.x + 32 && y >= pos.current.y - 32 && y < pos.current.y + 32) {
             score.current++;
-            state.current = { ...state.current, s: state.current.s + 0.1 };
+            state.current = { ...state.current };
             placeBlock();
             addParticles(x, y);
         }
