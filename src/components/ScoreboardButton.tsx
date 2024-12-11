@@ -1,10 +1,11 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { FC, useState } from "react";
+import { useNavigate } from "react-router";
 
 const ScoreboardButton: FC<{
-    onWeeklyClick: () => void;
-    onTotalClick: () => void;
-}> = ({ onWeeklyClick, onTotalClick }) => {
+    onClick: () => void;
+}> = ({ onClick }) => {
+    const navigate = useNavigate();
     const [showPopup, setShowPopup] = useState(false);
 
     return (
@@ -18,13 +19,22 @@ const ScoreboardButton: FC<{
                         <Flex py={1} bg='#000c' direction='column' gap='2px' rounded={4}>
                             <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
                                 setShowPopup(false);
-                                onWeeklyClick();
+                                onClick();
+                                navigate('/scoreboard?view=weekly');
                             }}>
                                 WEEKLY
                             </Box>
                             <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
                                 setShowPopup(false);
-                                onTotalClick();
+                                onClick();
+                                navigate('/scoreboard?view=daily');
+                            }}>
+                                DAILY
+                            </Box>
+                            <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
+                                setShowPopup(false);
+                                onClick();
+                                navigate('/scoreboard?view=total')
                             }}>
                                 TOTAL
                             </Box>

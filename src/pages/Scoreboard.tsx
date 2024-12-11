@@ -5,8 +5,10 @@ import { useSearchParams } from 'react-router';
 import { useGetGames } from '../api/games';
 import { useGetScoreboard } from '../api/scoreboard';
 import { useGetUsers } from '../api/users';
-import { IUser } from '../interfaces';
+import { IGame, IScore, IUser } from '../interfaces';
 import { AuthContext } from '../providers/AuthProvider';
+
+const dayOfWeeks = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
 const Scoreboard = () => {
     const [params] = useSearchParams();
@@ -16,15 +18,29 @@ const Scoreboard = () => {
     const { games } = useGetGames();
     const { scores } = useGetScoreboard();
 
+    const getScores = (scores: IScore[]) => {
+        const total = scores?.reduce((prev, userScore) => prev + Number(userScore.score), 0);
+        return {
+            total,
+            games: games.map((game: IGame) => _.find(scores, (score => score.game_id == game.id))?.score).join('/')
+        };
+    }
+
     const usersWithScore = useMemo(() => {
-        const userScores = _.groupBy(view ? scores[view] : null, (score) => score.user_id);
-        const result = _.map(users, (user: IUser) => {
-            const totalScore = userScores[user.id]?.reduce((prev, userScore) => prev + Number(userScore.score), 0);
-            return { ...user, totalScore };
-        });
-        return result.sort((a: any, b: any) => {
-            return (b.totalScore || 0) - (a.totalScore || 0);
-        });
+        if (view) {
+            const weekly = _.groupBy(scores.weekly, (score => score.user_id));
+            const daily = Array.from({ length: 7 }, (_v, index) => _.groupBy(scores.daily?.[index], (score => score.user_id)));
+            const total = _.groupBy(scores.total, (score => score.user_id));
+
+            const result = _.map(users, (user: IUser) => {
+                return { ...user, weekly: [getScores(weekly[user.id])], daily: daily.map(scores => getScores(scores[user.id])), total: [getScores(total[user.id])] };
+            });
+
+            return result.sort((a: any, b: any) => {
+                return (b[view][0].total || 0) - (a[view][0].total || 0);
+            });
+        }
+        return [];
     }, [users, games, scores, view]);
 
     return (
@@ -40,31 +56,45 @@ const Scoreboard = () => {
                                 <Th fontFamily='Pixeled'>
                                     PROFILE
                                 </Th>
-                                <Th fontFamily='Pixeled'>
-                                    TOTAL
-                                </Th>
+                                {view == 'daily' ? dayOfWeeks.map((dayOfWeek: string, index: number) => (
+                                    <Th key={index} fontFamily='Pixeled'>
+                                        {dayOfWeek}
+                                    </Th>
+                                )) : (
+                                    <Th fontFamily='Pixeled'>
+                                        TOTAL
+                                    </Th>
+                                )}
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {[...usersWithScore.filter((userWithScore, index) => index >= 20 && userWithScore.id == user?.id), ...usersWithScore.filter((_, index) => index < 20)].map((userWithScore: any, index: number) => {
-                                return (
-                                    <Tr key={index} {...(userWithScore.id == user?.id ? { shadow: 'inset 0 0 12px #fc02d8' } : {})}>
-                                        <Td fontSize={12} pl={8}>
-                                            {index + 1}
-                                        </Td>
-                                        <Td py='8px'>
-                                            <Flex gap='8px'>
-                                                <Avatar src={`${import.meta.env.VITE_API_URL}/public/${userWithScore.avatar}`} />
-                                                <Flex direction='column' justify='center' gap='8px'>
-                                                    <Text fontSize={12}>{userWithScore.name}</Text>
+                            {[
+                                ...usersWithScore.filter((userWithScore, index) => index >= 20 && userWithScore.id == user?.id),
+                                ...usersWithScore.filter((_, index) => index < 20)
+                            ].map((userWithScore: any, index: number) => {
+                                if (view) {
+                                    console.log(userWithScore);
+                                    return (
+                                        <Tr key={index} {...(userWithScore.id == user?.id ? { shadow: 'inset 0 0 12px #fc02d8' } : {})}>
+                                            <Td fontSize={12} pl={8}>
+                                                {index + 1}
+                                            </Td>
+                                            <Td py='8px'>
+                                                <Flex gap='8px'>
+                                                    <Avatar src={`${import.meta.env.VITE_API_URL}/public/${userWithScore.avatar}`} />
+                                                    <Flex direction='column' justify='center' gap='8px'>
+                                                        <Text fontSize={12}>{userWithScore.name}</Text>
+                                                    </Flex>
                                                 </Flex>
-                                            </Flex>
-                                        </Td>
-                                        <Td fontSize={12}>
-                                            {userWithScore.totalScore}
-                                        </Td>
-                                    </Tr>
-                                )
+                                            </Td>
+                                            {userWithScore[view]?.map((score: any) => (
+                                                <Td fontSize={12}>
+                                                    {view == 'daily' ? <>{score.total}: {score.games}</> : score.total}
+                                                </Td>
+                                            ))}
+                                        </Tr>
+                                    )
+                                }
                             })}
                         </Tbody>
                     </Table>
