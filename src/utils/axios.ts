@@ -2,7 +2,7 @@ import { default as Axios } from 'axios';
 
 const getToken = () => {
     const token = localStorage.getItem('dynamic_authentication_token');
-    return token?.slice(1, token?.length - 1);
+    return token ? token.slice(1, token.length - 1) : '';
 }
 
 const axios = Axios.create({
