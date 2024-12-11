@@ -1,18 +1,15 @@
 import { Box, Button, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text, Tooltip } from "@chakra-ui/react";
 import { createContext, FC, ReactNode, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { useSignInWithDynamicId } from "../api/auth";
 import { useUpdateUser } from "../api/users";
 import Avatar from "../components/Avatar";
 import { IUser } from "../interfaces";
-import { axios, storage, toast } from "../utils";
+import { axios, toast } from "../utils";
 
 interface IAuth {
     user?: IUser;
     setUser?: (user: IUser) => void;
-    token?: string | null;
-    setToken?: (token: string) => void;
-    signInWithDynamicId?: (userId: string) => void;
+    refresh?: () => void;
     logout?: () => void;
     showProfileEditModal?: () => void;
 }
@@ -24,11 +21,7 @@ interface Props {
 }
 
 const AuthProvider: FC<Props> = ({ children }) => {
-    const [token, setToken] = useState(storage.getToken());
     const [user, setUser] = useState<IUser>();
-    const { mutate: signInWithDynamicId } = useSignInWithDynamicId((res) => {
-        setToken?.(res.data.token);
-    });
     const [showProfileEditModal, setShowProfileEditModal] = useState(false);
     const [avatar, setAvatar] = useState<string>('');
     const [name, setName] = useState('');
@@ -47,10 +40,10 @@ const AuthProvider: FC<Props> = ({ children }) => {
     }, [user]);
 
     const logout = () => {
-        setToken(null);
+        setUser(undefined);
     }
 
-    const getUserInfo = async () => {
+    const refresh = async () => {
         try {
             const res = await axios.get('/user-info');
             const user = res.data;
@@ -65,14 +58,8 @@ const AuthProvider: FC<Props> = ({ children }) => {
     }
 
     useEffect(() => {
-        if (token) {
-            storage.setToken(token);
-            getUserInfo();
-        } else {
-            storage.deleteToken();
-            setUser(undefined);
-        }
-    }, [token]);
+        refresh();
+    }, []);
 
     const handleSave = () => {
         const formData = new FormData();
@@ -96,7 +83,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ token, setToken, user, signInWithDynamicId, logout, showProfileEditModal: () => setShowProfileEditModal(true) }}>
+        <AuthContext.Provider value={{ user, refresh, logout, showProfileEditModal: () => setShowProfileEditModal(true) }}>
             {children}
             <Input ref={fileInputRef} type="file" accept="image/*" display='none' onChange={(e) => {
                 const image = e.target.files?.[0];

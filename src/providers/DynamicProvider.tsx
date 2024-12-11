@@ -25,7 +25,7 @@ const evmNetworks = [
 const DynamicProvider: FC<{
     children: ReactNode;
 }> = ({ children }) => {
-    const { signInWithDynamicId, logout } = useContext(AuthContext);
+    const { refresh, logout } = useContext(AuthContext);
 
     return (
         <DynamicContextProvider
@@ -36,10 +36,8 @@ const DynamicProvider: FC<{
                     EthereumWalletConnectors,
                 ],
                 events: {
-                    onAuthSuccess: (args) => {
-                        if (args.user.userId) {
-                            signInWithDynamicId?.(args.user.userId);
-                        }
+                    onAuthSuccess: () => {
+                        refresh?.();
                     },
                     onLogout: () => {
                         logout?.();
