@@ -3,7 +3,6 @@ import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import Avatar from "./Avatar";
-import LoginButton from "./LoginButton";
 
 const Profile = () => {
     const { user, showProfileEditModal } = useContext(AuthContext);
@@ -20,15 +19,15 @@ const Profile = () => {
                         <MenuButton>
                             <Avatar w={{ base: '48px', lg: '80px' }} cursor='pointer' h={{ base: '48px', lg: '80px' }} src={`${import.meta.env.VITE_API_URL}/public/${user?.avatar}`} />
                         </MenuButton>
-                        <MenuList>
-                            <MenuItem onClick={showProfileEditModal}>
+                        <MenuList bg='#000c'>
+                            <MenuItem bg='#0000' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={showProfileEditModal}>
                                 EDIT PROFILE
                             </MenuItem>
-                            <MenuItem onClick={() => setShowDynamicUserProfile(true)}>
+                            <MenuItem bg='#0000' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => setShowDynamicUserProfile(true)}>
                                 PROFILE
                             </MenuItem>
                             <Divider />
-                            <MenuItem onClick={handleLogOut}>
+                            <MenuItem bg='#0000' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={handleLogOut}>
                                 LOGOUT
                             </MenuItem>
                         </MenuList>
