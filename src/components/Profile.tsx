@@ -3,6 +3,7 @@ import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import Avatar from "./Avatar";
+import LoginButton from "./LoginButton";
 
 const Profile = () => {
     const { user, showProfileEditModal } = useContext(AuthContext);
@@ -37,6 +38,7 @@ const Profile = () => {
             </>
         )
     }
+    
     return <LoginButton />
 }
 
