@@ -228,7 +228,7 @@ const Velocitas = () => {
     }
 
     const handleClick = (x: number, y: number) => {
-        if (isPlaying.current && x > pos.current.x - 32 && x < pos.current.x + 32 && y >= pos.current.y - 32 && y < pos.current.y + 32) {
+        if (isPlaying.current && x > pos.current.x - 32 && x < pos.current.x + 32 && y > pos.current.y - 32 && y < pos.current.y + 32) {
             score.current++;
             state.current = { ...state.current };
             placeBlock();
