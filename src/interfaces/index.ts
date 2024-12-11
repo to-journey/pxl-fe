@@ -13,6 +13,7 @@ export interface IUser {
     dynamic_id: string;
     telegram_id: string;
     is_banned: boolean;
+    is_admin: boolean;
 }
 
 export interface IScore {

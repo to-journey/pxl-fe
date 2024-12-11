@@ -1,11 +1,13 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { FC, useState } from "react";
+import { FC, useContext, useState } from "react";
 import { useNavigate } from "react-router";
+import { AuthContext } from "../providers/AuthProvider";
 
 const ScoreboardButton: FC<{
     onClick: () => void;
 }> = ({ onClick }) => {
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
     const [showPopup, setShowPopup] = useState(false);
 
     return (
@@ -24,13 +26,15 @@ const ScoreboardButton: FC<{
                             }}>
                                 WEEKLY
                             </Box>
-                            <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
-                                setShowPopup(false);
-                                onClick();
-                                navigate('/scoreboard?view=daily');
-                            }}>
-                                DAILY
-                            </Box>
+                            {user?.is_admin && (
+                                <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
+                                    setShowPopup(false);
+                                    onClick();
+                                    navigate('/scoreboard?view=daily');
+                                }}>
+                                    DAILY
+                                </Box>
+                            )}
                             <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
                                 setShowPopup(false);
                                 onClick();

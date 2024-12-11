@@ -2,8 +2,8 @@ import { Box } from "@chakra-ui/react";
 import { Route, Routes } from "react-router";
 import Header from "../components/Header";
 import AboutUs from "../pages/AboutUs";
+import Admin from "../pages/Admin";
 import Games from "../pages/Games";
-import Questions from "../pages/Questions";
 import Scoreboard from "../pages/Scoreboard";
 
 const MainLayout = () => {
@@ -13,8 +13,8 @@ const MainLayout = () => {
             <Routes>
                 <Route path="/" element={<Games />} />
                 <Route path="/scoreboard" element={<Scoreboard />} />
-                <Route path="/questions" element={<Questions />} />
                 <Route path="/about-us" element={<AboutUs />} />
+                <Route path="/admin" element={<Admin />} />
             </Routes>
         </Box>
     )
