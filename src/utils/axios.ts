@@ -1,5 +1,9 @@
 import { default as Axios } from 'axios';
-import { getToken } from './storage';
+
+const getToken = () => {
+    const token = localStorage.getItem('dynamic_authentication_token');
+    return token?.slice(1, token?.length - 1);
+}
 
 const axios = Axios.create({
     baseURL: import.meta.env.VITE_API_URL,
