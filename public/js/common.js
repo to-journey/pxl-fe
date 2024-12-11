@@ -7,7 +7,8 @@ resizeOps();
 window.addEventListener("resize", resizeOps);
 
 const submitScore = (gameId, score, time) => {
-    const token = localStorage.getItem('token');
+    let token = localStorage.getItem('dynamic_authentication_token');
+    token = token ? token.slice(1, token.length - 1) : '';
     if (!token) {
         console.error("Unauthorized. Cannot submit score.");
         return;
