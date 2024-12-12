@@ -22,7 +22,7 @@ const Scoreboard = () => {
         const total = scores?.reduce((prev, userScore) => prev + Number(userScore.score), 0);
         return {
             total,
-            games: games.map((game: IGame) => _.find(scores, (score => score.game_id == game.id))?.score).join('/')
+            games: games.map((game: IGame) => _.find(scores, (score => score.game_id == game.id))?.score)
         };
     }
 
@@ -93,7 +93,18 @@ const Scoreboard = () => {
                                             {userWithScore[view]?.map((score: any) => (
                                                 <Td fontSize={12} p={0}>
                                                     <Flex position='relative' p={4} h='65px' align='center' {...(userWithScore.id == user?.id && { bgGradient: 'linear(to-b, #fc02d880, #0000 20%, #0000 80%, #fc02d880)' })}>
-                                                        {view == 'daily' ? <>{score.total}: {score.games}</> : <>{score.total || 0}</>}
+                                                        {view == 'daily' ? (
+                                                            <Flex gap='4px'>
+                                                                {score.total || 0}:
+                                                                {score.games.map((game: any, index: number) => (
+                                                                    <>
+                                                                        <Text color='red.500'>{index + 1}</Text>=<Text>{game || 0}</Text>
+                                                                    </>
+                                                                ))}
+                                                            </Flex>
+                                                        ) : (
+                                                            <>{score.total || 0}</>
+                                                        )}
                                                     </Flex>
                                                 </Td>
                                             ))}
