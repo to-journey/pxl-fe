@@ -29,8 +29,9 @@ const AuthProvider: FC<Props> = ({ children }) => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [image, setImage] = useState<File>();
     const { mutate: handleUpdateUserInfo, isPending } = useUpdateUser(() => {
-        toast.success('User info has been successfully updated.');
         setShowProfileEditModal(false);
+        refresh();
+        toast.success('User info has been successfully updated.');
     });
 
     useEffect(() => {
