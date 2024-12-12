@@ -36,9 +36,11 @@ const Scoreboard = () => {
                 return { ...user, weekly: [getScores(weekly[user.id])], daily: daily.map(scores => getScores(scores[user.id])), total: [getScores(total[user.id])] };
             });
 
-            return result.sort((a: any, b: any) => {
+            const sortedResult = result.sort((a: any, b: any) => {
                 return (b[view][0].total || 0) - (a[view][0].total || 0);
             });
+
+            return sortedResult.map((user, index) => ({ ...user, rank: index + 1 }));
         }
         return [];
     }, [users, games, scores, view]);
@@ -69,18 +71,19 @@ const Scoreboard = () => {
                         </Thead>
                         <Tbody>
                             {[
-                                ...usersWithScore.filter((userWithScore) => userWithScore.id == user?.id),
-                                ...usersWithScore.filter((userWithScore) => userWithScore.id != user?.id)
+                                ...usersWithScore.filter((userWithScore, index) => index > 20 && userWithScore.id == user?.id),
+                                ...usersWithScore.filter((userWithScore, index) => index < 20 || userWithScore.id != user?.id)
                             ].map((userWithScore: any, index: number) => {
                                 if (view) {
-                                    console.log(userWithScore);
                                     return (
-                                        <Tr key={index} {...(userWithScore.id == user?.id ? { shadow: 'inset 0 0 12px #fc02d8' } : {})}>
-                                            <Td fontSize={12} pl={8}>
-                                                {index + 1}
+                                        <Tr key={index}>
+                                            <Td fontSize={12} p={0}>
+                                                <Flex position='relative' pl={8} h='65px' align='center' {...(userWithScore.id == user?.id && { bgGradient: 'linear(to-b, #fc02d880, #0000 20%, #0000 80%, #fc02d880)' })}>
+                                                    {userWithScore.rank}
+                                                </Flex>
                                             </Td>
-                                            <Td py='8px'>
-                                                <Flex gap='8px'>
+                                            <Td py='8px' p={0}>
+                                                <Flex p={4} h='65px' align='center' gap='8px' {...(userWithScore.id == user?.id && { bgGradient: 'linear(to-b, #fc02d880, #0000 20%, #0000 80%, #fc02d880)' })}>
                                                     <Avatar src={`${import.meta.env.VITE_API_URL}/public/${userWithScore.avatar}`} />
                                                     <Flex direction='column' justify='center' gap='8px'>
                                                         <Text fontSize={12}>{userWithScore.name}</Text>
@@ -88,8 +91,10 @@ const Scoreboard = () => {
                                                 </Flex>
                                             </Td>
                                             {userWithScore[view]?.map((score: any) => (
-                                                <Td fontSize={12}>
-                                                    {view == 'daily' ? <>{score.total}: {score.games}</> : score.total}
+                                                <Td fontSize={12} p={0}>
+                                                    <Flex position='relative' p={4} h='65px' align='center' {...(userWithScore.id == user?.id && { bgGradient: 'linear(to-b, #fc02d880, #0000 20%, #0000 80%, #fc02d880)' })}>
+                                                        {view == 'daily' ? <>{score.total}: {score.games}</> : <>{score.total || 0}</>}
+                                                    </Flex>
                                                 </Td>
                                             ))}
                                         </Tr>
