@@ -1,4 +1,4 @@
-import { Button, Flex, Grid, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Table, TableContainer, Tbody, Td, Text, Textarea, Th, Thead, Tr } from "@chakra-ui/react";
+import { Button, Flex, Grid, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Table, TableContainer, Tbody, Td, Text, Textarea, Th, Thead, Tr } from "@chakra-ui/react";
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -10,8 +10,8 @@ import { IQuestion } from "../interfaces";
 const Admin = () => {
     const { questions } = useGetQuestions();
     const [date, setDate] = useState('');
-    const { mutate: saveQuestions } = useSaveQuestions(date);
-    const { mutate: sendNotification } = useSendNotification(() => {
+    const { mutate: saveQuestions, isPending: isSaving } = useSaveQuestions(date);
+    const { mutate: sendNotification, isPending: isSending } = useSendNotification(() => {
         toast.success('Successfully sent notification');
     });
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
@@ -23,10 +23,11 @@ const Admin = () => {
         setQuestion(question || '');
     }, [questions, date]);
 
-    const handleSave = () => {
+    const handleSave = async () => {
         try {
             JSON.parse(question);
-            saveQuestions(question);
+            await saveQuestions(question);
+            setIsOpenEditModal(false);
         } catch (err: any) {
             toast.error(err.message);
         }
@@ -88,6 +89,7 @@ const Admin = () => {
                         <Textarea maxH='480px' value={message} onChange={(e) => setMessage(e.target.value)} />
                         <Flex justify='right'>
                             <Button p='8px 16px 12px 16px' onClick={handleSend}>
+                                {isSending && <Spinner size='sm' mr={1} />}
                                 SEND
                             </Button>
                         </Flex>
@@ -96,7 +98,7 @@ const Admin = () => {
             </Grid>
             <Modal size='xl' isCentered isOpen={isOpenEditModal} onClose={() => setIsOpenEditModal(false)}>
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent bg='#000c'>
                     <ModalCloseButton />
                     <ModalHeader pb='8px'>
                         EDIT QUESTIONS
@@ -105,7 +107,8 @@ const Admin = () => {
                         <Textarea minH='320px' value={question} onChange={(e) => setQuestion(e.target.value)} />
                     </ModalBody>
                     <ModalFooter pt='8px'>
-                        <Button onClick={handleSave}>
+                        <Button p='8px 16px 12px 16px' onClick={handleSave}>
+                            {isSaving && <Spinner size='sm' mr={1} />}
                             SAVE
                         </Button>
                     </ModalFooter>
