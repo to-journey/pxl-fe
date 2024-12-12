@@ -10,16 +10,18 @@ const Velocitas = () => {
     const ref = useRef<HTMLCanvasElement>(null);
     const animationRef = useRef(0);
     const [status, setStatus] = useState<GameStatus>(GameStatus.WELCOME);
-    const bg = useRef<any>(null);
-    const block = useRef<any>(null);
     const isLoading = useRef(true);
     const isPlaying = useRef(false);
     const isGameOver = useRef(false);
     const countDown = useRef(0);
+    const score = useRef(0);
+
+    const bg = useRef<any>(null);
+    const block = useRef<any>(null);
+
     const lines = useRef<any[]>([]);
     const particles = useRef<any[]>([]);
     const state = useRef({ i: -1, j: 0, p: 0 });
-    const score = useRef(0);
     const pos = useRef({ x: 0, y: 0 });
 
     const width = 375, height = 560;
@@ -262,7 +264,7 @@ const Velocitas = () => {
             fontFamily='sans-serif'
         >
             {status == GameStatus.WELCOME && (
-                <Flex direction='column' align='center' gap='16px'>
+                <Flex p='16px' direction='column' align='center' gap='16px'>
                     <Flex direction='column'>
                         <Text textAlign='center' fontSize={28} fontWeight='bold'>
                             Welcome to "VELOCITAS BLOCCA"
