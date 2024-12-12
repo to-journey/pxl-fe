@@ -69,8 +69,8 @@ const Scoreboard = () => {
                         </Thead>
                         <Tbody>
                             {[
-                                ...usersWithScore.filter((userWithScore, index) => index >= 20 && userWithScore.id == user?.id),
-                                ...usersWithScore.filter((_, index) => index < 20)
+                                ...usersWithScore.filter((userWithScore) => userWithScore.id == user?.id),
+                                ...usersWithScore.filter((userWithScore) => userWithScore.id != user?.id)
                             ].map((userWithScore: any, index: number) => {
                                 if (view) {
                                     console.log(userWithScore);
