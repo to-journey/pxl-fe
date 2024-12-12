@@ -23,9 +23,9 @@ interface Props {
 const AuthProvider: FC<Props> = ({ children }) => {
     const [user, setUser] = useState<IUser>();
     const [showProfileEditModal, setShowProfileEditModal] = useState(false);
-    const [avatar, setAvatar] = useState<string>('');
-    const [name, setName] = useState('');
-    const [telegramId, setTelegramId] = useState('');
+    const [avatar, setAvatar] = useState<string>();
+    const [name, setName] = useState<string>();
+    const [telegramId, setTelegramId] = useState<string>();
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [image, setImage] = useState<File>();
     const { mutate: handleUpdateUserInfo, isPending } = useUpdateUser(() => {
@@ -35,9 +35,9 @@ const AuthProvider: FC<Props> = ({ children }) => {
     });
 
     useEffect(() => {
-        if (user?.name) setName(user.name);
-        if (user?.telegram_id) setTelegramId(user.telegram_id);
-        if (user?.avatar) setAvatar(`${import.meta.env.VITE_API_URL}/public/${user.avatar}`);
+        setName(user?.name);
+        setTelegramId(user?.telegram_id);
+        setAvatar(user?.avatar ? `${import.meta.env.VITE_API_URL}/public/${user?.avatar}` : undefined);
     }, [user]);
 
     const logout = () => {
@@ -70,16 +70,18 @@ const AuthProvider: FC<Props> = ({ children }) => {
         }
         if (image)
             formData.append('image', image);
-        if (name.trim().length == 0) {
+        if (name && name.trim().length > 0) {
+            formData.append('name', name);
+        } else {
             toast.error('Please input user name');
             return;
         }
-        formData.append('name', name);
-        if (telegramId.trim().length == 0) {
+        if (telegramId && telegramId.trim().length > 0) {
+            formData.append('telegram_id', telegramId);
+        } else {
             toast.error('Please input telegram ID');
             return;
         }
-        formData.append('telegram_id', telegramId);
         handleUpdateUserInfo(formData);
     }
 
