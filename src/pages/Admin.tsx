@@ -7,6 +7,8 @@ import { useGetQuestions, useSaveQuestions } from "../api/questions";
 import { EditIcon, PlayIcon } from "../components/icons";
 import { IQuestion } from "../interfaces";
 
+const dayOfWeeks = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+
 const Admin = () => {
     const { questions } = useGetQuestions();
     const [date, setDate] = useState('');
@@ -60,7 +62,7 @@ const Admin = () => {
                                 {questions.map((question: IQuestion, index: number) => (
                                     <Tr key={index}>
                                         <Td>
-                                            {question.date}
+                                            {dayOfWeeks[index]} {question.date}
                                         </Td>
                                         <Td>
                                             <Button onClick={() => {
