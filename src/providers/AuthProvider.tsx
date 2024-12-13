@@ -117,7 +117,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
                                     <Tooltip label="YOU REQUIRE TO SIGN UP TO THE TELEGRAM BOT">
                                         <Box cursor='pointer'>?</Box>
                                     </Tooltip>
-                                    <Link to='https://t.me/pxl_games' target="_blank">
+                                    <Link to='https://t.me/pxlgames_bot' target="_blank">
                                         <Image w='32px' src='/telegram.png' cursor='pointer' />
                                     </Link>
                                 </Flex>
