@@ -3,7 +3,7 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 const AboutUs = () => {
     return (
         <Flex justify='center'>
-            <Box w='75%' py={{ base: '48px', lg: '96px' }} fontSize={{ base: 12, lg: 20 }}>
+            <Box w='80%' mt={{ base: '32px', lg: '64px' }} p={{ base: '32px', lg: '64px' }} bg='#000c' fontSize={{ base: 12, lg: 20 }} rounded='xl'>
                 <Text lineHeight={2}>
                     PXLGAMES is an exciting play-to-earn gaming platform that blends fun, competition, and rewards.
                 </Text>
