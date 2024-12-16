@@ -16,6 +16,7 @@ const Profile = () => {
                     <DynamicWidget />
                 </Box>
                 <Flex align='center' gap='8px'>
+                    <Text fontSize={12}>{user?.name}</Text>
                     <Menu>
                         <MenuButton>
                             <Avatar w={{ base: '48px', lg: '80px' }} cursor='pointer' h={{ base: '48px', lg: '80px' }} src={`${import.meta.env.VITE_API_URL}/public/${user?.avatar}`} />
@@ -33,7 +34,6 @@ const Profile = () => {
                             </MenuItem>
                         </MenuList>
                     </Menu>
-                    <Text fontSize={12}>{user?.name}</Text>
                 </Flex >
             </>
         )
