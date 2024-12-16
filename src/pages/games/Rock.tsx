@@ -204,7 +204,7 @@ const Rock = () => {
                             Welcome to "ROCK&ROLL"
                         </Text>
                         <Text textAlign='center' fontFamily='sans-serif' fontSize={16}>
-                            Get ready to tap your way through the cosmic speedway of blocks!
+                            Get ready for a fast-paced color challenge!
                         </Text>
                     </Flex>
                     <Button bg='#6f00ff' color='white' _hover={{ bg: '#00ffcc' }} onClick={startGame}>
