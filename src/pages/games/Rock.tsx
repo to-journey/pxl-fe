@@ -218,7 +218,7 @@ const Rock = () => {
                     width={width} height={height}
                     style={{ border: "2px solid white", borderRadius: "16px" }}
                     onMouseDown={handleClick}
-                    onTouchStart={handleClick}
+                    onTouchStart={(e) => e.touches.length == 0 && handleClick()}
                 />
             )}
             {status == GameStatus.RESULT && (
