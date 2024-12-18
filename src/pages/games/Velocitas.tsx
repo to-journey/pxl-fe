@@ -230,11 +230,12 @@ const Velocitas = () => {
     }
 
     const handleClick = (x: number, y: number) => {
-        if (isPlaying.current && x > pos.current.x - 32 && x < pos.current.x + 32 && y > pos.current.y - 32 && y < pos.current.y + 32) {
-            score.current++;
-            state.current = { ...state.current };
-            placeBlock();
-            addParticles(x, y);
+        if (isPlaying.current) {
+            if (x >= pos.current.x - 48 && x <= pos.current.x + 48 && y >= pos.current.y - 48 && y <= pos.current.y + 48) {
+                score.current++;
+                placeBlock();
+                addParticles(x, y);
+            }
         }
     }
 
