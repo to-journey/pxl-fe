@@ -285,7 +285,7 @@ const Velocitas = () => {
                     width={width} height={height}
                     style={{ border: "2px solid white", borderRadius: "16px" }}
                     onMouseDown={(e) => handleClick(e.clientX - ref.current!.getBoundingClientRect().left, e.clientY - ref.current!.getBoundingClientRect().top)}
-                    onTouchStart={(e) => e.touches.length == 0 && handleClick(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top)}
+                    onTouchStart={(e) => e.touches.length == 1 && handleClick(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top)}
                 />
             )}
             {status == GameStatus.RESULT && (
