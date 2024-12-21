@@ -5,7 +5,6 @@ import ConfettiCanvas from "../../components/Confetti";
 import { GameStatus } from "../../constants/enum";
 import { loadImage } from "../../utils";
 
-
 const Rock = () => {
     const { mutate: submitScore } = useCreateScore();
     const ref = useRef<HTMLCanvasElement>(null);
@@ -16,6 +15,7 @@ const Rock = () => {
     const isGameOver = useRef(false);
     const countDown = useRef(0);
     const score = useRef(0);
+    
     const wallsRef = useRef<HTMLImageElement[]>([]);
     const ballsRef = useRef<HTMLImageElement[]>([]);
 
