@@ -23,6 +23,7 @@ const Digitus = () => {
     const telos = useRef<any>(null);
     const clock = useRef<any>(null);
 
+    const lastTime = useRef(0);
     const count = useRef(30);
     const coins = useRef<any[]>([]);
 
@@ -225,14 +226,19 @@ const Digitus = () => {
                     style={{ border: "2px solid white", borderRadius: "16px" }}
                     onMouseUp={(e) => {
                         if (isPlaying.current) {
-                            if (e.button == 0) {
-                                score.current++;
-                                addCoins();
+                            if (e.button == 0 || e.button == 2) {
+                                const curTime = Date.now();
+                                if (Date.now() - lastTime.current > 50) {
+                                    console.log(curTime);
+                                    score.current++;
+                                    addCoins();
+                                    lastTime.current = curTime;
+                                }
                             }
                         }
                     }}
                     onTouchEnd={(e) => {
-                        if (isPlaying.current) { 
+                        if (isPlaying.current) {
                             if (e.touches.length == 0) {
                                 score.current++;
                                 addCoins();
