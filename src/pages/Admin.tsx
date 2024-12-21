@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useSendNotification } from "../api/message";
 import { useCreatePumpImages, useDeletePumpImages, useGetPumpImages } from "../api/pump_images";
 import { useGetQuestions, useSaveQuestions } from "../api/questions";
+import Confirm from "../components/Confirm";
 import { IPumpImage, IQuestion } from "../interfaces";
 import { queryClient } from "../providers";
 
@@ -156,7 +157,14 @@ const Admin = () => {
                                                 </Td>
                                                 <Td>
                                                     <Flex align="center">
-                                                        {isDeleting ? <Spinner size='sm' /> : <DeleteIcon boxSize={4} onClick={() => handleDelete(pumpImage.id)} />}
+                                                        {isDeleting ? <Spinner size='sm' /> : (
+                                                            <Confirm
+                                                                label={'DO YOU REALLY DELETE THIS IMAGE?'}
+                                                                onOk={() => handleDelete(pumpImage.id)}
+                                                            >
+                                                                <DeleteIcon boxSize={4} />
+                                                            </Confirm>
+                                                        )}
                                                     </Flex>
                                                 </Td>
                                             </Tr>
