@@ -29,3 +29,8 @@ export interface IQuestion {
     date: string;
     question: string;
 }
+
+export interface IPumpImage {
+    id: number;
+    image: string;
+}
