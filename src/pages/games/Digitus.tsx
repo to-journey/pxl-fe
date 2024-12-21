@@ -225,8 +225,6 @@ const Digitus = () => {
                     style={{ border: "2px solid white", borderRadius: "16px" }}
                     onMouseUp={(e) => {
                         if (isPlaying.current) {
-                            // const x = e.clientX - ref.current!.getBoundingClientRect().left;
-                            // const y = e.clientY - ref.current!.getBoundingClientRect().top;
                             if (e.button == 0) {
                                 score.current++;
                                 addCoins();
@@ -234,9 +232,7 @@ const Digitus = () => {
                         }
                     }}
                     onTouchEnd={(e) => {
-                        if (isPlaying.current) {
-                            // const x = e.touches[0]!.clientX - ref.current!.getBoundingClientRect().left;
-                            // const y = e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top;   
+                        if (isPlaying.current) { 
                             if (e.touches.length == 0) {
                                 score.current++;
                                 addCoins();
