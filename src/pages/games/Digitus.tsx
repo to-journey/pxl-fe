@@ -245,6 +245,9 @@ const Digitus = () => {
                             }
                         }
                     }}
+                    onContextMenu={(e) => {
+                        e.preventDefault();
+                    }}
                 />
             )}
             {status == GameStatus.RESULT && (
