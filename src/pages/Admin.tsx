@@ -125,6 +125,9 @@ const Admin = () => {
                         </Flex>
                     </Flex>
                     <Flex direction='column' gap='16px'>
+                        <Text>
+                            PUMP&DUMP
+                        </Text>
                         <Input type="file" display='none' ref={fileRef} onChange={(e) => e.target.files && e.target.files.length > 0 && setFile(e.target.files[0])} />
                         <Flex gap={4}>
                             <TableContainer flexGrow={1}>
