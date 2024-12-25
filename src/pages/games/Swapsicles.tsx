@@ -236,8 +236,16 @@ const Swapsicles = () => {
 
     useEffect(() => {
         animationRef.current = requestAnimationFrame(render);
+        const handleTouchMove = (e: any) => {
+            e.preventDefault();
+            handleMove(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top);
+        };
+        ref.current?.addEventListener("touchmove", handleTouchMove, { passive: false });
         loadAssets();
-        return () => cancelAnimationFrame(animationRef.current);
+        return () => {
+            cancelAnimationFrame(animationRef.current);
+            ref.current?.removeEventListener("touchmove", handleTouchMove);
+        }
     }, []);
 
     return (
@@ -273,10 +281,6 @@ const Swapsicles = () => {
                         e.touches.length == 1 && handleDown(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top)
                     }}
                     onMouseMove={(e) => handleMove(e.clientX - ref.current!.getBoundingClientRect().left, e.clientY - ref.current!.getBoundingClientRect().top)}
-                    onTouchMove={(e) => {
-                        e.preventDefault();
-                        handleMove(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top);
-                    }}
                     onMouseUp={handleUp}
                     onTouchEnd={(e) => {
                         e.preventDefault();
