@@ -16,8 +16,8 @@ const Rock = () => {
     const countDown = useRef(0);
     const score = useRef(0);
     
-    const wallsRef = useRef<HTMLImageElement[]>([]);
-    const ballsRef = useRef<HTMLImageElement[]>([]);
+    const wallsRef = useRef<any[]>([]);
+    const ballsRef = useRef<any[]>([]);
 
     const pos = useRef(0);
     const panes = useRef<any[]>([]);
