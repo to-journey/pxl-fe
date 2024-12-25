@@ -71,7 +71,7 @@ const Swapsicles = () => {
                             particles.current.splice(index, 1);
                         }
                     });
-                    if (pos.current >= -320) {
+                    if (pos.current >= -290) {
                         handleGameEnd();
                     }
                 }
