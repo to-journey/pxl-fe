@@ -5,6 +5,7 @@ import Digitus from "../pages/games/Digitus";
 import Pump from "../pages/games/Pump";
 import Rock from "../pages/games/Rock";
 import Velocitas from "../pages/games/Velocitas";
+import Swapsicles from "../pages/games/Swapsicles";
 
 const GameLayout = () => {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ const GameLayout = () => {
                 <Route path="/digitus.html" element={<Digitus />} />
                 <Route path="/velocitas.html" element={<Velocitas />} />
                 <Route path="/rock.html" element={<Rock />} />
+                <Route path="/swapsicles.html" element={<Swapsicles />} />
             </Routes>
         </>
     )
