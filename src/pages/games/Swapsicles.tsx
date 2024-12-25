@@ -182,6 +182,7 @@ const Swapsicles = () => {
     }
 
     const handleDown = (x: number, y: number) => {
+        cursorPos.current = { x, y };
         if (isPlaying.current) {
             for (let i = 0; i < 5; i++) {
                 if (Math.hypot(poolX[i] - x, pos.current + 752 - y) <= 32) {
@@ -237,7 +238,6 @@ const Swapsicles = () => {
     useEffect(() => {
         animationRef.current = requestAnimationFrame(render);
         const handleTouchMove = (e: any) => {
-            e.preventDefault();
             handleMove(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top);
         };
         ref.current?.addEventListener("touchmove", handleTouchMove, { passive: false });
