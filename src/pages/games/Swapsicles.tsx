@@ -237,16 +237,20 @@ const Swapsicles = () => {
 
     useEffect(() => {
         animationRef.current = requestAnimationFrame(render);
-        const handleTouchMove = (e: any) => {
-            handleMove(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top);
-        };
-        ref.current?.addEventListener("touchmove", handleTouchMove, { passive: false });
         loadAssets();
-        return () => {
-            cancelAnimationFrame(animationRef.current);
-            ref.current?.removeEventListener("touchmove", handleTouchMove);
-        }
+        return () => cancelAnimationFrame(animationRef.current);
     }, []);
+
+    useEffect(() => {
+        const canvas = ref.current;
+        if (canvas) {
+            const handleTouchMove = (e: any) => {
+                handleMove(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top);
+            };
+            ref.current?.addEventListener("touchmove", handleTouchMove, { passive: false });
+            return () => ref.current?.removeEventListener("touchmove", handleTouchMove);
+        }
+    }, [status]);
 
     return (
         <Flex
@@ -277,13 +281,11 @@ const Swapsicles = () => {
                     style={{ border: "2px solid white", borderRadius: "16px" }}
                     onMouseDown={(e) => handleDown(e.clientX - ref.current!.getBoundingClientRect().left, e.clientY - ref.current!.getBoundingClientRect().top)}
                     onTouchStart={(e) => {
-                        e.preventDefault();
                         e.touches.length == 1 && handleDown(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top)
                     }}
                     onMouseMove={(e) => handleMove(e.clientX - ref.current!.getBoundingClientRect().left, e.clientY - ref.current!.getBoundingClientRect().top)}
                     onMouseUp={handleUp}
-                    onTouchEnd={(e) => {
-                        e.preventDefault();
+                    onTouchEnd={() => {
                         handleUp();
                     }}
                 />
