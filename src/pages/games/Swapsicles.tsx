@@ -268,11 +268,20 @@ const Swapsicles = () => {
                     width={width} height={height}
                     style={{ border: "2px solid white", borderRadius: "16px" }}
                     onMouseDown={(e) => handleDown(e.clientX - ref.current!.getBoundingClientRect().left, e.clientY - ref.current!.getBoundingClientRect().top)}
-                    onTouchStart={(e) => e.touches.length == 1 && handleDown(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top)}
+                    onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.touches.length == 1 && handleDown(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top)
+                    }}
                     onMouseMove={(e) => handleMove(e.clientX - ref.current!.getBoundingClientRect().left, e.clientY - ref.current!.getBoundingClientRect().top)}
-                    onTouchMove={(e) => e.touches.length == 1 && handleMove(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top)}
+                    onTouchMove={(e) => {
+                        e.preventDefault();
+                        handleMove(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top);
+                    }}
                     onMouseUp={handleUp}
-                    onTouchEnd={handleUp}
+                    onTouchEnd={(e) => {
+                        e.preventDefault();
+                        handleUp();
+                    }}
                 />
             )}
             {status == GameStatus.RESULT && (
