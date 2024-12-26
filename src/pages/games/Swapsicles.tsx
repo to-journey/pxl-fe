@@ -245,6 +245,7 @@ const Swapsicles = () => {
         const canvas = ref.current;
         if (canvas) {
             const handleTouchMove = (e: any) => {
+                e.preventDefault();
                 handleMove(e.touches[0].clientX - ref.current!.getBoundingClientRect().left, e.touches[0]!.clientY - ref.current!.getBoundingClientRect().top);
             };
             ref.current?.addEventListener("touchmove", handleTouchMove, { passive: false });
