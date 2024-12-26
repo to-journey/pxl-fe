@@ -44,7 +44,7 @@ const Swapsicles = () => {
 
                 poolX.forEach((x, index) => {
                     if (poolImages.current[index]) {
-                        ctx.drawImage(poolImages.current[index], x - 30, 514, 60, 30);
+                        ctx.drawImage(poolImages.current[index], x - 30, 514);
                     }
                 });
 
@@ -52,9 +52,9 @@ const Swapsicles = () => {
                     row.forEach((coin, j) => {
                         if (coin >= 0 && coinImages.current[coin]) {
                             if (i == 9 && selectedCoinIndex.current == j) {
-                                ctx.drawImage(coinImages.current[coin], cursorPos.current.x - 32, cursorPos.current.y - 32, 64, 64);
+                                ctx.drawImage(coinImages.current[coin], cursorPos.current.x - 32, cursorPos.current.y - 32);
                             } else {
-                                ctx.drawImage(coinImages.current[coin], poolX[j] - 32, pos.current + i * 80, 64, 64);
+                                ctx.drawImage(coinImages.current[coin], poolX[j] - 32, pos.current + i * 80);
                             }
                         }
                     });
