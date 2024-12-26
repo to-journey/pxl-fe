@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { axios, toast } from "../../utils";
+import { IPumpImage } from "../../interfaces";
 
 export const useCreatePumpImages = () => {
     return useMutation({
@@ -11,7 +12,7 @@ export const useCreatePumpImages = () => {
 export const useGetPumpImages = () => {
     const { data, isPending } = useQuery({
         queryKey: ['getPumpImages'],
-        queryFn: () => axios.get('/pump-images'),
+        queryFn: () => axios.get<IPumpImage[]>('/pump-images'),
     });
 
     return { pumpImages: data?.data || [], isPending };
