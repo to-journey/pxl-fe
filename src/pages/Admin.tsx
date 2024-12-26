@@ -1,10 +1,10 @@
-import { ArrowForwardIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, DeleteIcon, EditIcon, TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import { Button, Flex, Grid, Image, Input, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Table, TableContainer, Tbody, Td, Text, Textarea, Th, Thead, Tr } from "@chakra-ui/react";
 import _ from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useSendNotification } from "../api/message";
-import { useCreatePumpImages, useDeletePumpImages, useGetPumpImages } from "../api/pump_images";
+import { useCreatePumpImages, useDeletePumpImages, useGetPumpImages, useUpdatePumpImages } from "../api/pump_images";
 import { useGetQuestions, useSaveQuestions } from "../api/questions";
 import Confirm from "../components/Confirm";
 import { IPumpImage, IQuestion } from "../interfaces";
@@ -15,13 +15,14 @@ const dayOfWeeks = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const Admin = () => {
     const { questions } = useGetQuestions();
     const [date, setDate] = useState('');
-    const { mutate: saveQuestions, isPending: isSaving } = useSaveQuestions(date);
+    const { mutateAsync: saveQuestions, isPending: isSaving } = useSaveQuestions(date);
     const { mutate: sendNotification, isPending: isSending } = useSendNotification(() => {
         toast.success('Successfully sent notification');
     });
     const { pumpImages } = useGetPumpImages();
     const { mutateAsync: createPumpImage, isPending: isAdding } = useCreatePumpImages();
     const { mutateAsync: deletePumpImage, isPending: isDeleting } = useDeletePumpImages();
+    const { mutateAsync: updatePumpImage, isPending: isMoving } = useUpdatePumpImages();
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
     const [question, setQuestion] = useState('');
     const [message, setMessage] = useState('');
@@ -67,6 +68,34 @@ const Admin = () => {
             queryClient.invalidateQueries({ queryKey: ['getPumpImages'] });
         } catch (err: any) {
             toast.error(err.message);
+        }
+    }
+
+    const moveUp = async (id: number, image: string) => {
+        let prevImage: IPumpImage | null = null;
+        pumpImages.forEach((pumpImage: IPumpImage, index: number) => {
+            if (id == pumpImage.id && index > 0) {
+                prevImage = pumpImages[index - 1];
+            }
+        });
+        if (prevImage) {
+            await updatePumpImage({ id: (prevImage as IPumpImage).id, image });
+            await updatePumpImage({ id, image: (prevImage as IPumpImage).image });
+            queryClient.invalidateQueries({ queryKey: ['getPumpImages'] });
+        }
+    }
+
+    const moveDown = async (id: number, image: string) => {
+        let nextImage: IPumpImage | null = null;
+        pumpImages.forEach((pumpImage: IPumpImage, index: number) => {
+            if (id == pumpImage.id && index < pumpImages.length - 1) {
+                nextImage = pumpImages[index + 1];
+            }
+        });
+        if (nextImage) {
+            await updatePumpImage({ id: (nextImage as IPumpImage).id, image });
+            await updatePumpImage({ id, image: (nextImage as IPumpImage).image });
+            queryClient.invalidateQueries({ queryKey: ['getPumpImages'] });
         }
     }
 
@@ -156,16 +185,20 @@ const Admin = () => {
                                                     <Image w='48px' h='48px' src={`${import.meta.env.VITE_API_URL}/public/${pumpImage.image}`} />
                                                 </Td>
                                                 <Td>
-                                                    <Flex align="center">
-                                                        {isDeleting ? <Spinner size='sm' /> : (
+                                                    {isDeleting || isMoving ? <Spinner size='sm' /> : (
+                                                        <Flex align="center" gap={4}>
                                                             <Confirm
                                                                 label={'DO YOU REALLY DELETE THIS IMAGE?'}
                                                                 onOk={() => handleDelete(pumpImage.id)}
                                                             >
                                                                 <DeleteIcon boxSize={4} />
                                                             </Confirm>
-                                                        )}
-                                                    </Flex>
+                                                            <Flex direction='column' gap={1}>
+                                                                <TriangleUpIcon cursor='pointer' onClick={() => moveUp(pumpImage.id, pumpImage.image)} />
+                                                                <TriangleDownIcon cursor='pointer' onClick={() => moveDown(pumpImage.id, pumpImage.image)} />
+                                                            </Flex>
+                                                        </Flex>
+                                                    )}
                                                 </Td>
                                             </Tr>
                                         ))}

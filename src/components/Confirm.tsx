@@ -1,4 +1,4 @@
-import { Box, BoxProps, Button, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, Text } from "@chakra-ui/react";
+import { BoxProps, Button, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, Text } from "@chakra-ui/react";
 import { FC, useState } from "react";
 
 interface Props extends BoxProps {
@@ -14,9 +14,9 @@ const Confirm: FC<Props> = ({ children, label, okLabel = 'OK', cancelLabel = 'CA
 
     return (
         <>
-            <Box onClick={() => setShowConfirm(true)} {...props}>
+            <Flex align='center' onClick={() => setShowConfirm(true)} {...props}>
                 {children}
-            </Box>
+            </Flex>
             <Modal size='sm' isCentered isOpen={showConfirm} onClose={() => {
                 setShowConfirm(false);
                 onCancel?.();
