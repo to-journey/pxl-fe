@@ -4,10 +4,13 @@ import { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 import Avatar from "./Avatar";
 import LoginButton from "./LoginButton";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const { user, showProfileEditModal } = useContext(AuthContext);
     const { handleLogOut, setShowDynamicUserProfile } = useDynamicContext();
+    const navigate = useNavigate();
+
 
     if (user) {
         return (
@@ -25,7 +28,7 @@ const Profile = () => {
                             <MenuItem bg='#0000' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={showProfileEditModal}>
                                 EDIT PROFILE
                             </MenuItem>
-                            <MenuItem bg='#0000' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => setShowDynamicUserProfile(true)}>
+                            <MenuItem bg='#0000' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate("/wallet")}>
                                 PROFILE
                             </MenuItem>
                             <Divider />
