@@ -12,6 +12,7 @@ export interface IUser {
     avatar: string;
     dynamic_id: string;
     telegram_id: string;
+    twitter_id: string;
     is_banned: boolean;
     is_admin: boolean;
 }
