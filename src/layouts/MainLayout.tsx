@@ -5,6 +5,7 @@ import AboutUs from "../pages/AboutUs";
 import Admin from "../pages/Admin";
 import Games from "../pages/Games";
 import Scoreboard from "../pages/Scoreboard";
+import Wallet from "../pages/wallet";
 
 const MainLayout = () => {
     return (
@@ -13,6 +14,7 @@ const MainLayout = () => {
             <Routes>
                 <Route path="/" element={<Games />} />
                 <Route path="/scoreboard" element={<Scoreboard />} />
+                <Route path="/wallet" element={<Wallet />} />
                 <Route path="/about-us" element={<AboutUs />} />
                 <Route path="/admin" element={<Admin />} />
             </Routes>

@@ -11,13 +11,13 @@ interface Props {
 }
 
 const GameCard: FC<Props> = ({ src, label, to, isPlayed }) => {
-    const { user, showProfileEditModal } = useContext(AuthContext);
+    const { user: authUser, showProfileEditModal } = useContext(AuthContext);
 
     return (
         <Box display='flex' flexDirection='column' gap='8px' alignItems='center' cursor='pointer' _hover={{ border: 'none' }} onClick={() => {
-            if (!user) {
+            if (!authUser) {
                 toast.error('Please login to play the game.');
-            } else if (!user.avatar || user.avatar.trim().length == 0 || !user.telegram_id || user.telegram_id.trim().length == 0) {
+            } else if (!authUser.avatar || authUser.avatar.trim().length == 0 || (!authUser.telegram_id && !authUser.twitter_id)) {
                 toast.error('Please complete your profile to play the game.');
                 showProfileEditModal?.();
             } else if (to) {
