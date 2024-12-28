@@ -1,9 +1,9 @@
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { DynamicContextProvider, useDynamicContext, useSocialAccounts } from "@dynamic-labs/sdk-react-core";
-import { FC, ReactNode, useContext, useEffect } from "react";
-import { AuthContext } from "./AuthProvider";
 import { ProviderEnum } from '@dynamic-labs/sdk-api-core';
+import { DynamicContextProvider, useSocialAccounts } from "@dynamic-labs/sdk-react-core";
+import { FC, ReactNode, useContext, useEffect } from "react";
 import { axios } from "../utils";
+import { AuthContext } from "./AuthProvider";
 
 const evmNetworks = [
     {
@@ -73,7 +73,7 @@ const DynamicProvider: FC<{
     return (
         <DynamicContextProvider
             settings={{
-                environmentId: "",
+                environmentId: "ce082cc7-f0b7-4427-8cbf-300cb553cf93",
                 mobileExperience: 'redirect',
                 walletConnectors: [
                     EthereumWalletConnectors,

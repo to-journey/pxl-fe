@@ -1,7 +1,7 @@
-import { Box, Button, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Button, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Tooltip } from "@chakra-ui/react";
 import { createContext, FC, ReactNode, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { saveimage, useUpdateUser } from "../api/users";
+import { useUpdateUser } from "../api/users";
 import Avatar from "../components/Avatar";
 import { IUser } from "../interfaces";
 import { axios, toast } from "../utils";
@@ -31,7 +31,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [image, setImage] = useState<File>();
-    const { mutate: handleUpdateUserInfo, isPending } = saveimage(() => {
+    const { mutate: handleUpdateUserInfo, isPending } = useUpdateUser(() => {
         setShowProfileEditModal(false);
         refresh();
         toast.success('User info has been successfully updated.');
