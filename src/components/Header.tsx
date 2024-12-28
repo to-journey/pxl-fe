@@ -14,7 +14,7 @@ const Header = () => {
 
     return (
         <>
-            <Box position="fixed" top={0} zIndex={1020} w='full'>
+            <Box position="sticky" top={0} zIndex={1020} w='full'>
                 <Flex position='relative' h={{ base: '80px', lg: '112px' }} bg='#0008' px={{ base: '16px', lg: '96px' }} py='16px' gap={{ base: '16px', lg: '32px' }}>
                     <Image src="/logo.png" w={{ base: '48px', lg: '80px' }} h={{ base: '48px', lg: '80px' }} cursor='pointer' onClick={() => navigate('/')} />
                     <Flex w='full' align='center'>
