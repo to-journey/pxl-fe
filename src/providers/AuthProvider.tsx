@@ -102,7 +102,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
                 <ModalContent bg="gray.800" color="white" rounded="lg" shadow="lg" overflow="hidden">
                     <ModalCloseButton />
                     <ModalHeader textAlign="center" fontWeight="bold" fontSize="lg">
-                        Edit Profile
+                        EDIT PROFILE
                     </ModalHeader>
                     <ModalBody pb={4}>
                         <Flex direction="column" gap={6}>
@@ -118,14 +118,14 @@ const AuthProvider: FC<Props> = ({ children }) => {
                                     borderColor="whiteAlpha.400"
                                 />
                                 <Text fontSize="sm" color="gray.400" mt={2}>
-                                    Click the avatar to upload a image
+                                    CLICK THE AVATAR TO UPLOAD A IMAGE
                                 </Text>
                             </Flex>
 
                             {/* Username Field */}
                             <Flex direction="column" gap={2}>
                                 <Text fontSize="sm" color="gray.400">
-                                    Username
+                                    USERNAME
                                 </Text>
                                 <Input
                                     fontSize="md"
@@ -143,7 +143,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
                             {/* Telegram ID Field */}
                             <Flex direction="column" gap={2}>
                                 <Text fontSize="sm" color="gray.400">
-                                    Telegram ID
+                                    TELEGRAM ID
                                 </Text>
                                 {telegramId ? (
                                     <Flex align="center" gap={4}>
@@ -181,7 +181,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
                                             navigate("/wallet")
                                         }}
                                     >
-                                        Connect Telegram
+                                        CONNECT TELEGRAM
                                     </Button>
                                 )}
                             </Flex>
@@ -189,7 +189,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
                             {/* X.com (Twitter) ID Field */}
                             <Flex direction="column" gap={2}>
                                 <Text fontSize="sm" color="gray.400">
-                                    Twitter ID
+                                    TWITTER ID
                                 </Text>
                                 {twitterId ? (
                                     <Flex align="center" gap={4}>
@@ -221,7 +221,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
                                             navigate("/wallet");
                                         }}
                                     >
-                                        Connect Twitter
+                                        CONNECT TWITTER
                                     </Button>
                                 )}
                             </Flex>
@@ -241,7 +241,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
                             _active={{ bg: "blue.600" }}
                             isDisabled={isPending}
                         >
-                            Save
+                            SAVE
                         </Button>
                     </ModalFooter>
                 </ModalContent>
