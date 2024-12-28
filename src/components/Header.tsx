@@ -6,10 +6,12 @@ import Avatar from "./Avatar";
 import { ListIcon } from "./icons";
 import Profile from "./Profile";
 import ScoreboardButton from "./ScoreboardButton";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 
 const Header = () => {
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
+    const { user: dynamicUser } = useDynamicContext();
     const [isOpenMenu, setIsOpenMenu] = useState(false);
 
     return (
@@ -49,7 +51,7 @@ const Header = () => {
                     <DrawerHeader>
                         <Flex align='center' gap='8px'>
                             <Avatar w='48px' h='48px' src={`${import.meta.env.VITE_API_URL}/public/${user?.avatar}`} />
-                            <Text fontSize={12}>{user?.name}</Text>
+                            <Text fontSize={12}>{dynamicUser?.username}</Text>
                         </Flex>
                     </DrawerHeader>
                     <DrawerBody>

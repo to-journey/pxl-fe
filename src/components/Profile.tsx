@@ -1,16 +1,16 @@
 import { Box, Divider, Flex, Menu, MenuButton, MenuItem, MenuList, Text } from "@chakra-ui/react";
 import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../providers/AuthProvider";
 import Avatar from "./Avatar";
 import LoginButton from "./LoginButton";
-import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const { user, showProfileEditModal } = useContext(AuthContext);
+    const { user: dynamicUser } = useDynamicContext();
     const { handleLogOut } = useDynamicContext();
     const navigate = useNavigate();
-
 
     if (user) {
         return (
@@ -19,7 +19,7 @@ const Profile = () => {
                     <DynamicWidget />
                 </Box>
                 <Flex align='center' gap='8px'>
-                    <Text fontSize={12}>{user?.name}</Text>
+                    <Text fontSize={12}>{dynamicUser?.username}</Text>
                     <Menu>
                         <MenuButton>
                             <Avatar w={{ base: '48px', lg: '80px' }} cursor='pointer' h={{ base: '48px', lg: '80px' }} src={`${import.meta.env.VITE_API_URL}/public/${user?.avatar}`} />
