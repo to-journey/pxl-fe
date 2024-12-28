@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const { user, showProfileEditModal } = useContext(AuthContext);
-    const { handleLogOut, setShowDynamicUserProfile } = useDynamicContext();
+    const { handleLogOut } = useDynamicContext();
     const navigate = useNavigate();
 
 
