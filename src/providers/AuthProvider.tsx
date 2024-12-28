@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Tooltip } from "@chakra-ui/react";
+import { Button, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
 import { createContext, FC, ReactNode, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useUpdateUser } from "../api/users";
@@ -25,28 +25,23 @@ const AuthProvider: FC<Props> = ({ children }) => {
     const [showProfileEditModal, setShowProfileEditModal] = useState(false);
 
     const [avatar, setAvatar] = useState<string>();
-    const [name, setName] = useState<string>();
     const [telegramId, setTelegramId] = useState<string>();
     const [twitterId, setTwitterId] = useState<string>();
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [image, setImage] = useState<File>();
-    const { mutate: handleUpdateUserInfo, isPending } = useUpdateUser(() => {
+    const { mutate: updateUserInfo, isPending } = useUpdateUser(() => {
         setShowProfileEditModal(false);
         refresh();
         toast.success('User info has been successfully updated.');
     });
     const navigate = useNavigate();
 
-
     useEffect(() => {
-        setName(user?.name);
         setTelegramId(user?.telegram_id);
         setTwitterId(user?.twitter_id);
         setAvatar(user?.avatar ? `${import.meta.env.VITE_API_URL}/public/${user?.avatar}` : undefined);
     }, [user]);
-
-
 
     const logout = () => {
         setUser(undefined);
@@ -82,9 +77,19 @@ const AuthProvider: FC<Props> = ({ children }) => {
             toast.error('Please select user avatar.');
             return;
         }
-        if (image) formData.append('image', image);
 
-        handleUpdateUserInfo(formData);
+        if (image) {
+            formData.append('image', image);
+        }
+
+        if (telegramId && telegramId.trim().length > 0) {
+            formData.append('telegram_id', telegramId);
+        } else {
+            toast.error('Please input telegram ID');
+            return;
+        }
+
+        updateUserInfo(formData);
     };
 
     return (
@@ -117,27 +122,6 @@ const AuthProvider: FC<Props> = ({ children }) => {
                                     border="2px solid"
                                     borderColor="whiteAlpha.400"
                                 />
-                                <Text fontSize="sm" color="gray.400" mt={2}>
-                                    CLICK THE AVATAR TO UPLOAD A IMAGE
-                                </Text>
-                            </Flex>
-
-                            {/* Username Field */}
-                            <Flex direction="column" gap={2}>
-                                <Text fontSize="sm" color="gray.400">
-                                    USERNAME
-                                </Text>
-                                <Input
-                                    fontSize="md"
-                                    value={name}
-                                    readOnly
-                                    bg="gray.700"
-                                    border="1px solid"
-                                    borderColor="gray.600"
-                                    color="gray.400"
-                                    cursor="not-allowed"
-                                    _hover={{ borderColor: "gray.500" }}
-                                />
                             </Flex>
 
                             {/* Telegram ID Field */}
@@ -145,45 +129,12 @@ const AuthProvider: FC<Props> = ({ children }) => {
                                 <Text fontSize="sm" color="gray.400">
                                     TELEGRAM ID
                                 </Text>
-                                {telegramId ? (
-                                    <Flex align="center" gap={4}>
-                                        <Input
-                                            fontSize="md"
-                                            value={telegramId}
-                                            readOnly
-                                            bg="gray.700"
-                                            border="1px solid"
-                                            borderColor="gray.600"
-                                            color="gray.400"
-                                            cursor="not-allowed"
-                                            _hover={{ borderColor: "gray.500" }}
-                                        />
-                                        <Tooltip label="You need to sign up to the Telegram bot" hasArrow>
-                                            <Box color="gray.500" cursor="pointer" fontSize="lg">
-                                                ?
-                                            </Box>
-                                        </Tooltip>
-                                        <Link to="https://t.me/pxlgames_bot" target="_blank">
-                                            <Image w="36px" src="/telegram.png" cursor="pointer" />
-                                        </Link>
-                                    </Flex>
-                                ) : (
-                                    <Button
-                                        leftIcon={<Image w="20px" src="/telegram.png" />}
-                                        variant="outline"
-                                        w="full"
-                                        colorScheme="telegram"
-                                        borderColor="telegram.500"
-                                        _hover={{ bg: "telegram.600", borderColor: "telegram.600" }}
-                                        _active={{ bg: "telegram.700", borderColor: "telegram.700" }}
-                                        onClick={() => {
-                                            setShowProfileEditModal(false); // Close the modal
-                                            navigate("/wallet")
-                                        }}
-                                    >
-                                        CONNECT TELEGRAM
-                                    </Button>
-                                )}
+                                <Flex align='center' gap='8px'>
+                                    <Input fontSize={14} value={telegramId} onChange={(e) => setTelegramId(e.target.value)} />
+                                    <Link to='https://t.me/pxlgames_bot' target="_blank">
+                                        <Image w='32px' src='/telegram.png' cursor='pointer' />
+                                    </Link>
+                                </Flex>
                             </Flex>
 
                             {/* X.com (Twitter) ID Field */}
@@ -203,9 +154,8 @@ const AuthProvider: FC<Props> = ({ children }) => {
                                             color="gray.400"
                                             cursor="not-allowed"
                                             _hover={{ borderColor: "gray.500" }}
+                                            onChange={() => { }}
                                         />
-
-
                                     </Flex>
                                 ) : (
                                     <Button
@@ -217,7 +167,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
                                         _hover={{ bg: "twitter.600", borderColor: "twitter.600" }}
                                         _active={{ bg: "twitter.700", borderColor: "twitter.700" }}
                                         onClick={() => {
-                                            setShowProfileEditModal(false); // Close the modal
+                                            setShowProfileEditModal(false);
                                             navigate("/wallet");
                                         }}
                                     >
@@ -233,7 +183,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
                         <Button
                             onClick={handleSave}
                             isLoading={isPending}
-                            loadingText="Saving"
+                            loadingText="SAVING"
                             w="full"
                             colorScheme="blue"
                             bg="blue.500"

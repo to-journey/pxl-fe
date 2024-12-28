@@ -73,7 +73,7 @@ const DynamicProvider: FC<{
     return (
         <DynamicContextProvider
             settings={{
-                environmentId: "ce082cc7-f0b7-4427-8cbf-300cb553cf93",
+                environmentId: "306c6c43-f376-4edd-94e0-80e640ba447e",
                 mobileExperience: 'redirect',
                 walletConnectors: [
                     EthereumWalletConnectors,
