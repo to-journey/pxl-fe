@@ -31,18 +31,9 @@ const SocialAccountHandler: FC = () => {
         const fetchLinkedAccounts = async () => {
             try {
                 const twitterAccount = await getLinkedAccountInformation(ProviderEnum.Twitter);
-                const telegramAccount = await getLinkedAccountInformation(ProviderEnum.Telegram);
 
                 const res = await axios.get('/user-info');
                 let user = res.data;
-
-                if (telegramAccount) {
-                    user.telegram_id = telegramAccount.publicIdentifier;
-                    console.log(`Telegram account linked: ${telegramAccount.publicIdentifier}`);
-                } else {
-                    user.telegram_id = "";
-                    console.log("No Telegram account linked.");
-                }
 
                 if (twitterAccount) {
                     user.twitter_id = twitterAccount.publicIdentifier;

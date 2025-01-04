@@ -21,7 +21,7 @@ const Confirm: FC<Props> = ({ children, label, okLabel = 'OK', cancelLabel = 'CA
                 setShowConfirm(false);
                 onCancel?.();
             }}>
-                <ModalContent bg='#000c' border='2px solid purple'>
+                <ModalContent bg='#000c' border='2px solid purple' backdropFilter='blur(4px)'>
                     <ModalCloseButton />
                     <ModalHeader>
                         <Text fontSize={14}>
