@@ -1,6 +1,6 @@
 import { Button, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
 import { createContext, FC, ReactNode, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useUpdateUser } from "../api/users";
 import Avatar from "../components/Avatar";
 import { IUser } from "../interfaces";
@@ -104,7 +104,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
             }} />
             <Modal size="md" isCentered isOpen={showProfileEditModal} onClose={() => setShowProfileEditModal(false)}>
                 <ModalOverlay />
-                <ModalContent bg="gray.800" color="white" rounded="lg" shadow="lg" overflow="hidden">
+                <ModalContent bg='#000c' border='2px solid purple' backdropFilter='blur(4px)'>
                     <ModalCloseButton />
                     <ModalHeader textAlign="center" fontWeight="bold" fontSize="lg">
                         EDIT PROFILE
@@ -122,19 +122,6 @@ const AuthProvider: FC<Props> = ({ children }) => {
                                     border="2px solid"
                                     borderColor="whiteAlpha.400"
                                 />
-                            </Flex>
-
-                            {/* Telegram ID Field */}
-                            <Flex direction="column" gap={2}>
-                                <Text fontSize="sm" color="gray.400">
-                                    TELEGRAM ID
-                                </Text>
-                                <Flex align='center' gap='8px'>
-                                    <Input fontSize={14} value={telegramId} onChange={(e) => setTelegramId(e.target.value)} />
-                                    <Link to='https://t.me/pxlgames_bot' target="_blank">
-                                        <Image w='32px' src='/telegram.png' cursor='pointer' />
-                                    </Link>
-                                </Flex>
                             </Flex>
 
                             {/* X.com (Twitter) ID Field */}

@@ -17,7 +17,7 @@ const UserProfileModal: FC<Props> = ({ isOpen, onClose, userId }) => {
     return (
         <Modal size='sm' isCentered isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
-            <ModalContent bg='#000c' border='2px solid purple' p={4}>
+            <ModalContent p={4} bg='#000c' border='2px solid purple' backdropFilter='blur(4px)'>
                 <ModalCloseButton />
                 <ModalBody>
                     <Flex direction='column' gap='16px' align='center'>

@@ -3,7 +3,6 @@ import { Button, Flex, Grid, Image, Input, Link, Modal, ModalBody, ModalCloseBut
 import _ from "lodash";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { useSendNotification } from "../api/message";
 import { useCreatePumpImages, useDeletePumpImages, useGetPumpImages, useUpdatePumpImages } from "../api/pump_images";
 import { useGetQuestions, useSaveQuestions } from "../api/questions";
 import Confirm from "../components/Confirm";
@@ -16,16 +15,12 @@ const Admin = () => {
     const { questions } = useGetQuestions();
     const [date, setDate] = useState('');
     const { mutateAsync: saveQuestions, isPending: isSaving } = useSaveQuestions(date);
-    const { mutate: sendNotification, isPending: isSending } = useSendNotification(() => {
-        toast.success('Successfully sent notification');
-    });
     const { pumpImages } = useGetPumpImages();
     const { mutateAsync: createPumpImage, isPending: isAdding } = useCreatePumpImages();
     const { mutateAsync: deletePumpImage, isPending: isDeleting } = useDeletePumpImages();
     const { mutateAsync: updatePumpImage, isPending: isMoving } = useUpdatePumpImages();
     const [isOpenEditModal, setIsOpenEditModal] = useState(false);
     const [question, setQuestion] = useState('');
-    const [message, setMessage] = useState('');
     const fileRef = useRef<HTMLInputElement | null>(null);
     const [file, setFile] = useState<File>();
     const imageUrl = useMemo(() => file && URL.createObjectURL(file), [file]);
@@ -43,10 +38,6 @@ const Admin = () => {
         } catch (err: any) {
             toast.error(err.message);
         }
-    }
-
-    const handleSend = () => {
-        sendNotification(message);
     }
 
     const handleAdd = async () => {
@@ -141,87 +132,73 @@ const Admin = () => {
                         </Table>
                     </TableContainer>
                 </Flex>
-                <Flex p='32px' direction='column' gap='32px' bg='black' rounded='16px'>
-                    <Flex direction='column' gap='16px'>
-                        <Text>
-                            SEND NOTIFICATION
-                        </Text>
-                        <Textarea maxH='480px' value={message} onChange={(e) => setMessage(e.target.value)} />
-                        <Flex justify='right'>
-                            <Button p='8px 16px 12px 16px' onClick={handleSend}>
-                                {isSending && <Spinner size='sm' mr={1} />}
-                                SEND
-                            </Button>
-                        </Flex>
-                    </Flex>
-                    <Flex direction='column' gap='16px'>
-                        <Text>
-                            PUMP&DUMP
-                        </Text>
-                        <Input type="file" display='none' ref={fileRef} onChange={(e) => e.target.files && e.target.files.length > 0 && setFile(e.target.files[0])} />
-                        <Flex gap={4}>
-                            <TableContainer flexGrow={1}>
-                                <Table>
-                                    <Thead>
-                                        <Tr>
-                                            <Th fontFamily='pixeled'>
-                                                #
-                                            </Th>
-                                            <Th fontFamily='pixeled'>
-                                                IMAGE
-                                            </Th>
-                                            <Th fontFamily='pixeled'>
-                                                ACTION
-                                            </Th>
-                                        </Tr>
-                                    </Thead>
-                                    <Tbody>
-                                        {pumpImages.map((pumpImage: IPumpImage, index: number) => (
-                                            <Tr key={pumpImage.id}>
-                                                <Td>
-                                                    {index + 1}
-                                                </Td>
-                                                <Td>
-                                                    <Image w='48px' h='48px' src={`${import.meta.env.VITE_API_URL}/public/${pumpImage.image}`} />
-                                                </Td>
-                                                <Td>
-                                                    {isDeleting || isMoving ? <Spinner size='sm' /> : (
-                                                        <Flex align="center" gap={4}>
-                                                            <Confirm
-                                                                label={'DO YOU REALLY DELETE THIS IMAGE?'}
-                                                                onOk={() => handleDelete(pumpImage.id)}
-                                                            >
-                                                                <DeleteIcon boxSize={4} />
-                                                            </Confirm>
-                                                            <Flex direction='column' gap={1}>
-                                                                <TriangleUpIcon cursor='pointer' onClick={() => moveUp(pumpImage.id, pumpImage.image)} />
-                                                                <TriangleDownIcon cursor='pointer' onClick={() => moveDown(pumpImage.id, pumpImage.image)} />
-                                                            </Flex>
+                <Flex p='32px' direction='column' gap='16px' bg='black' rounded='16px'>
+                    <Text>
+                        PUMP&DUMP
+                    </Text>
+                    <Input type="file" display='none' ref={fileRef} onChange={(e) => e.target.files && e.target.files.length > 0 && setFile(e.target.files[0])} />
+                    <Flex direction={{ base: 'column', lg: 'row' }} gap={4}>
+                        <TableContainer flexGrow={1}>
+                            <Table>
+                                <Thead>
+                                    <Tr>
+                                        <Th fontFamily='pixeled'>
+                                            #
+                                        </Th>
+                                        <Th fontFamily='pixeled'>
+                                            IMAGE
+                                        </Th>
+                                        <Th fontFamily='pixeled'>
+                                            ACTION
+                                        </Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    {pumpImages.map((pumpImage: IPumpImage, index: number) => (
+                                        <Tr key={pumpImage.id}>
+                                            <Td>
+                                                {index + 1}
+                                            </Td>
+                                            <Td>
+                                                <Image w='48px' h='48px' src={`${import.meta.env.VITE_API_URL}/public/${pumpImage.image}`} />
+                                            </Td>
+                                            <Td>
+                                                {isDeleting || isMoving ? <Spinner size='sm' /> : (
+                                                    <Flex align="center" gap={4}>
+                                                        <Confirm
+                                                            label={'DO YOU REALLY DELETE THIS IMAGE?'}
+                                                            onOk={() => handleDelete(pumpImage.id)}
+                                                        >
+                                                            <DeleteIcon boxSize={4} />
+                                                        </Confirm>
+                                                        <Flex direction='column' gap={1}>
+                                                            <TriangleUpIcon cursor='pointer' onClick={() => moveUp(pumpImage.id, pumpImage.image)} />
+                                                            <TriangleDownIcon cursor='pointer' onClick={() => moveDown(pumpImage.id, pumpImage.image)} />
                                                         </Flex>
-                                                    )}
-                                                </Td>
-                                            </Tr>
-                                        ))}
-                                    </Tbody>
-                                </Table>
-                            </TableContainer>
-                            <Flex direction='column' align='center' gap={4}>
-                                {imageUrl && <Image w='128px' h='128px' src={imageUrl} rounded={8} />}
-                                <Button onClick={() => fileRef.current?.click()}>
-                                    SELECT
-                                </Button>
-                                <Button onClick={handleAdd}>
-                                    {isAdding && <Spinner size='sm' mr={1} />}
-                                    ADD
-                                </Button>
-                            </Flex>
+                                                    </Flex>
+                                                )}
+                                            </Td>
+                                        </Tr>
+                                    ))}
+                                </Tbody>
+                            </Table>
+                        </TableContainer>
+                        <Flex direction='column' align='center' gap={4}>
+                            {imageUrl && <Image w='128px' h='128px' src={imageUrl} rounded={8} />}
+                            <Button onClick={() => fileRef.current?.click()}>
+                                SELECT
+                            </Button>
+                            <Button onClick={handleAdd}>
+                                {isAdding && <Spinner size='sm' mr={1} />}
+                                ADD
+                            </Button>
                         </Flex>
                     </Flex>
                 </Flex>
             </Grid>
             <Modal size='xl' isCentered isOpen={isOpenEditModal} onClose={() => setIsOpenEditModal(false)}>
                 <ModalOverlay />
-                <ModalContent bg='#000c'>
+                <ModalContent bg='#000c' border='2px solid purple' backdropFilter='blur(4px)'>
                     <ModalCloseButton />
                     <ModalHeader pb='8px'>
                         EDIT QUESTIONS
