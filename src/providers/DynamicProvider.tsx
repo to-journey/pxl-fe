@@ -1,8 +1,7 @@
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
-import { ProviderEnum } from '@dynamic-labs/sdk-api-core';
-import { DynamicContextProvider, useSocialAccounts } from "@dynamic-labs/sdk-react-core";
-import { FC, ReactNode, useContext, useEffect } from "react";
-import { axios } from "../utils";
+import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
+import { FC, ReactNode, useContext } from "react";
+import { useUpdateUser } from "../api/users";
 import { AuthContext } from "./AuthProvider";
 
 const evmNetworks = [
@@ -24,64 +23,26 @@ const evmNetworks = [
     },
 ];
 
-const SocialAccountHandler: FC = () => {
-    const { getLinkedAccountInformation } = useSocialAccounts();
-
-    useEffect(() => {
-        const fetchLinkedAccounts = async () => {
-            try {
-                const twitterAccount = await getLinkedAccountInformation(ProviderEnum.Twitter);
-
-                const res = await axios.get('/user-info');
-                let user = res.data;
-
-                if (twitterAccount) {
-                    user.twitter_id = twitterAccount.publicIdentifier;
-                    console.log(`Twitter account linked: ${twitterAccount.publicIdentifier}`);
-                } else {
-                    user.twitter_id = "";
-                    console.log("No Twitter account linked.");
-                }
-
-                await axios.put('/user-data', user);
-
-            } catch (error) {
-                console.error("Failed to fetch linked accounts:", error);
-            }
-        };
-
-        fetchLinkedAccounts();
-    }, [getLinkedAccountInformation]);
-
-    return null;
-};
-
 const DynamicProvider: FC<{
     children: ReactNode;
 }> = ({ children }) => {
-    const { refresh, logout } = useContext(AuthContext);
+    const { user, refresh, logout } = useContext(AuthContext);
+    const { mutate } = useUpdateUser();
 
     return (
         <DynamicContextProvider
             settings={{
-                environmentId: "306c6c43-f376-4edd-94e0-80e640ba447e",
+                environmentId: import.meta.env.VITE_DYNAMIC_ENVIRONMENT_ID,
                 mobileExperience: 'redirect',
                 walletConnectors: [
                     EthereumWalletConnectors,
                 ],
                 events: {
                     onAuthSuccess: () => {
-
                         refresh?.();
                     },
                     onUserProfileUpdate: async (usr) => {
-
-                        const res = await axios.get('/user-info');
-                        let userData = res.data;
-
-                        userData.name = usr?.username;
-
-                        axios.put('/user-data', userData);
+                        mutate({ id: user?.id, ...usr });
                     },
                     onLogout: () => {
                         logout?.();
@@ -95,7 +56,6 @@ const DynamicProvider: FC<{
             theme="dark"
         >
             {children}
-            <SocialAccountHandler />
         </DynamicContextProvider>
     );
 }
