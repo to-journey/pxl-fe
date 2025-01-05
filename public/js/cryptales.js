@@ -91,7 +91,7 @@ function endGame() {
     document.querySelector('.button-container').style.display = 'none';
     document.getElementById('next-button').style.display = 'none';
 
-    submitScore(2, score, elapsedTime);
+    submitScore(1, score, elapsedTime);
 }
 
 document.getElementById("start-game-button").onclick = function () {

@@ -227,7 +227,7 @@ const Swapsicles = () => {
         isPlaying.current = false;
         isGameOver.current = true;
         submitScore({
-            gameId: 8,
+            gameId: 7,
             score: score.current,
         });
         setTimeout(() => {

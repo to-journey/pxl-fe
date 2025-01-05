@@ -176,7 +176,7 @@ const Rock = () => {
         isPlaying.current = false;
         isGameOver.current = true;
         submitScore({
-            gameId: 7,
+            gameId: 6,
             score: score.current,
         });
         setTimeout(() => {

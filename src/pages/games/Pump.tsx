@@ -260,7 +260,7 @@ const Pump = () => {
         isPlaying.current = false;
         isGameOver.current = true;
         submitScore({
-            gameId: 3,
+            gameId: 2,
             score: score.current,
         });
         setTimeout(() => {
