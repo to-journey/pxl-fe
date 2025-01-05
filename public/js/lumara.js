@@ -284,7 +284,7 @@ gameLoop();
 const handleGameEnd = () => {
     isPlaying = false;
     gameOver = true;
-    submitScore(4, score);
+    submitScore(3, score);
     $("#score").html(`Score: ${score}`);
     setTimeout(() => {
         $("#game").addClass('hide');

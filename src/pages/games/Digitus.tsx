@@ -169,7 +169,7 @@ const Digitus = () => {
         isPlaying.current = false;
         isGameOver.current = true;
         submitScore({
-            gameId: 5,
+            gameId: 4,
             score: score.current,
         });
         setTimeout(() => {

@@ -243,7 +243,7 @@ const Velocitas = () => {
         isPlaying.current = false;
         isGameOver.current = true;
         submitScore({
-            gameId: 6,
+            gameId: 5,
             score: score.current,
         });
         setTimeout(() => {
