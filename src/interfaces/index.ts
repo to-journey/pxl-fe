@@ -8,11 +8,10 @@ export interface IGame {
 
 export interface IUser {
     id: number;
-    name: string;
-    avatar: string;
-    dynamic_id: string;
-    telegram_id: string;
+    email: string;
+    username: string;
     twitter_id: string;
+    avatar: string;
     is_banned: boolean;
     is_admin: boolean;
 }
