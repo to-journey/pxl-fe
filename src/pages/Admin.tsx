@@ -14,7 +14,7 @@ const dayOfWeeks = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const Admin = () => {
     const { questions } = useGetQuestions();
     const [date, setDate] = useState('');
-    const { mutateAsync: saveQuestions, isPending: isSaving } = useSaveQuestions(date);
+    const { mutateAsync: saveQuestions, isPending: isSaving } = useSaveQuestions();
     const { pumpImages } = useGetPumpImages();
     const { mutateAsync: createPumpImage, isPending: isAdding } = useCreatePumpImages();
     const { mutateAsync: deletePumpImage, isPending: isDeleting } = useDeletePumpImages();
@@ -33,7 +33,7 @@ const Admin = () => {
     const handleSave = async () => {
         try {
             JSON.parse(question);
-            await saveQuestions(question);
+            await saveQuestions({ date, question });
             setIsOpenEditModal(false);
         } catch (err: any) {
             toast.error(err.message);
@@ -169,7 +169,7 @@ const Admin = () => {
                                                             label={'DO YOU REALLY DELETE THIS IMAGE?'}
                                                             onOk={() => handleDelete(pumpImage.id)}
                                                         >
-                                                            <DeleteIcon boxSize={4} />
+                                                            <DeleteIcon boxSize={4} cursor='pointer' />
                                                         </Confirm>
                                                         <Flex direction='column' gap={1}>
                                                             <TriangleUpIcon cursor='pointer' onClick={() => moveUp(pumpImage.id, pumpImage.image)} />
