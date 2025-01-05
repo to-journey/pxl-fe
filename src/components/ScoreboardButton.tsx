@@ -22,6 +22,13 @@ const ScoreboardButton: FC<{
                             <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
                                 setShowPopup(false);
                                 onClick();
+                                navigate('/scoreboard?view=total')
+                            }}>
+                                TOTAL
+                            </Box>
+                            <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
+                                setShowPopup(false);
+                                onClick();
                                 navigate('/scoreboard?view=weekly');
                             }}>
                                 WEEKLY
@@ -35,13 +42,6 @@ const ScoreboardButton: FC<{
                                     DAILY
                                 </Box>
                             )}
-                            <Box p='8px 16px' cursor='pointer' _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => {
-                                setShowPopup(false);
-                                onClick();
-                                navigate('/scoreboard?view=total')
-                            }}>
-                                TOTAL
-                            </Box>
                         </Flex>
                     </Box>
                 )}
