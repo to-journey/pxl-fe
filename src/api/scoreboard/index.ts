@@ -4,7 +4,7 @@ import { axios, toast } from "../../utils";
 export const useGetScoreboard = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['getScoreboard'],
-        queryFn: () => axios.get('/scores'),
+        queryFn: () => axios.get('/score'),
     });
 
     return { scores: data?.data || [], isLoading };

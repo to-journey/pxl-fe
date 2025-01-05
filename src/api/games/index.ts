@@ -4,7 +4,7 @@ import { axios } from "../../utils";
 export const useGetGames = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['getGames'],
-        queryFn: () => axios.get('/games'),
+        queryFn: () => axios.get('/game'),
     });
 
     return { games: data?.data || [], isLoading };

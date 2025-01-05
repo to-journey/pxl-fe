@@ -1,10 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { axios, toast } from "../../utils";
 import { IPumpImage } from "../../interfaces";
+import { axios, toast } from "../../utils";
 
 export const useCreatePumpImages = () => {
     return useMutation({
-        mutationFn: (data: any) => axios.post('/pump-images', data),
+        mutationFn: (data: any) => axios.post('/pump-image', data),
         onError: (err: any) => toast.error(err.response?.data.message || err.message),
     });
 }
@@ -12,7 +12,7 @@ export const useCreatePumpImages = () => {
 export const useGetPumpImages = () => {
     const { data, isPending } = useQuery({
         queryKey: ['getPumpImages'],
-        queryFn: () => axios.get<IPumpImage[]>('/pump-images'),
+        queryFn: () => axios.get<IPumpImage[]>('/pump-image'),
     });
 
     return { pumpImages: data?.data || [], isPending };
@@ -20,14 +20,14 @@ export const useGetPumpImages = () => {
 
 export const useUpdatePumpImages = () => {
     return useMutation({
-        mutationFn: (data: any) => axios.put(`/pump-images/${data.id}`, data),
+        mutationFn: (data: any) => axios.patch(`/pump-image/${data.id}`, data),
         onError: (err: any) => toast.error(err.response?.data.message || err.message),
     })
 }
 
 export const useDeletePumpImages = () => {
     return useMutation({
-        mutationFn: (id: any) => axios.delete(`/pump-images/${id}`),
+        mutationFn: (id: any) => axios.delete(`/pump-image/${id}`),
         onError: (err: any) => toast.error(err.response?.data.message || err.message),
     })
 }
