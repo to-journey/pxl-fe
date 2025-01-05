@@ -25,20 +25,14 @@ const AuthProvider: FC<Props> = ({ children }) => {
     const [showProfileEditModal, setShowProfileEditModal] = useState(false);
 
     const [avatar, setAvatar] = useState<string>();
-    const [telegramId, setTelegramId] = useState<string>();
     const [twitterId, setTwitterId] = useState<string>();
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [image, setImage] = useState<File>();
-    const { mutate: updateUserInfo, isPending } = useUpdateUser(() => {
-        setShowProfileEditModal(false);
-        refresh();
-        toast.success('User info has been successfully updated.');
-    });
+    const { mutateAsync: updateUserInfo, isPending } = useUpdateUser();
     const navigate = useNavigate();
 
     useEffect(() => {
-        setTelegramId(user?.telegram_id);
         setTwitterId(user?.twitter_id);
         setAvatar(user?.avatar ? `${import.meta.env.VITE_API_URL}/public/${user?.avatar}` : undefined);
     }, [user]);
@@ -49,7 +43,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
 
     const refresh = async () => {
         try {
-            const res = await axios.get('/user-info');
+            const res = await axios.get('/auth/profile');
             const user = res.data;
             setUser(user);
             if (!user.avatar || user.avatar.trim().length == 0 || (!user.telegram_id && !user.twitter_id)) {
@@ -62,17 +56,12 @@ const AuthProvider: FC<Props> = ({ children }) => {
     }
 
     useEffect(() => {
-        if (showProfileEditModal) {
-            refresh();
-        }
-    }, [showProfileEditModal]);
-
-    useEffect(() => {
         refresh();
     }, []);
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const formData = new FormData();
+
         if (user?.avatar == null && !image) {
             toast.error('Please select user avatar.');
             return;
@@ -82,14 +71,9 @@ const AuthProvider: FC<Props> = ({ children }) => {
             formData.append('image', image);
         }
 
-        if (telegramId && telegramId.trim().length > 0) {
-            formData.append('telegram_id', telegramId);
-        } else {
-            toast.error('Please input telegram ID');
-            return;
-        }
-
-        updateUserInfo(formData);
+        await updateUserInfo(formData);
+        setShowProfileEditModal(false);
+        refresh();
     };
 
     return (
