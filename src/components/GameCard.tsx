@@ -17,7 +17,7 @@ const GameCard: FC<Props> = ({ src, label, to, isPlayed }) => {
         <Box display='flex' flexDirection='column' gap='8px' alignItems='center' cursor='pointer' _hover={{ border: 'none' }} onClick={() => {
             if (!authUser) {
                 toast.error('Please login to play the game.');
-            } else if (!authUser.avatar || authUser.avatar.trim().length == 0 || (!authUser.telegram_id && !authUser.twitter_id)) {
+            } else if (!authUser.avatar || authUser.avatar.trim().length == 0 || !authUser.twitter_id) {
                 toast.error('Please complete your profile to play the game.');
                 showProfileEditModal?.();
             } else if (to) {
