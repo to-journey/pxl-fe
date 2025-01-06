@@ -95,7 +95,7 @@ const Scoreboard = () => {
                                                     <Flex p={4} h='65px' align='center' gap='8px' {...(userWithScore.id == user?.id && { bgGradient: 'linear(to-b, #fc02d880, #0000 20%, #0000 80%, #fc02d880)' })}>
                                                         <Avatar src={`${import.meta.env.VITE_API_URL}/public/${userWithScore.avatar}`} />
                                                         <Flex direction='column' justify='center' gap='8px'>
-                                                            <Text fontSize={12}>{userWithScore.name}</Text>
+                                                            <Text fontSize={12}>{userWithScore.username}</Text>
                                                         </Flex>
                                                     </Flex>
                                                 </Td>
