@@ -13,6 +13,8 @@ const Games = () => {
                     return <GameCard key={game.id} src={`/games/${game.sname}.png`} label={game.name} to={`/games/${game.sname}.html`} isPlayed={game.is_played} />
                 })}
                 <GameCard src="/games/coming_soon.png" label="COMING SOON" />
+                <GameCard src="/games/coming_soon.png" label="COMING SOON" />
+                <GameCard src="/games/coming_soon.png" label="COMING SOON" />
             </Grid>
         </Flex>
     )
