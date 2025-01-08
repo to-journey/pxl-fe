@@ -4,21 +4,20 @@ import { useCreateScore } from "../../api/scoreboard";
 import ConfettiCanvas from "../../components/Confetti";
 import { GameStatus } from "../../constants/enum";
 
-interface IShowMap {
+interface IOpenMap {
     [key: number]: boolean;
 }
 
 const Nexus = () => {
     const { mutate: submitScore } = useCreateScore();
-    const [countDown, setCountDown] = useState<number | null>(0);
     const [status, setStatus] = useState<GameStatus>(GameStatus.WELCOME);
+    const [countDown, setCountDown] = useState<number | null>(0);
     const [score, setScore] = useState(0);
     const isPlaying = useRef(false);
     const [cards, setCards] = useState<number[]>([]);
-    const [showImage, setShowImage] = useState<IShowMap>({});
-    const [prevSelectedCardIndex, setPrevSelectedCardIndex] = useState<number | null>(null);
-    const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null);
+    const [isOpen, setIsOpen] = useState<IOpenMap>({});
     const [showAll, setShowAll] = useState(false);
+    const selectedIndex = useRef<number | null>(null);
     const onceWrong = useRef(false);
 
     const width = 375, height = 560;
@@ -40,11 +39,11 @@ const Nexus = () => {
         setCountDown(3);
         setScore(0);
         isPlaying.current = false;
-        setPrevSelectedCardIndex(null);
-        setSelectedCardIndex(null);
+        setIsOpen({});
         setShowAll(false);
+        selectedIndex.current = null;
         onceWrong.current = false;
-        placeCards(4);
+        placeCards(2);
         let countDown = 3;
         const interval = setInterval(() => {
             if (countDown == 0) {
@@ -60,10 +59,10 @@ const Nexus = () => {
         }, 1500);
     }
 
-    const handleGameEnd = (s?: number) => {
+    const handleGameEnd = (score: number) => {
         submitScore({
             gameId: 8,
-            score: s || score,
+            score,
         });
         setTimeout(() => {
             setStatus(GameStatus.RESULT);
@@ -104,82 +103,58 @@ const Nexus = () => {
                     )}
                     <Grid maxH='560px' templateColumns={`repeat(${cols}, minmax(0, 1fr))`} gap='12px'>
                         {cards.map((card, index) => (
-                            <label key={index} htmlFor={`checkbox${index}`} onClick={() => {
-                                if (showAll) return;
-                                if (isPlaying.current) {
-                                    if (selectedCardIndex == null) {
-                                        setSelectedCardIndex(index);
+                            <label key={index} htmlFor={`checkbox${index}`}>
+                                <Input id={`checkbox${index}`} type="checkbox" className="card-check" display='none' checked={showAll || (isOpen[index] ?? false)} onChange={(e) => {
+                                    if (!isPlaying.current || isOpen[index] || !e.target.checked || showAll) return;
+                                    console.log(selectedIndex.current);
+                                    setIsOpen((prev) => {
+                                        prev[index] = true;
+                                        return { ...prev };
+                                    });
+                                    if (selectedIndex.current == null) {
+                                        selectedIndex.current = index;
                                     } else {
-                                        if (selectedCardIndex == index) return;
-                                        setPrevSelectedCardIndex(selectedCardIndex);
-                                        setSelectedCardIndex(index);
-                                        if (cards[selectedCardIndex] != cards[index]) {
+                                        if (cards[selectedIndex.current] != cards[index]) {
                                             if (onceWrong.current) {
-                                                handleGameEnd();
+                                                handleGameEnd(score);
                                             }
                                             onceWrong.current = true;
+                                            const a = selectedIndex.current, b = index;
+                                            selectedIndex.current = null;
                                             setTimeout(() => {
-                                                setPrevSelectedCardIndex(null);
-                                                setSelectedCardIndex(null);
-                                                setTimeout(() => {
-                                                    setShowImage({});
-                                                }, 75);
-                                            }, 400);
-                                        } else {
-                                            setTimeout(() => {
-                                                setCards(prev => {
-                                                    prev[selectedCardIndex] = 128 + prev[selectedCardIndex];
-                                                    prev[index] = 128 + prev[index];
-                                                    return [...prev];
-                                                });
-                                                setScore(score + 2);
-                                                for (let i = 5, s = 8; i <= 10; i++) {
-                                                    if (score == s - 2) {
-                                                        placeCards(i);
-                                                        setShowAll(true);
-                                                        setTimeout(() => setShowAll(false), i * 1000 - 1500);
-                                                    }
-                                                    s += i * 2;
-                                                }
-                                                if (score == 88)
-                                                    handleGameEnd(90);
-                                                setPrevSelectedCardIndex(null);
-                                                setSelectedCardIndex(null);
-                                                setTimeout(() => {
-                                                    setShowImage({});
-                                                }, 75);
-                                            }, 400);
-                                        }
-                                        if (prevSelectedCardIndex != null) {
-                                            setTimeout(() => {
-                                                setShowImage((prev) => {
-                                                    prev[prevSelectedCardIndex] = false;
+                                                setIsOpen((prev) => {
+                                                    prev[a] = false;
+                                                    prev[b] = false;
                                                     return { ...prev };
                                                 });
-                                            }, 75);
+                                            }, 500);
+                                        } else {
+                                            selectedIndex.current = null;
+                                            const sc = score + 2;
+                                            setScore(sc);
+                                            for (let i = 3, s = 4; i <= 11; s += i * 2, i++) {
+                                                if (s == sc) {
+                                                    if (i == 11) {
+                                                        handleGameEnd(sc);
+                                                    } else {
+                                                        setTimeout(() => {
+                                                            setIsOpen({});
+                                                            placeCards(i);
+                                                            setShowAll(true);
+                                                            setTimeout(() => setShowAll(false), i * 1000 - 1500);
+                                                        }, 500);
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
-                            }}>
-                                <Input id={`checkbox${index}`} type="checkbox" className="card-check" display='none' checked={showAll || prevSelectedCardIndex == index || selectedCardIndex == index || card >= 128} onChange={(e) => {
-                                    if (showAll) return;
-                                    if (isPlaying.current) {
-                                        setTimeout(() => {
-                                            setShowImage((prev) => {
-                                                prev[index] = e.target.checked;
-                                                return { ...prev };
-                                            });
-                                        }, 75);
-                                    }
-                                }} />
+                                } />
                                 <Box className="card" w={`${size}px`} h={`${size}px`}>
                                     {card >= 0 && (
                                         <Box className="img" h='full' position='relative'>
-                                            {(showAll || showImage[index] || card >= 128) ? (
-                                                <Image h='full' src={`/img/nexus/${card >= 128 ? card - 128 : card}.png`} />
-                                            ) : (
-                                                <Image h='full' src="/img/nexus/card.png" />
-                                            )}
+                                            <Image h='full' src={`/img/nexus/${card}.png`} />
+                                            <Image position='absolute' left={0} top={0} h='full' src="/img/nexus/card.png" />
                                         </Box>
                                     )}
                                 </Box>
