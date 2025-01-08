@@ -2,10 +2,11 @@ import { Button } from "@chakra-ui/react";
 import { Route, Routes, useNavigate } from "react-router";
 import { ReturnIcon } from "../components/icons";
 import Digitus from "../pages/games/Digitus";
+import Nexus from "../pages/games/Nexus";
 import Pump from "../pages/games/Pump";
 import Rock from "../pages/games/Rock";
-import Velocitas from "../pages/games/Velocitas";
 import Swapsicles from "../pages/games/Swapsicles";
+import Velocitas from "../pages/games/Velocitas";
 
 const GameLayout = () => {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ const GameLayout = () => {
                 <Route path="/velocitas.html" element={<Velocitas />} />
                 <Route path="/rock.html" element={<Rock />} />
                 <Route path="/swapsicles.html" element={<Swapsicles />} />
+                <Route path="/nexus.html" element={<Nexus />} />
             </Routes>
         </>
     )
