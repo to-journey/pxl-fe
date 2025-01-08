@@ -106,7 +106,6 @@ const Nexus = () => {
                             <label key={index} htmlFor={`checkbox${index}`}>
                                 <Input id={`checkbox${index}`} type="checkbox" className="card-check" display='none' checked={showAll || (isOpen[index] ?? false)} onChange={(e) => {
                                     if (!isPlaying.current || isOpen[index] || !e.target.checked || showAll) return;
-                                    console.log(selectedIndex.current);
                                     setIsOpen((prev) => {
                                         prev[index] = true;
                                         return { ...prev };
