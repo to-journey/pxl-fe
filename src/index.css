@@ -33,10 +33,28 @@
 }
 
 .card>.img {
-  transition: all .4s;
+  transition: all .5s;
   transform: perspective(1000px) rotateY(0);
 }
 
 .card-check:checked+.card>.img {
   transform: perspective(1000px) rotateY(180deg);
+}
+
+.card-check+.card>.img>img:first-child {
+  opacity: 0;
+  transition-delay: .1s;
+}
+
+.card-check+.card>.img>img:last-child {
+  opacity: 1;
+  transition-delay: .1s;
+}
+
+.card-check:checked+.card>.img>img:first-child {
+  opacity: 1;
+}
+
+.card-check:checked+.card>.img>img:last-child {
+  opacity: 0;
 }
