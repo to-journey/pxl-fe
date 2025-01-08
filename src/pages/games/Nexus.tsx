@@ -76,6 +76,16 @@ const Nexus = () => {
             bg='linear-gradient(135deg, #6f00ff, #00ffcc)'
             fontFamily='sans-serif'
         >
+            <Image display='none' src='/img/nexus/0.png' />
+            <Image display='none' src='/img/nexus/1.png' />
+            <Image display='none' src='/img/nexus/2.png' />
+            <Image display='none' src='/img/nexus/3.png' />
+            <Image display='none' src='/img/nexus/4.png' />
+            <Image display='none' src='/img/nexus/5.png' />
+            <Image display='none' src='/img/nexus/6.png' />
+            <Image display='none' src='/img/nexus/7.png' />
+            <Image display='none' src='/img/nexus/8.png' />
+            <Image display='none' src='/img/nexus/9.png' />
             {status == GameStatus.WELCOME && (
                 <Flex p='16px' direction='column' align='center' gap='16px'>
                     <Flex direction='column'>
