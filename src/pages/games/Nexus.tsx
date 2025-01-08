@@ -18,7 +18,7 @@ const Nexus = () => {
     const [isOpen, setIsOpen] = useState<IOpenMap>({});
     const [showAll, setShowAll] = useState(false);
     const selectedIndex = useRef<number | null>(null);
-    const onceWrong = useRef(false);
+    const wrongCount = useRef(0);
 
     const width = 375, height = 560;
 
@@ -42,7 +42,7 @@ const Nexus = () => {
         setIsOpen({});
         setShowAll(false);
         selectedIndex.current = null;
-        onceWrong.current = false;
+        wrongCount.current = 0;
         placeCards(2);
         let countDown = 3;
         const interval = setInterval(() => {
@@ -124,10 +124,10 @@ const Nexus = () => {
                                         selectedIndex.current = index;
                                     } else {
                                         if (cards[selectedIndex.current] != cards[index]) {
-                                            if (onceWrong.current) {
+                                            if (wrongCount.current == 2) {
                                                 handleGameEnd(score);
                                             }
-                                            onceWrong.current = true;
+                                            wrongCount.current++;
                                             const a = selectedIndex.current, b = index;
                                             selectedIndex.current = null;
                                             setTimeout(() => {
