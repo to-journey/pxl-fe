@@ -31,3 +31,12 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.card>.img {
+  transition: all .4s;
+  transform: perspective(1000px) rotateY(0);
+}
+
+.card-check:checked+.card>.img {
+  transform: perspective(1000px) rotateY(180deg);
+}
