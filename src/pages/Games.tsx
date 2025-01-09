@@ -14,7 +14,6 @@ const Games = () => {
                 })}
                 <GameCard src="/games/coming_soon.png" label="COMING SOON" />
                 <GameCard src="/games/coming_soon.png" label="COMING SOON" />
-                <GameCard src="/games/coming_soon.png" label="COMING SOON" />
             </Grid>
         </Flex>
     )
