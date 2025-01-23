@@ -11,12 +11,12 @@ async function startGame() {
         const params = new URLSearchParams(url.search);
         let date = params.get('date') || 'today';
         date = date ? date : 'today';
-        fetch(`https://pxlgames.xyz/api/questions/${date}`)
+        fetch(`https://pxlgames.xyz/api/question/${date}`)
             .then(response => resolve(response.json()))
             .catch(error => reject(error));
     });
 
-    questions = JSON.parse(result);
+    questions = JSON.parse(result.question);
     questions = questions.sort(() => Math.random() > 0.5 ? -1 : 1);
 
     document.getElementById('welcome-screen').style.display = 'none';
