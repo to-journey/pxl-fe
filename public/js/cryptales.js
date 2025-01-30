@@ -97,3 +97,7 @@ function endGame() {
 document.getElementById("start-game-button").onclick = function () {
     startGame();
 };
+
+document.getElementsByTagName("body")[0].addEventListener("touchmove", (e) => {
+    e.preventDefault();
+}, { passive: false });
