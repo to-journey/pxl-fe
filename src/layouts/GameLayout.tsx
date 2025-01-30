@@ -1,4 +1,5 @@
-import { Button } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
+import { useEffect, useRef } from "react";
 import { Route, Routes, useNavigate } from "react-router";
 import { ReturnIcon } from "../components/icons";
 import Digitus from "../pages/games/Digitus";
@@ -10,9 +11,20 @@ import Velocitas from "../pages/games/Velocitas";
 
 const GameLayout = () => {
     const navigate = useNavigate();
+    const ref = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (ref.current) {
+            const handleTouchMove = (e: any) => {
+                e.preventDefault();
+            };
+            ref.current?.addEventListener("touchmove", handleTouchMove, { passive: false });
+            return () => ref.current?.removeEventListener("touchmove", handleTouchMove);
+        }
+    }, [ref.current]);
 
     return (
-        <>
+        <Box ref={ref}>
             <Button position='fixed' right='16px' top='16px' zIndex={60} px={2} bg='#6f00ff' color='white' _hover={{ bg: '#00ffcc' }} onClick={() => navigate('/')}>
                 <ReturnIcon />
             </Button>
@@ -24,7 +36,7 @@ const GameLayout = () => {
                 <Route path="/swapsicles.html" element={<Swapsicles />} />
                 <Route path="/nexus.html" element={<Nexus />} />
             </Routes>
-        </>
+        </Box>
     )
 }
 
