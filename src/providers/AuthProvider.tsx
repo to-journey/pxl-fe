@@ -7,6 +7,7 @@ import { IUser } from "../interfaces";
 import { axios, toast } from "../utils";
 
 interface IAuth {
+    isLoading?: boolean;
     user?: IUser;
     setUser?: (user: IUser) => void;
     refresh?: () => void;
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const AuthProvider: FC<Props> = ({ children }) => {
+    const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<IUser>();
     const [showProfileEditModal, setShowProfileEditModal] = useState(false);
 
@@ -53,6 +55,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
             console.error(err.message);
             setUser(undefined);
         }
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -78,7 +81,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
 
     return (
 
-        <AuthContext.Provider value={{ user, refresh, logout, showProfileEditModal: () => setShowProfileEditModal(true) }}>
+        <AuthContext.Provider value={{ isLoading, user, refresh, logout, showProfileEditModal: () => setShowProfileEditModal(true) }}>
             {children}
             <Input ref={fileInputRef} type="file" accept="image/*" display='none' onChange={(e) => {
                 const image = e.target.files?.[0];
