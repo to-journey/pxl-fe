@@ -81,10 +81,9 @@ const Scoreboard = () => {
                                     if (view) {
                                         return (
                                             <Tr key={i} onClick={() => {
-                                                if (user?.is_admin) {
-                                                    setSelectedUserId(userWithScore.id);
-                                                    setShowUserProfileModal(true);
-                                                }
+                                                if (!user?.is_admin) return;
+                                                setSelectedUserId(userWithScore.id);
+                                                setShowUserProfileModal(true);
                                             }}>
                                                 <Td fontSize={12} p={0}>
                                                     <Flex position='relative' pl={8} h='65px' align='center' {...(userWithScore.id == user?.id && { bgGradient: 'linear(to-b, #fc02d880, #0000 20%, #0000 80%, #fc02d880)' })}>
