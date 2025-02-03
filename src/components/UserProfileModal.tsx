@@ -43,7 +43,7 @@ const UserProfileModal: FC<Props> = ({ isOpen, onClose, userId }) => {
                         <Flex direction='column' gap='8px'>
                             <Text whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>EMAIL: {user.email}</Text>
                             <Text whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>USERNAME: {user.username}</Text>
-                            <Link target="_blank" href={`https://x.com/${user.twiiter_id}`} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>TWITTER: {user.twitter_id}</Link>
+                            <Link target="_blank" href={`https://x.com/${user.twitter_id}`} whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>TWITTER: {user.twitter_id}</Link>
                             <Flex>
                                 <Text whiteSpace='nowrap' overflow='hidden' textOverflow='ellipsis'>WALLET: {user.wallet_address}</Text>
                                 <Button mt={-0.5} size='xs' onClick={handleCopy}>
