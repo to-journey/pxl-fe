@@ -1,4 +1,4 @@
-import { Avatar, Flex, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { Avatar, Badge, Flex, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import _ from 'lodash';
 import { useContext, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router';
@@ -93,8 +93,13 @@ const Scoreboard = () => {
                                                 <Td py='8px' p={0}>
                                                     <Flex p={4} h='65px' align='center' gap='8px' {...(userWithScore.id == user?.id && { bgGradient: 'linear(to-b, #fc02d880, #0000 20%, #0000 80%, #fc02d880)' })}>
                                                         <Avatar src={`${import.meta.env.VITE_API_URL}/public/${userWithScore.avatar}`} />
-                                                        <Flex direction='column' justify='center' gap='8px'>
+                                                        <Flex align='center' gap='8px'>
                                                             <Text fontSize={12}>{userWithScore.username}</Text>
+                                                            {userWithScore.is_banned && (
+                                                                <Badge p='4px 4px 6px 4px' colorScheme='red' fontSize='xx-small'>
+                                                                    BANNED
+                                                                </Badge>
+                                                            )}
                                                         </Flex>
                                                     </Flex>
                                                 </Td>
