@@ -22,7 +22,10 @@ export const useUpdateUser = () => {
 export const useUpdateUserById = () => {
     return useMutation({
         mutationFn: (user: any) => axios.put(`/user/${user.id}`, user),
-        onSuccess: () => toast.success('User has been successfully updated.'),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['getUsers'] });
+            toast.success('User has been successfully updated.');
+        },
         onError: (err: any) => toast.error(err.message),
     });
 }
