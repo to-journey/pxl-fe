@@ -1,19 +1,23 @@
 import { ArrowForwardIcon, DeleteIcon, EditIcon, TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import { Button, Flex, Grid, Image, Input, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Table, TableContainer, Tbody, Td, Text, Textarea, Th, Thead, Tr } from "@chakra-ui/react";
 import _ from "lodash";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useCreatePumpImages, useDeletePumpImages, useGetPumpImages, useUpdatePumpImages } from "../api/pump_images";
 import { useGetQuestions, useSaveQuestions } from "../api/questions";
 import Confirm from "../components/Confirm";
 import { IPumpImage, IQuestion } from "../interfaces";
 import { queryClient } from "../providers";
+import { AuthContext } from "../providers/AuthProvider";
 
 const dayOfWeeks = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
 const Admin = () => {
+    const navigate = useNavigate();
     const { questions } = useGetQuestions();
     const [date, setDate] = useState('');
+    const { isLoading, user } = useContext(AuthContext);
     const { mutateAsync: saveQuestions, isPending: isSaving } = useSaveQuestions();
     const { pumpImages } = useGetPumpImages();
     const { mutateAsync: createPumpImage, isPending: isAdding } = useCreatePumpImages();
@@ -24,6 +28,10 @@ const Admin = () => {
     const fileRef = useRef<HTMLInputElement | null>(null);
     const [file, setFile] = useState<File>();
     const imageUrl = useMemo(() => file && URL.createObjectURL(file), [file]);
+
+    if (!isLoading && !user) {
+        navigate('/');
+    }
 
     useEffect(() => {
         const question = _.find(questions, (question => question.date == date))?.question;
@@ -89,6 +97,8 @@ const Admin = () => {
             queryClient.invalidateQueries({ queryKey: ['getPumpImages'] });
         }
     }
+
+    if (!user) return <></>
 
     return (
         <>
