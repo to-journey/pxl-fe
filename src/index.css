@@ -58,3 +58,8 @@
 .card-check:checked+.card>.img>img:last-child {
   opacity: 0;
 }
+
+.embedded-widget {
+  width: 420px;
+  max-width: 100%;
+}
