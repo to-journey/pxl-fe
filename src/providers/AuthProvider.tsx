@@ -44,7 +44,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
             const res = await axios.get('/auth/profile');
             const user = res.data;
             setUser(user);
-            if (!user.avatar || user.avatar.trim().length == 0 || (!user.telegram_id && !user.twitter_id)) {
+            if (!user.avatar || user.avatar.trim().length == 0) {
                 setShowProfileEditModal(true);
             }
         } catch (err: any) {
