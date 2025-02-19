@@ -1,6 +1,5 @@
-import { Button, Flex, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
+import { Button, Flex, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
 import { createContext, FC, ReactNode, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
 import { useUpdateUser } from "../api/users";
 import Avatar from "../components/Avatar";
 import { IUser } from "../interfaces";
@@ -27,15 +26,12 @@ const AuthProvider: FC<Props> = ({ children }) => {
     const [showProfileEditModal, setShowProfileEditModal] = useState(false);
 
     const [avatar, setAvatar] = useState<string>();
-    const [twitterId, setTwitterId] = useState<string>();
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [image, setImage] = useState<File>();
     const { mutateAsync: updateUserInfo, isPending } = useUpdateUser();
-    const navigate = useNavigate();
 
     useEffect(() => {
-        setTwitterId(user?.twitter_id);
         setAvatar(user?.avatar ? `${import.meta.env.VITE_API_URL}/public/${user?.avatar}` : undefined);
     }, [user]);
 
@@ -110,47 +106,6 @@ const AuthProvider: FC<Props> = ({ children }) => {
                                     borderColor="whiteAlpha.400"
                                 />
                             </Flex>
-
-                            {/* X.com (Twitter) ID Field */}
-                            <Flex direction="column" gap={2}>
-                                <Text fontSize="sm" color="gray.400">
-                                    TWITTER ID
-                                </Text>
-                                {twitterId ? (
-                                    <Flex align="center" gap={4}>
-                                        <Input
-                                            fontSize="md"
-                                            value={twitterId}
-                                            readOnly
-                                            bg="gray.700"
-                                            border="1px solid"
-                                            borderColor="gray.600"
-                                            color="gray.400"
-                                            cursor="not-allowed"
-                                            _hover={{ borderColor: "gray.500" }}
-                                            onChange={() => { }}
-                                        />
-                                    </Flex>
-                                ) : (
-                                    <Button
-                                        leftIcon={<Image w="20px" src="/twitter.png" />}
-                                        variant="outline"
-                                        w="full"
-                                        colorScheme="twitter"
-                                        borderColor="twitter.500"
-                                        _hover={{ bg: "twitter.600", borderColor: "twitter.600" }}
-                                        _active={{ bg: "twitter.700", borderColor: "twitter.700" }}
-                                        onClick={() => {
-                                            setShowProfileEditModal(false);
-                                            navigate("/wallet");
-                                        }}
-                                    >
-                                        CONNECT TWITTER
-                                    </Button>
-                                )}
-                            </Flex>
-
-
                         </Flex>
                     </ModalBody>
                     <ModalFooter>
