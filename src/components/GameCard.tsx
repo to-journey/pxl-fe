@@ -1,4 +1,5 @@
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { FC, useContext } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "../providers/AuthProvider";
@@ -12,11 +13,12 @@ interface Props {
 
 const GameCard: FC<Props> = ({ src, label, to, isPlayed }) => {
     const { user: authUser, showProfileEditModal } = useContext(AuthContext);
+    const { setShowAuthFlow } = useDynamicContext();
 
     return (
         <Box display='flex' flexDirection='column' gap='8px' alignItems='center' cursor='pointer' _hover={{ border: 'none' }} onClick={() => {
             if (!authUser) {
-                toast.error('Please login to play the game.');
+                setShowAuthFlow(true);
             } else if (!authUser.avatar || authUser.avatar.trim().length == 0) {
                 toast.error('Please complete your profile to play the game.');
                 showProfileEditModal?.();
