@@ -10,7 +10,7 @@ import Scoreboard from "../pages/Scoreboard";
 
 const MainLayout = () => {
     return (
-        <Flex className="bg-img" h='100vh' direction='column' overflowY='auto' backgroundPosition='center center'>
+        <Flex className="bg-img" h='100vh' direction='column' justify='space-between' overflowY='auto' backgroundPosition='center center'>
             <Header />
             <Routes>
                 <Route path="/" element={<Games />} />
