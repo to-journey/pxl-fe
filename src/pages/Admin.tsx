@@ -102,7 +102,7 @@ const Admin = () => {
 
     return (
         <>
-            <Grid p={{ base: '16px', lg: '96px' }} templateColumns={{ base: 'minmax(0, 1fr)', lg: 'repeat(2, minmax(0, 1fr))' }} gap='32px'>
+            <Grid p={{ base: '16px', lg: '96px 96px 48px 96px' }} templateColumns={{ base: 'minmax(0, 1fr)', lg: 'repeat(2, minmax(0, 1fr))' }} gap='32px'>
                 <Flex p='16px' bg='black' rounded='16px'>
                     <TableContainer w='full' maxW='1440px'>
                         <Table>
