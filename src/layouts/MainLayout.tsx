@@ -1,5 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 import { Route, Routes } from "react-router";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import AboutUs from "../pages/AboutUs";
 import Admin from "../pages/Admin";
@@ -18,6 +19,7 @@ const MainLayout = () => {
                 <Route path="/about-us" element={<AboutUs />} />
                 <Route path="/admin" element={<Admin />} />
             </Routes>
+            <Footer />
         </Flex>
     )
 }
