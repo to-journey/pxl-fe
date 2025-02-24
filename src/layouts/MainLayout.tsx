@@ -5,8 +5,10 @@ import Header from "../components/Header";
 import AboutUs from "../pages/AboutUs";
 import Admin from "../pages/Admin";
 import Games from "../pages/Games";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
 import Wallet from "../pages/Profile";
 import Scoreboard from "../pages/Scoreboard";
+import TermsOfService from "../pages/TermsOfService";
 
 const MainLayout = () => {
     return (
@@ -18,6 +20,8 @@ const MainLayout = () => {
                 <Route path="/wallet" element={<Wallet />} />
                 <Route path="/about-us" element={<AboutUs />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/terms-of-service" element={<TermsOfService />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Routes>
             <Footer />
         </Flex>
