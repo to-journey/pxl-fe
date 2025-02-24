@@ -17,7 +17,7 @@ const Footer = () => {
             All rights reserved
           </Text>
         </Flex>
-        <Flex justify="center" gap={{ base: 1, lg: 4 }}>
+        <Flex justify="center" gap={{ base: 2, lg: 8 }}>
           <Link w={6} h={6} color='white' href="https://x.com/pxlgames_xyz">
             <XIcon />
           </Link>
