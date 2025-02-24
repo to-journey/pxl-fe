@@ -1,6 +1,7 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router";
-import { SocialIcon } from "react-social-icons";
+import DiscordIcon from "./icons/DiscordIcon";
+import XIcon from "./icons/XIcon";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -17,8 +18,12 @@ const Footer = () => {
           </Text>
         </Flex>
         <Flex justify="center" gap={2}>
-          <SocialIcon url="https://x.com/pxlgames_xyz" bgColor="#0000" fgColor="#fff" />
-          <SocialIcon url="https://discord.gg/8djjQfZG3R" bgColor="#0000" fgColor="#fff" />
+          <Link w={6} h={6} color='white' href="https://x.com/pxlgames_xyz">
+            <XIcon />
+          </Link>
+          <Link w={6} h={6} color='white' href="https://discord.gg/8djjQfZG3R">
+            <DiscordIcon />
+          </Link>
         </Flex>
         <Flex flexGrow={1} justify="right" fontFamily="Fauna Thin" gap={2}>
           <Text cursor='pointer' onClick={() => navigate('/terms-of-service')}>
