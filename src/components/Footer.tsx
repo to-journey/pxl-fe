@@ -7,7 +7,7 @@ const Footer = () => {
   const navigate = useNavigate();
 
   return (
-    <Flex position="sticky" bottom={0} direction="column" gap={2} fontFamily="Fauna Thin">
+    <Flex position="sticky" bottom={0} direction="column" gap={2} fontFamily="Prima Sans">
       <Flex p={{ base: "16px 8px", lg: "32px" }} align="center" bg="black" color="white">
         <Flex flexGrow={1} direction={{ base: 'column', lg: 'row' }} gap={{ base: 1, lg: 2 }}>
           <Text>

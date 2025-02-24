@@ -27,8 +27,8 @@
 }
 
 @font-face {
-  font-family: 'Fauna Thin';
-  src: url('/fonts/FaunaThin.ttf') format('truetype');
+  font-family: 'Prima Sans';
+  src: url('/fonts/PrimaSans.otf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
