@@ -33,13 +33,6 @@
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'Prima Sans';
-  src: url('/fonts/PrimaSans.otf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
 .bg-img {
   background-image: url('/bg.gif');
   background-repeat: no-repeat;
