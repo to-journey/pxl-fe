@@ -2,7 +2,7 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 
 const PrivacyPolicy = () => {
   return (
-    <Flex p={{ base: '16px', lg: '96px 96px 48px 96px' }} justify='center'>
+    <Flex p={{ base: '16px', lg: '96px' }} justify='center' fontFamily="Prima Sans">
       <Box w='full' maxW='1280px' p={{ base: '32px', lg: '64px' }} bg='#000c' fontSize={{ base: 12, lg: 20 }} rounded='xl'>
         <Flex direction='column' gap={2}>
           <Flex direction='column' gap={1}>
