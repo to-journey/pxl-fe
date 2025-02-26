@@ -21,6 +21,7 @@ async function startGame() {
 
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('game-container').style.display = 'block';
+    document.getElementById('play-again-button').style.display = 'none';
     currentQuestionIndex = 0;
     score = 0;
     elapsedTime = 0;
@@ -84,6 +85,7 @@ function stopTimer() {
 
 function endGame() {
     stopTimer();
+    document.getElementById('play-again-button').style.display = 'block';
     document.getElementById('question-text').textContent = `Congratulations! Your final score is ${score}.`;
     document.getElementById('feedback').textContent = '';
     document.getElementById('explanation').textContent = '';
@@ -97,6 +99,10 @@ function endGame() {
 document.getElementById("start-game-button").onclick = function () {
     startGame();
 };
+
+document.getElementById("play-again-button").onclick = function () {
+    startGame();
+}
 
 document.getElementsByTagName("body")[0].addEventListener("touchmove", (e) => {
     e.preventDefault();
