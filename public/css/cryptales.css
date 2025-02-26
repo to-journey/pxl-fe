@@ -6,7 +6,7 @@
 
 body {
     margin: 0;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     background: linear-gradient(135deg, #6f00ff, #00ffcc);
     text-align: center;
     font-family: 'Arial', sans-serif;

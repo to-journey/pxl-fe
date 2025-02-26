@@ -12,7 +12,7 @@ import TermsOfService from "../pages/TermsOfService";
 
 const MainLayout = () => {
     return (
-        <Flex className="bg-img" h='100vh' direction='column' justify='space-between' overflowY='auto' backgroundPosition='center center'>
+        <Flex className="bg-img" h='calc(var(--vh, 1vh) * 100)' direction='column' justify='space-between' overflowY='auto' backgroundPosition='center center'>
             <Header />
             <Routes>
                 <Route path="/" element={<Games />} />

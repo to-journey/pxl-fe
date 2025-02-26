@@ -192,7 +192,7 @@ const Rock = () => {
 
     return (
         <Flex
-            h='100vh'
+            h='calc(var(--vh, 1vh) * 100)'
             align='center' justify='center'
             bg='linear-gradient(135deg, #6f00ff, #00ffcc)'
             fontFamily='sans-serif'
