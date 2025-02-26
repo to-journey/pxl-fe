@@ -318,6 +318,8 @@ function startGame() {
     coin_spawn_elapse = 0;
     rock_spawn_elapse = 0;
 
+    countDown = 3;
+
     const timerId = setInterval(() => {
         countDown--;
         if (countDown == -1) {
