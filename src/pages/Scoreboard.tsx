@@ -28,6 +28,7 @@ const Scoreboard = () => {
       games: games.map((game: IGame) => ({
         name: game.name.slice(0, 2),
         score: _.find(scores, (score => score.game_id == game.id))?.score ?? 0,
+        time: _.find(scores, (score => score.game_id == game.id))?.time,
       })),
     };
   }
@@ -116,6 +117,11 @@ const Scoreboard = () => {
                                     <Flex key={k}>
                                       <Text color='red.500'>{game.name}</Text>
                                       <Text>={game.score}</Text>
+                                      {game.time && game.time > 0 && (
+                                        <Text>
+                                          /{game.time}
+                                        </Text>
+                                      )}
                                     </Flex>
                                   ))}
                                 </Flex>

@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import AboutUs from "../pages/AboutUs";
 import Admin from "../pages/Admin";
 import Games from "../pages/Games";
+import Partners from "../pages/Partners";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import Wallet from "../pages/Profile";
 import Scoreboard from "../pages/Scoreboard";
@@ -19,6 +20,7 @@ const MainLayout = () => {
                 <Route path="/scoreboard" element={<Scoreboard />} />
                 <Route path="/wallet" element={<Wallet />} />
                 <Route path="/about-us" element={<AboutUs />} />
+                <Route path="/partners" element={<Partners />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />

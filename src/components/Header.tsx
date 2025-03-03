@@ -28,6 +28,9 @@ const Header = () => {
                             <Button p='12px 28px 16px 28px' bg="black" fontSize={12} _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate('/about-us')}>
                                 ABOUT US
                             </Button>
+                            <Button p='12px 28px 16px 28px' bg="black" fontSize={12} _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate('/partners')}>
+                                PARTNERS
+                            </Button>
                             {user?.is_admin && (
                                 <Button p='12px 28px 16px 28px' bg="black" fontSize={12} _hover={{ shadow: 'inset 0 0 12px #fc02d8' }} onClick={() => navigate('/admin')}>
                                     ADMIN PAGE
