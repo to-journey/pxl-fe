@@ -19,6 +19,8 @@ const Nexus = () => {
     const [showAll, setShowAll] = useState(false);
     const selectedIndex = useRef<number | null>(null);
     const wrongCount = useRef(0);
+    const [time, setTime] = useState(0);
+    const timeRef = useRef<any>();
 
     const width = 375, height = 560;
 
@@ -43,11 +45,13 @@ const Nexus = () => {
         setShowAll(false);
         selectedIndex.current = null;
         wrongCount.current = 0;
+        setTime(0);
         placeCards(2);
         let countDown = 3;
         const interval = setInterval(() => {
             if (countDown == 0) {
                 isPlaying.current = true;
+                timeRef.current = setInterval(() => setTime((prev) => prev + 1), 1000);
                 setShowAll(true);
                 setTimeout(() => setShowAll(false), 2500);
                 setCountDown(null);
@@ -60,9 +64,14 @@ const Nexus = () => {
     }
 
     const handleGameEnd = (score: number) => {
+        if (timeRef.current) {
+            clearInterval(timeRef.current);
+            timeRef.current = null;
+        }
         submitScore({
             gameId: 8,
             score,
+            time,
         });
         setTimeout(() => {
             setStatus(GameStatus.RESULT);
@@ -105,6 +114,9 @@ const Nexus = () => {
                 <Flex position='relative' p='24px' w={width} h={height} justify='center' align='center' border="2px solid white" rounded="16px" bg="url('/img/nexus/bg.png')">
                     <Text position='absolute' left={2} top={2} zIndex={1} fontSize='24px'>
                         Score: {score}
+                    </Text>
+                    <Text position='absolute' right={2} top={2} zIndex={1} fontSize='24px'>
+                        Time: {time}
                     </Text>
                     {countDown != null && (
                         <Text position='absolute' zIndex={1} fontSize='36px'>
